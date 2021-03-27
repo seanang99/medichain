@@ -9,7 +9,8 @@ Technology Stack:
 (3) Database - MongoDB
 (4) Blockchain - Solidity (Ethereum)
 ___________________________________________________________
-::::::::::::::::::::::::::: Frontend & Backend dependencies  :::::::::::::::::::::::::::
+
+<<< Frontend & Backend dependencies  >>>
 To run the application you must first install the following dependencies, 
 
 In the backend directory: (./server)
@@ -21,8 +22,9 @@ In the frontend directory: (./client)
 npm install axios @material-ui/core
 
 The react web project will run on "http://localhost:3000"
+___________________________________________________________
 
-::::::::::::::::::::::::::: Database setup instructions :::::::::::::::::::::::::::
+<<< Database setup instructions >>>
 
 ---------------------------The Easy Way---------------------------
 The test data has already been preloaded into a database for your testing needs and the application just needs to be run as is.
@@ -81,8 +83,9 @@ Password:
    d. Repeat steps 4-6 for categories and labels.
 
 The test data is now loaded into your database and you can proceed to start the application.
+___________________________________________________________
 
-::::::::::::::::::::::::::: Application startup instructions :::::::::::::::::::::::::::
+<<< Application startup instructions >>>
 
 Start up 4 instances of command prompt, or use the built in instances of command prompt in visual studio code.
 
