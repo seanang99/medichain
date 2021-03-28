@@ -77,7 +77,7 @@ contract MediChain {
         return insurers.length - 1;
     }
 
-    function submitClaim(uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public {
+    function submitClaim(uint256 policyholderId, uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public returns (uint256) {
         Claim memory newClaim = Claim(
             claimDate,
             msg.sender,
@@ -91,8 +91,31 @@ contract MediChain {
             token,
             medicalRecordRefIds
         );
-        
+
         claims.push(newClaim);
+        policyholders[policyholderId].submittedClaims[claims.length - 1] = newClaim;
+
+        return claims.length - 1;
+    }
+
+    function processClaim(uint256 claimId, uint256 claimAmount, string memory policyNumber) public {
+        // Can update claimAmount, claimStatus, verifier, policyNumber.
+    }
+
+    function approveClaim() public {
+        // update claimStatus
+    }
+
+    function rejectClaim() public {
+        // update claimStatus
+    }
+
+    function getClaimsByInsurer() public {
+
+    }
+
+    function getClaimsByPolicyholder() public {
+
     }
 
     // To be done by insurer

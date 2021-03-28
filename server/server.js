@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const port = 3001
+const medichain = require('../connection/app')
 const mongoose = require('mongoose')
 
 app.get('/', (req, res) => {
@@ -26,3 +27,24 @@ const dbConnection = mongoose.connection
 dbConnection.once('open', ()=>{
   console.log("Mongoose DB Connection established Successfully!")
 })
+
+app.post('/registerPolicyholder', (req, res) => {
+  console.log("**** POST /registerPolicyholder ****");
+  const policyholder = req.body.address;
+
+  medichain.registerPolicyholder(policyholder, (message) => {
+    console.log(`server.js/registerPolicyholder: ${message}\n`)
+    res.send(message);
+  });
+});
+
+app.post('/registerInsurer', (req, res) => {
+  console.log("**** POST /registerInsurer ****");
+  const insurer = req.body.address;
+
+  medichain.registerInsurer(insurer, (message) => {
+    console.log(`server.js/registerInsurer: ${message}\n`)
+    res.send(message);
+  });
+});
+
