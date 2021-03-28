@@ -5,9 +5,10 @@
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "axios": "^0.21.1",
+    "generate-react-cli": "^6.0.2",
     "react": "16.11.0",
     "react-dom": "16.11.0",
-    "react-scripts": "3.2.0",
+    "react-scripts": "^4.0.3",
     "web3": "1.2.2"
   },
   "scripts": {
