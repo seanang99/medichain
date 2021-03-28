@@ -4,6 +4,9 @@ import getWeb3 from "./getWeb3";
 
 import "./App.css";
 
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import Login from "./components/Login"
+
 class App extends Component {
   state = { storageValue: 0, web3: null, accounts: null, contract: null };
 
@@ -53,19 +56,27 @@ class App extends Component {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
-      <div className="App">
-        <h1>Good to Go!</h1>
-        <p>Your Truffle Box is installed and ready.</p>
-        <h2>Smart Contract Example</h2>
-        <p>
-          If your contracts compiled and migrated successfully, below will show
-          a stored value of 5 (by default).
-        </p>
-        <p>
-          Try changing the value stored on <strong>line 40</strong> of App.js.
-        </p>
-        <div>The stored value is: {this.state.storageValue}</div>
-      </div>
+      <BrowserRouter>
+        <Switch>
+          <Route path='/' component={Login} />
+
+          {/* Add the rest of the routing here */}
+
+        </Switch>
+      </BrowserRouter>
+      // <div className="App">
+      //   <h1>Good to Go!</h1>
+      //   <p>Your Truffle Box is installed and ready.</p>
+      //   <h2>Smart Contract Example</h2>
+      //   <p>
+      //     If your contracts compiled and migrated successfully, below will show
+      //     a stored value of 5 (by default).
+      //   </p>
+      //   <p>
+      //     Try changing the value stored on <strong>line 40</strong> of App.js.
+      //   </p>
+      //   <div>The stored value is: {this.state.storageValue}</div>
+      // </div>
     );
   }
 }
