@@ -49,7 +49,7 @@ contract MediChain {
     Insurer[] public insurers;
     mapping(address => Insurer) private insurersMapping;
 
-    function registerPolicyholder(address policyholder) public contractOwnerOnly {
+    function registerPolicyholder(address policyholder) public contractOwnerOnly returns (uint256) {
         require(policyholdersMapping[policyholder].policyholderAddress == address(0), "Policyholder has already been registered!");
 
         Policyholder memory newPolicyholder;
@@ -59,9 +59,11 @@ contract MediChain {
         policyholdersMapping[policyholder] = newPolicyholder;
 
         emit registerUser(policyholder);
+
+        return policyholders.length - 1;
     }
 
-    function registerInsurer(address insurer) public contractOwnerOnly {
+    function registerInsurer(address insurer) public contractOwnerOnly returns (uint256) {
         require(insurersMapping[insurer].insurerAddress == address(0), "Insurer has already been registered!");
 
         Insurer memory newInsurer;
@@ -71,6 +73,8 @@ contract MediChain {
         insurersMapping[insurer] = newInsurer;
 
         emit registerUser(insurer);
+
+        return insurers.length - 1;
     }
 
     function submitClaim(uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public {
