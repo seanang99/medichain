@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 contract Claim {
-    address _owner = msg.sender;
+    address _owner = msg.sender; // System Administrator
 
     enum ClaimStatus { PENDING, APPROVED, REJECTED }
 
@@ -15,7 +15,7 @@ contract Claim {
         address approver;
         address rejecter;
         string token;
-        date tokenExpiryDate;
+        // date tokenExpiryDate;
         string medicalRecordRefId;
     }
 

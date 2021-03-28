@@ -2,55 +2,58 @@ pragma solidity ^0.5.0;
 
 import './Claim.sol';
 
-// 1. Are we going to keep track of the policies?
-//   - a. Yes, can do register policy to policyholder also (since we can also view medical records).
-//        This also has added benefit of trust, since changes to policy will be tracked.
-//   - b. No, we just do the claim approval/rejection part.
-// 2. Should we have insurer staff accounts?
-//   - I think we should, to keep track of who approve/reject which claim
-// 3. Registration
-//   - Company to register for policyholder/insurer
-//   - NRIC to register policyholder
+// 1. Do not keep track of policy details
+// 2. There will be insurer staff accounts (mainly used to keep track of who approve/reject claims)
+// 3. Policyholder/Insurer accounts will be preloaded.
+//    - May or may not do registration.
 contract MediChain {
-    address _owner = msg.sender; // Insurance Company
+    address _owner = msg.sender; // System Adminstrator
 
     struct Policyholder {
-        uint256 policyholderDbId;
+        address policyholderAddress;
         Claim[] claims;
     }
 
     struct Insurer {
-        uint256 insurerDbId;
-        Claim[] approvedClaims;
-        Claim[] rejectedClaims;
+        address insurerAddress;
+        Claim[] verifiedClaims; // Claims that were processed and verified by this insurer
+        Claim[] endorsedClaims; // Claims that were approved or rejected by this insurer
     }
 
-    uint256 public numPolicyholders = 0;
-    uint256 public numInsurers = 0;
-
-    mapping(address => Policyholder) public policyholders;
-    mapping(address => Insurer) public insurers;
+    Policyholder[] public policyholders; // For off-chain database to easily retrieve policyholder details
+    mapping(address => Policyholder) public policyholdersMapping; // To allow fast checking of the existence of policyholder
+    
+    Insurer[] public insurers;
+    mapping(address => Insurer) public insurersMapping;
 
     modifier contractOwnerOnly() {
         require(msg.sender == _owner, "Only MediChain owner can perform registration!");
         _;
     }
 
+    event registerUser(address user);
+
     function registerPolicyholder(address policyholder) public contractOwnerOnly {
-        require(policyholders[policyholder].policyholderDbId == 0, "Policyholder has already been registered!");
+        require(policyholdersMapping[policyholder].policyholderAddress == address(0), "Policyholder has already been registered!");
 
         Policyholder memory newPolicyholder;
-        newPolicyholder.policyholderDbId = ++numPolicyholders;
+        newPolicyholder.policyholderAddress = policyholder;
 
-        policyholders[policyholder] = newPolicyholder;
+        policyholders.push(newPolicyholder);
+        policyholdersMapping[policyholder] = newPolicyholder;
+
+        emit registerUser(policyholder);
     }
 
     function registerInsurer(address insurer) public contractOwnerOnly {
-        require(insurers[insurer].insurerDbId == 0, "Insurer has already been registered!");
+        require(insurersMapping[insurer].insurerAddress == address(0), "Insurer has already been registered!");
 
         Insurer memory newInsurer;
-        newInsurer.insurerDbId = ++numInsurers;
+        newInsurer.insurerAddress = insurer;
 
-        insurers[insurer] = newInsurer;
+        insurers.push(newInsurer);
+        insurersMapping[insurer] = newInsurer;
+
+        emit registerUser(insurer);
     }
 }
