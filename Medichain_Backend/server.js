@@ -39,8 +39,11 @@ app.post('/registerPolicyholder', (req, res) => {
   const policyholder = req.body.address;
 
   medichain.registerPolicyholder(policyholder, (message) => {
-    console.log(`server.js/registerPolicyholder: ${message}\n`)
+    console.log(`server.js/registerPolicyholder: ${message}\n`);
     res.send(message);
+  }).catch(err => {
+    console.log(`server.js/registerPolicyholder: ${err}\n`);
+    res.status(403).send(err);
   });
 });
 
@@ -49,7 +52,27 @@ app.post('/registerInsurer', (req, res) => {
   const insurer = req.body.address;
 
   medichain.registerInsurer(insurer, (message) => {
-    console.log(`server.js/registerInsurer: ${message}\n`)
+    console.log(`server.js/registerInsurer: ${message}\n`);
     res.send(message);
+  }).catch(err => {
+    console.log(`server.js/registerInsurer: ${err}\n`);
+    res.status(403).send(err);
   });
 });
+
+app.post('/submitClaim', (req, res) => {
+  console.log("**** POST /submitClaim ****");
+
+  const policyholder = req.body.policyholder;
+  const medicalAmount = req.body.medicalAmount;
+  const token = req.body.token;
+  const medicalRecordRefIds = req.body.medicalRecordRefIds;
+
+  medichain.submitClaim(policyholder, medicalAmount, token, medicalRecordRefIds, (message) => {
+    console.log(`server.js/submitClaim: ${message}\n`);
+    res.send(message);
+  }).catch(err => {
+    console.log(`server.js/submitClaim: ${err}\n`);
+    res.status(403).send(err);
+  });
+})
