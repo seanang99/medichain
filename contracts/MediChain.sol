@@ -23,8 +23,13 @@ contract MediChain {
         _;
     }
 
+    modifier policyholderOnly() {
+        require(policyholders[msg.sender].isActivated, "User is not a policyholder!");
+        _;
+    }
+
     modifier insurerOnly() {
-        require(insurersMapping[msg.sender].insurerAddress != address(0), "User is not an insurer!");
+        require(insurers[msg.sender].isActivated, "User is not an insurer!");
         _;
     }
 
@@ -35,6 +40,11 @@ contract MediChain {
 
     modifier differentVerifier(address verifier) {
         require(msg.sender != verifier, "The claim cannot be endorsed by the same insurer!");
+        _;
+    }
+
+    modifier processedClaim(ClaimStatus claimStatus) {
+        require(claimStatus == ClaimStatus.PROCESSED, "The claim has not been processed or has already been endorsed!");
         _;
     }
 
@@ -53,56 +63,46 @@ contract MediChain {
     }
 
     struct Policyholder {
-        address policyholderAddress;
-        mapping(uint256 => Claim) submittedClaims;
+        bool isActivated;
+        // address policyholderAddress;
+        // mapping(uint256 => Claim) submittedClaims;
     }
 
     struct Insurer {
-        address insurerAddress;
-        mapping(uint256 => Claim) verifiedClaims; // Claims that were processed and verified by this insurer
-        mapping(uint256 => Claim) endorsedClaims; // Claims that were approved or rejected by this insurer
+        bool isActivated;
+        // address insurerAddress;
+        // mapping(uint256 => Claim) verifiedClaims; // Claims that were processed and verified by this insurer
+        // mapping(uint256 => Claim) endorsedClaims; // Claims that were approved or rejected by this insurer
     }
 
     Claim[] private claims;
 
-    Policyholder[] public policyholders; // For off-chain database to easily retrieve policyholder details
-    mapping(address => Policyholder) private policyholdersMapping; // To allow fast checking of the existence of policyholder
+    uint256 private numPolicyholders;
+    mapping(address => Policyholder) private policyholders; 
 
-    Insurer[] public insurers;
-    mapping(address => Insurer) private insurersMapping;
+    uint256 private numInsurers;
+    mapping(address => Insurer) private insurers;
 
     // When registering a new account for Policyholder/Insurer, the platform owner will specify an address for the user (in private MediChain network)
     function registerPolicyholder(address policyholder) public contractOwnerOnly returns (uint256) {
-        require(policyholdersMapping[policyholder].policyholderAddress == address(0), "Policyholder has already been registered!");
+        require(!policyholders[policyholder].isActivated, "Policyholder has already been registered!");
 
-        Policyholder memory newPolicyholder;
-        newPolicyholder.policyholderAddress = policyholder;
-
-        policyholders.push(newPolicyholder);
-        policyholdersMapping[policyholder] = newPolicyholder;
-
+        policyholders[policyholder] = Policyholder(true);
         emit userRegistration(policyholder);
 
-        return policyholders.length - 1;
+        return numPolicyholders++;
     }
 
     function registerInsurer(address insurer) public contractOwnerOnly returns (uint256) {
-        require(insurersMapping[insurer].insurerAddress == address(0), "Insurer has already been registered!");
+        require(!insurers[insurer].isActivated, "Insurer has already been registered!");
 
-        Insurer memory newInsurer;
-        newInsurer.insurerAddress = insurer;
-
-        insurers.push(newInsurer);
-        insurersMapping[insurer] = newInsurer;
-
+        insurers[insurer] = Insurer(true);
         emit userRegistration(insurer);
 
-        return insurers.length - 1;
+        return numInsurers++;
     }
 
-    function submitClaim(uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public returns (uint256) {
-        require(policyholdersMapping[msg.sender].policyholderAddress != address(0), "Policyholder has not been registered yet!");
-
+    function submitClaim(uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public policyholderOnly returns (uint256) {
         Claim memory newClaim = Claim(
             claimDate,
             msg.sender,
@@ -116,11 +116,7 @@ contract MediChain {
             token,
             medicalRecordRefIds
         );
-
         claims.push(newClaim);
-        policyholdersMapping[msg.sender].submittedClaims[claims.length - 1] = newClaim;
-        // policyholders[policyholderId].submittedClaims[claims.length - 1] = newClaim;
-
         emit claimUpdate(claims.length - 1, newClaim.claimStatus);
 
         return claims.length - 1;
@@ -138,41 +134,41 @@ contract MediChain {
         emit claimUpdate(claimId, claims[claimId].claimStatus);
     }
 
-    function approveClaim(uint256 claimId, string memory remarks) public validClaimId(claimId) insurerOnly differentInsurer(claims[claimId].claimant) differentVerifier(claims[claimId].verifier) {
-        require(claims[claimId].claimStatus == ClaimStatus.PROCESSED, "The claim has not been processed or has already been endorsed!");
-
+    function approveClaim(uint256 claimId, string memory remarks) public validClaimId(claimId) insurerOnly differentInsurer(claims[claimId].claimant) differentVerifier(claims[claimId].verifier) processedClaim(claims[claimId].claimStatus) {
         claims[claimId].claimStatus = ClaimStatus.APPROVED;
-        claims[claimId].endorser = msg.sender;
-        claims[claimId].remarks = remarks;
-        
-        emit claimUpdate(claimId, claims[claimId].claimStatus);
+        updateClaim(claimId, remarks);
     }
 
-    function rejectClaim(uint256 claimId, string memory remarks) public validClaimId(claimId) insurerOnly differentInsurer(claims[claimId].claimant) differentVerifier(claims[claimId].verifier) {
-        require(claims[claimId].claimStatus == ClaimStatus.PROCESSED, "The claim has not been processed or has already been endorsed!");
-
+    function rejectClaim(uint256 claimId, string memory remarks) public validClaimId(claimId) insurerOnly differentInsurer(claims[claimId].claimant) differentVerifier(claims[claimId].verifier) processedClaim(claims[claimId].claimStatus) {
         claims[claimId].claimStatus = ClaimStatus.REJECTED;
-        claims[claimId].endorser = msg.sender;
+        updateClaim(claimId, remarks);
+    }
+
+    function updateClaim(uint256 claimId, string memory remarks) private {
+        claims[claimId].endorser = tx.origin;
         claims[claimId].remarks = remarks;
-        
         emit claimUpdate(claimId, claims[claimId].claimStatus);    
     }
 
-    function getClaimsByInsurer() public view insurerOnly returns(Claim[] memory claimRecords) {
+    // Filter claims at Node.js backend!
+    function getClaims() public view returns(Claim[] memory claimRecords) {
         return claims;
     }
 
-    // function getClaimsByPolicyholder() public view returns(mapping(uint256 => Claim) memory claimRecords) {
-    //     require(policyholdersMapping[msg.sender].policyholderAddress != address(0), "Caller must be a policyholder!");
-    //     // Claim[] memory claimRecords = new Claim[](numClaims);
-    //     // for(uint256 i = 0; i < numClaims; i++) {
-    //     //     claimRecords[i] = policyholdersMapping[msg.sender].submittedClaims[i];
-    //     // }
-    //     return policyholdersMapping[msg.sender].submittedClaims;
+    // function getClaimsByPolicyholder() public view policyholderOnly returns(Claim[] memory claimRecords) {
+    //     require(policyholders[msg.sender].isActivated, "Caller must be a policyholder!");
+        
+    //     Claim[] memory tempClaimRecords;
+    //     for(uint256 i = 0; i < claims.length; i++) {
+    //         if (claims[i].claimant == msg.sender) {
+    //             tempClaimRecords.push(claims[i]);
+    //         }
+    //     }
+    //     return claimRecords;
     // }
 
     function getClaim(uint256 claimId) public view returns(Claim memory claim) {
-        require(insurersMapping[msg.sender].insurerAddress != address(0) || msg.sender == claims[claimId].claimant, "Only insurer or claimant can view the claim!");
+        require(insurers[msg.sender].isActivated || msg.sender == claims[claimId].claimant, "Only insurer or claimant can view the claim!");
         return claims[claimId];
     }
 }

@@ -76,3 +76,18 @@ app.post('/submitClaim', (req, res) => {
     res.status(403).send(err);
   });
 })
+
+app.post('/getClaims', (req, res) => {
+  console.log("**** POST /getClaims ****");
+
+  const insurer = req.body.insurer;
+
+  medichain.getClaims(insurer, (claims) => {
+    console.log("server.js/getClaims:");
+    console.log(claims);
+    res.send(claims);
+  }).catch(err => {
+    console.log(`server.js/getClaims: ${err}`)
+    res.status(403).send(err);
+  })
+})
