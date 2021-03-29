@@ -49,6 +49,7 @@ contract MediChain {
     Insurer[] public insurers;
     mapping(address => Insurer) private insurersMapping;
 
+    // When registering a new account for Policyholder/Insurer, the platform owner will specify an address for the user (in private MediChain network)
     function registerPolicyholder(address policyholder) public contractOwnerOnly returns (uint256) {
         require(policyholdersMapping[policyholder].policyholderAddress == address(0), "Policyholder has already been registered!");
 

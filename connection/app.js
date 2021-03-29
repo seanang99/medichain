@@ -1,3 +1,4 @@
+// Assuming private Ethereum blockchain, hence no gas fees are required for making transaction calls.
 const Web3 = require('web3');
 const contract = require('@truffle/contract');
 const medichain_artifact = require('../build/contracts/MediChain.json');

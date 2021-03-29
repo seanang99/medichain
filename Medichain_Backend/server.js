@@ -12,8 +12,10 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
 
+
 // const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://admin:medichain@cluster0.ylqxg.gcp.mongodb.net/cluster0?retryWrites=true&w=majority";
+// const uri = "mongodb+srv://admin:medichain@cluster0.ylqxg.gcp.mongodb.net/cluster0?retryWrites=true&w=majority";
+const uri = "mongodb+srv://username:Password@cluster0.hcafc.gcp.mongodb.net/cluster0?retryWrites=true&w=majority";
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 // client.connect(err => {
 //   const collection = client.db("test").collection("devices");
@@ -27,6 +29,10 @@ const dbConnection = mongoose.connection
 dbConnection.once('open', ()=>{
   console.log("Mongoose DB Connection established Successfully!")
 })
+
+const accountRouter = require('./route/account.route')
+
+app.use('/account', accountRouter)
 
 app.post('/registerPolicyholder', (req, res) => {
   console.log("**** POST /registerPolicyholder ****");
@@ -47,4 +53,3 @@ app.post('/registerInsurer', (req, res) => {
     res.send(message);
   });
 });
-
