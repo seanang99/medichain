@@ -39,9 +39,9 @@ The MongoDB connection string for this database is: `CONNECTION_API_KEY` and has
 
 If you want to just see the database with the sample data already pre-loaded in, log into MongoDB atlas with the following credentials:
 
-Email: _email@email.com_
-
-Password: _password_
+> Email: _email@email.com_
+> 
+> Password: _password_
 
 ##### _---------------------------The Hard Way---------------------------_
 
