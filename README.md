@@ -1,46 +1,51 @@
-# medichain
+# MediChain
 
-Project Description:
+## Project Description
 MediChain is a blockchain project in the Insurance industry
 
-Technology Stack: 
-(1) Frontend - React
-(2) Backend - NodeJS & ExpressJS
-(3) Database - MongoDB
-(4) Blockchain - Solidity (Ethereum)
-___________________________________________________________
+## Technology Stack: 
+- Frontend - React 
+- Backend - NodeJS & ExpressJS
+- Database - MongoDB
+- Blockchain - Solidity (Ethereum)
 
-<<< Frontend & Backend dependencies  >>>
-To run the application you must first install the following dependencies, 
+## Frontend & Backend Dependencies
+To run the application you must first install the following dependencies:
 
-In the backend directory: (./server)
+#### Parent Directory
+```sh
+npm install -g truffle ganache-cli
+npm install web3 @truffle/contract
+```
 
-npm install express cors mongoose dotenv  
-
-In the frontend directory: (./client)
-
+#### Frontend Directory
+```sh
+cd client
 npm install axios @material-ui/core
+```
+The react web project will run on `http://localhost:3000`.
 
-The react web project will run on "http://localhost:3000"
-___________________________________________________________
+#### Backend Directory
+```sh
+cd Medichain_Backend
+npm install express cors mongoose dotenv
+```
 
-<<< Database setup instructions >>>
-
----------------------------The Easy Way---------------------------
+## Database Setup Instructions
+##### _---------------------------The Easy Way---------------------------_
 The test data has already been preloaded into a database for your testing needs and the application just needs to be run as is.
 
-The mongodb connection string for this database is: 
+The MongoDB connection string for this database is: `CONNECTION_API_KEY` and has already been provided in the .env file thus you are not required to edit the environmental variables of the program in any way.
 
-and has already been provided in the .env file thus you are not required to edit the environmental variables of the program in any way.
+If you want to just see the database with the sample data already pre-loaded in, log into MongoDB atlas with the following credentials:
 
-If you want to just see the database with the sample data already pre-loaded in, log into mongodb atlas with the following credentials:
+> Email: _email@email.com_
+> 
+> Password: _password_
 
-Email: 
-Password: 
+##### _---------------------------The Hard Way---------------------------_
 
----------------------------The Hard Way---------------------------
-
-1. Before we run the application, we must first create a mongoDB atlas account at https://www.mongodb.com/cloud/atlas/register.
+1. Before we run the application, we must first create a MongoDB atlas account at https://www.mongodb.com/cloud/atlas/register.
 
 2. Once you sign up, click create a new cluster and choose a free tier cluster and cloud provider.
 
@@ -85,22 +90,36 @@ Password:
 The test data is now loaded into your database and you can proceed to start the application.
 ___________________________________________________________
 
-<<< Application startup instructions >>>
+## Application Startup Instructions
+Open your Terminals and run these commands.
+#### First Tab:
+This starts the Ganache-CLI to start on Port 7545 with seed 8888. Ganache should generate 10 fixed test accounts automatically each with 100 ether by default.
+```sh
+ganache-cli -p 7545 -s 8888
+```
 
-Start up 4 instances of command prompt, or use the built in instances of command prompt in visual studio code.
+#### Second Tab:
+This will compile your contracts. You should see details of your contract being compiled and deployed in the command line. Ensure that the summary outputs the correct number of deployments. 
+```sh
+truffle compile
+truffle migrate
+```
 
-1. For the first instance, run "ganache-cli -p 7545"
-
-This starts the Ganache-CLI to start on Port 7545. Ganache should generate 10 test accounts automatically each with 100 ether by default.
-
-2. For the second instance, run "truffle compile" followed by "truffle migrate"
-
-This will import your contracts. You should see details of your contract being compiled and deployed in the command line. Ensure that the summary outputs the correct number of deployments. 
-
-3. For the third instance, cd client -> npm run
-
-This web interface for the web reactJS client can then be accessed at http://localhost:3000
-
-4. For the fourth instance, cd server -> node server
-
+#### Third Tab:
 This starts the backend node.js server. The app should be listening at http://localhost:3001. It should also show that "Mongoose DB Connection established Successfully!"
+```sh
+node Medichain_Backend/server.js
+```
+
+#### Fourth Tab:
+This web interface for the web reactJS client can then be accessed at http://localhost:3000
+```sh
+cd client
+npm start
+```
+
+#### Optional:
+To run the test scripts for testing the MediChain smart contract.
+```sh
+truffle test
+```
