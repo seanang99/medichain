@@ -18,7 +18,8 @@ const accountSchema = new Schema
         username: {
             type: String,
             required: [true, 'Username is required'],
-            minlength: 8
+            minlength: 8,
+            unique: true
         },
         password: {
             type: String,
