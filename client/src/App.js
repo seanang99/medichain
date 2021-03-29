@@ -6,6 +6,7 @@ import "./App.css";
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Login from "./components/Login"
+import PrivateRoute from "./components/MediChainRoute";
 
 class App extends Component {
   state = { storageValue: 0, web3: null, accounts: null, contract: null };
@@ -56,14 +57,15 @@ class App extends Component {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
-      <BrowserRouter>
-        <Switch>
-          <Route path='/' component={Login} />
+      // <BrowserRouter>
+      //   <Switch>
+      //     <Route path='/' component={Login} />
 
-          {/* Add the rest of the routing here */}
+      //     {/* Add the rest of the routing here */}
 
-        </Switch>
-      </BrowserRouter>
+      //   </Switch>
+      // </BrowserRouter>
+      <PrivateRoute />
       // <div className="App">
       //   <h1>Good to Go!</h1>
       //   <p>Your Truffle Box is installed and ready.</p>
