@@ -38,7 +38,9 @@ The test data has already been preloaded into a database for your testing needs 
 The MongoDB connection string for this database is: `CONNECTION_API_KEY` and has already been provided in the .env file thus you are not required to edit the environmental variables of the program in any way.
 
 If you want to just see the database with the sample data already pre-loaded in, log into MongoDB atlas with the following credentials:
+
 Email: _email@email.com_
+
 Password: _password_
 
 ##### _---------------------------The Hard Way---------------------------_
