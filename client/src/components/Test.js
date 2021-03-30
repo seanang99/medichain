@@ -1,7 +1,10 @@
 import React from "react";
+import CreateMedicalRecord from "./HealthCareProvider/CreateMedicalRecord";
+
+
 
 const Test = () => {
-  return <React.Fragment>Test</React.Fragment>;
+  return (<CreateMedicalRecord/>);
 };
 
 export default Test;

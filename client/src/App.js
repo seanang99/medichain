@@ -1,17 +1,19 @@
 import React, { Component } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
-import Login from "./components/Login"
+import Login from "./components/Login";
+import LoginPage from "./components/LoginPage"
+import Test from "./components/Test";
 import PrivateRoute from "./components/MediChainRoute";
 
 class App extends Component {
   render() {
     return (
       // From Tze Ming
-      // <Switch>
-      //   <Route exact path="/" component={Login} />
-      //   <Route path="/test" component={Test} />
-      // </Switch>
+      <Switch>
+        <Route exact path="/" component={Login} />
+        <Route path="/test" component={Test} />
+      </Switch>
 
       // <BrowserRouter>
       //   <Switch>
@@ -21,7 +23,7 @@ class App extends Component {
 
       //   </Switch>
       // </BrowserRouter>
-      <PrivateRoute />
+      // <PrivateRoute />
       // <div className="App">
       //   <h1>Good to Go!</h1>
       //   <p>Your Truffle Box is installed and ready.</p>
