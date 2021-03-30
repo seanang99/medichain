@@ -1,15 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect} from 'react'
+import axios from "axios";
+import { } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
+const useStyles = makeStyles((theme) => ({
+  root:{
+    height: '100vh',
+  },
+  paper: {
+    margin: theme.spacing(12, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  
+}));
 
-const HealthCareProvider = () => (
-  <div>
-    HealthCareProvider Component
-  </div>
-);
+export default function HealthCareProvider() {
+  
+  const classes = useStyles();
 
-HealthCareProvider.propTypes = {};
+  return (
+    <div>
+      
+    </div>
+  )
+}
 
-HealthCareProvider.defaultProps = {};
-
-export default HealthCareProvider;

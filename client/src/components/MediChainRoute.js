@@ -102,6 +102,7 @@ function AuthButton() {
   const [open, setOpen] = useState(true);
 
   return auth.user ? (
+    // Dashboard
     <p>
       Welcome!{" "}
       <button
