@@ -10,6 +10,7 @@ const theme = createMuiTheme({
     secondary: {
       main: "#F5AD9A",
     },
+    orange: "#D9704A",
     contrastThreshold: 3,
     // Used by the functions below to shift a color's luminance by approximately
     // two indexes within its tonal palette.
