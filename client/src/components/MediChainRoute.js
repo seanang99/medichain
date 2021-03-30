@@ -35,6 +35,7 @@ export default function MediChainRoute() {
             <Route path="/login">
               <LoginPage />
             </Route>
+            <Route path='/' component={LoginPage} /> {/* Need to check how to reroute to Login Page */}
             <PrivateRoute path="/protected">
               <ProtectedPage />
             </PrivateRoute>
