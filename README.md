@@ -21,7 +21,7 @@ npm install web3 @truffle/contract
 #### Frontend Directory
 ```sh
 cd client
-npm install axios @material-ui/core
+npm install axios react-router-dom @material-ui/core
 ```
 The react web project will run on `http://localhost:3000`.
 
