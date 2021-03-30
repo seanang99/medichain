@@ -84,10 +84,9 @@ module.exports = {
         throw `An error has occurred while rejecting a claim: ${err}`;
       });
   },
-  getClaims: function (insurer, callback) {
+  getClaims: function (address, callback) {
     return mediChainInstance
-      .getClaimsByInsurer
-      .call({ from: insurer })
+      .getClaims({ from: address })
       .then(claims => {
         let claimsInJson = [];
         for (claim of claims) {
@@ -105,7 +104,7 @@ module.exports = {
             "medicalRecordRefIds": claim[10].split(";").slice(0, -1)
           })
         }
-
+        
         callback(claimsInJson)
       })
       .catch(err => {
