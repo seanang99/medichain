@@ -57,6 +57,7 @@ const fakeAuth = {
     setTimeout(cb, 100);
   },
 };
+
 /** For more details on
  * `authContext`, `ProvideAuth`, `useAuth` and `useProvideAuth`
  * refer to: https://usehooks.com/useAuth/

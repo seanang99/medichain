@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   CssBaseline,
@@ -15,18 +15,16 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 
 import blob from "../image-assets/blob.svg";
+import blob1 from "../image-assets/blob1.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
   },
   image: {
-    backgroundImage: `url(${blob})`,
+    backgroundImage: `url(${blob1})`,
     backgroundRepeat: "no-repeat",
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
+    backgroundColor: theme.palette.type === "light" ? theme.palette.grey[50] : theme.palette.grey[900],
     backgroundSize: "200vh 200vh",
     backgroundPosition: "right",
   },
@@ -35,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
   },
   form: {
     width: "100%",
@@ -44,6 +43,15 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
     background: "#0E4776",
     borderRadius: "20px",
+  },
+  pageTitle: {
+    letterSpacing: "8px",
+    color: theme.palette.primary.dark,
+  },
+  flexGrid: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 }));
 
@@ -94,11 +102,12 @@ export default function Login() {
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} square>
+      <Grid item xs={12} sm={8} md={5} className={classes.flexGrid}>
         <div className={classes.paper}>
-          <Typography component="h1" variant="h3">
-            Login
-          </Typography> <br />
+          <Typography variant="h2" className={classes.pageTitle}>
+            LOGIN
+          </Typography>
+          <br />
           <Typography component="h2" variant="subtitle1">
             CENTRAL HEALTHCARE SYSTEM (EMRX)
           </Typography>
@@ -125,17 +134,8 @@ export default function Login() {
               autocomplete="current-password"
               onChange={(e) => setUsername(e.target.value)}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              variant="contained"
-              type="submit"
-              fullWidth
-              color="primary"
-              className={classes.submit}
-            >
+            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+            <Button variant="contained" type="submit" fullWidth color="primary" className={classes.submit}>
               Sign In
             </Button>
             <Grid container>
