@@ -42,6 +42,7 @@ const MedicalRecordCard = ({ title, patientName, fileURL }) => {
             endIcon={<GetApp fontSize="inherit" />}
             href={fileURL}
             target="_blank"
+            referrerPolicy="no-referrer"
           >
             Download File
           </Button>
