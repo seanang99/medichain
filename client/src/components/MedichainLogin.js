@@ -14,7 +14,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 
 import { emrxClient, setUser } from "../Auth";
-import blob1 from "../image-assets/blob1.svg";
+import blob1 from "../image-assets/bg-blob.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: `url(${blob1})`,
     backgroundRepeat: "no-repeat",
     backgroundColor: theme.palette.type === "light" ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: "200vh 200vh",
+    backgroundSize: "200vh 250vh",
     backgroundPosition: "right",
   },
   paper: {
@@ -40,12 +40,12 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
-    background: "#0E4776",
     borderRadius: "20px",
+    color: "#FFF",
   },
   pageTitle: {
     letterSpacing: "8px",
-    color: theme.palette.primary.dark,
+    color: theme.palette.secondary.main,
   },
   flexGrid: {
     display: "flex",
@@ -100,11 +100,12 @@ export default function Login() {
           </Typography>
           <br />
           <Typography component="h2" variant="subtitle1">
-            CENTRAL HEALTHCARE SYSTEM (EMRX)
+            MEDICHAIN
           </Typography>
           <form className={classes.form} onSubmit={(e) => login(e)}>
             <TextField
               variant="outlined"
+              color="secondary"
               margin="normal"
               fullWidth
               id="username"
@@ -121,6 +122,7 @@ export default function Login() {
             />
             <TextField
               variant="outlined"
+              color="secondary"
               margin="normal"
               fullWidth
               id="password"
@@ -135,12 +137,12 @@ export default function Login() {
                 })
               }
             />
-            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+            <FormControlLabel control={<Checkbox value="remember" color="secondary" />} label="Remember me" />
             <Button
               variant="contained"
               type="submit"
               fullWidth
-              color="primary"
+              color="secondary"
               className={classes.submit}
               onClick={(e) => login(e)}
             >
@@ -149,12 +151,12 @@ export default function Login() {
           </form>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link href="#" variant="body2" color="secondary">
                 Forgot username or password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="#" variant="body2" color="secondary">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
