@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const port = 3002;
 const mongoose = require('mongoose');
+const cors = require("cors")
+
+app.use(cors())
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
