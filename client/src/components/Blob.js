@@ -21,10 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
   secondaryTopBlob: {
     position: "fixed",
-    height: 800,
     top: 200,
     right: 50,
     zIndex: -999,
+    height: "100px",
     transform: "rotate(180deg)",
   },
 }));
@@ -34,9 +34,9 @@ const Blob = () => {
 
   return (
     <React.Fragment>
-      <img className={classes.btmBlob} src={blob} alt="bloop" />
-      <img className={classes.topBlob} src={blob2} alt="bloop" />
-      <img className={classes.secondaryTopBlob} src={blob2} alt="bloop" />
+      <img className={classes.btmBlob} src={blob2} alt="bloop" />
+      <img className={classes.topBlob} src={blob} alt="bloop" />
+      <img className={classes.secondaryTopBlob} src={blob} alt="bloop" />
     </React.Fragment>
   );
 };
