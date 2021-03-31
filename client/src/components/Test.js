@@ -2,6 +2,7 @@ import React from "react";
 
 import ClaimRecordAccordion from "./ClaimRecordAccordian";
 import MedicalRecordCard from "./MedicalRecordCard";
+import Blob from "./Blob";
 
 const Test = () => {
   const testMedicalCard1 = {
@@ -24,13 +25,14 @@ const Test = () => {
   };
 
   return (
-    <React.Fragment>
+    <div>
+      <Blob />
       <div style={{ maxWidth: "60%" }}>
         <MedicalRecordCard {...testMedicalCard1} />
         <MedicalRecordCard {...testMedicalCard2} />
         <ClaimRecordAccordion {...testClaimAccordian} />
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
