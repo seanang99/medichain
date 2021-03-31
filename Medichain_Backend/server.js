@@ -15,7 +15,7 @@ app.listen(port, () => {
 
 // const MongoClient = require('mongodb').MongoClient;
 // const uri = "mongodb+srv://admin:medichain@cluster0.ylqxg.gcp.mongodb.net/cluster0?retryWrites=true&w=majority";
-const uri = "mongodb+srv://username:Password@cluster0.hcafc.gcp.mongodb.net/cluster0?retryWrites=true&w=majority";
+const uri = "mongodb+srv://username:adminpassword@cluster0.hcafc.gcp.mongodb.net/cluster0?retryWrites=true&w=majority";
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 // client.connect(err => {
 //   const collection = client.db("test").collection("devices");
