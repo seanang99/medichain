@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 
 import Login from "./components/Login";
-import PrivateRoute from "./components/MediChainRoute";
+// import PrivateRoute from "./components/MediChainRoute";
 import Test from "./components/Test";
 
 class App extends Component {

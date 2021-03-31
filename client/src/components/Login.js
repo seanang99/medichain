@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import {
   CssBaseline,
@@ -6,7 +6,6 @@ import {
   Link,
   Box,
   Typography,
-  Paper,
   Button,
   Checkbox,
   FormControlLabel,
@@ -14,7 +13,6 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import blob from "../image-assets/blob.svg";
 import blob1 from "../image-assets/blob1.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +81,7 @@ export default function Login() {
     axios
       .post("url", account)
       .then((res) => {
-        const data = res.data;
+        // const data = res.data;
         // window.sessionStorage.setItem("account_type", data.account.__t);
         // window.sessionStorage.setItem("token", data.account.token);
         // window.sessionStorage.setItem("username", data.account.username);
