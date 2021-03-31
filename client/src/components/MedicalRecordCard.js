@@ -2,16 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Card, CardContent, Typography } from "@material-ui/core";
-import { GetApp } from "@material-ui/icons";
+import { Folder, GetApp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(2, 0),
+    margin: theme.spacing(1, 0),
     border: "1px solid #C4C4C4",
     boxShadow: "none",
   },
   cardContent: {
     display: "flex",
+    padding: theme.spacing(2),
+    "&:last-child": {
+      padding: theme.spacing(2),
+    },
   },
   flexItem: {
     flexGrow: 1,
@@ -19,10 +23,15 @@ const useStyles = makeStyles((theme) => ({
   button: {
     textTransform: "none",
     color: theme.palette.orange,
+    marginBottom: theme.spacing(1),
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
   },
 }));
 
-const MedicalRecordCard = ({ title, patientName, fileURL }) => {
+const MedicalRecordCard = ({ title, patientName, fileURL, submitClaim }) => {
   const classes = useStyles();
 
   return (
@@ -36,7 +45,7 @@ const MedicalRecordCard = ({ title, patientName, fileURL }) => {
             Patient: <span style={{ color: "#676767" }}>{patientName}</span>
           </Typography>
         </div>
-        <div>
+        <div className={classes.column}>
           <Button
             disableRipple
             classes={{ root: classes.button }}
@@ -47,6 +56,11 @@ const MedicalRecordCard = ({ title, patientName, fileURL }) => {
           >
             Download File
           </Button>
+          {submitClaim && (
+            <Button variant="contained" color="primary" style={{ borderRadius: 15 }} endIcon={<Folder />}>
+              Submit Claim
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
