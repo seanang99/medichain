@@ -27,7 +27,7 @@ app.use(express.json())
 mongoose.connect(uri,{useUnifiedTopology:true, useNewUrlParser:true, useCreateIndex:true})
 const dbConnection = mongoose.connection
 dbConnection.once('open', ()=>{
-  console.log("Mongoose DB Connection established Successfully!")
+  console.log("Medichain Mongoose DB Connection established Successfully!")
 })
 
 const accountRouter = require('./route/account.route')
