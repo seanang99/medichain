@@ -34,7 +34,6 @@ export default function CreateMedicalRecord() {
   const classes = useStyles();
 
   // Attribute of medical records
-  const [patientName, setPatientName] = useState("");
   const [patientId, setPatientId] = useState("");
   const [healthcareProviderId, setHealthCareProviderId] = useState("");
   const [recordType, setRecordType] = useState("");
@@ -45,7 +44,6 @@ export default function CreateMedicalRecord() {
   // Uploading Files
 
   const medicalRecord = {
-    patientName: patientName,
     patientId: patientId,
     healthcareProviderId: healthcareProviderId,
     recordType: recordType,
@@ -60,7 +58,6 @@ export default function CreateMedicalRecord() {
       .post("url", medicalRecord)
       .then((res) => {
         var record = res.data;
-        setPatientName("");
         setPatientId("");
         setHealthCareProviderId("");
         setRecordType("");
@@ -80,19 +77,7 @@ export default function CreateMedicalRecord() {
           New Medical Record
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              id="patientName"
-              name="patientName"
-              label="Patient Name"
-              fullWidth
-              autoFocus
-              onChange={(e) => setPatientName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -103,7 +88,7 @@ export default function CreateMedicalRecord() {
               onChange={(e) => setPatientId(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={9}>
             {/* Is this a dropdown?  */}
             <TextField
               variant="outlined"
@@ -115,7 +100,7 @@ export default function CreateMedicalRecord() {
               onChange={(e) => setRecordType(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <TextField
               variant="outlined"
               margin="normal"
