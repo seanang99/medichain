@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Card, CardContent, Typography } from "@material-ui/core";
 import { GetApp } from "@material-ui/icons";
@@ -50,6 +51,12 @@ const MedicalRecordCard = ({ title, patientName, fileURL }) => {
       </CardContent>
     </Card>
   );
+};
+
+MedicalRecordCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  patientName: PropTypes.string.isRequired,
+  fileURL: PropTypes.string.isRequired,
 };
 
 export default MedicalRecordCard;
