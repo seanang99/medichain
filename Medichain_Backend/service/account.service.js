@@ -35,7 +35,7 @@ async function readAllAccounts() {
 }
 
 async function readAccount(username) {
-    return Account.findOne({username: username})
+    return Account.findOne({ username: username })
         .catch((err) => {
             throw err
         })
