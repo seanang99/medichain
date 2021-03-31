@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   CssBaseline,
   Grid,
@@ -13,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
+import { emrxClient, setUser } from "../Auth";
 import blob1 from "../image-assets/blob1.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -69,31 +69,21 @@ function Copyright() {
 export default function Login() {
   const classes = useStyles();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const account = {
-    username: username,
-    password: password,
-  };
+  const [account, setAccount] = useState({
+    username: "",
+    password: "",
+  });
 
   const login = (e) => {
-    axios
-      .post("url", account)
-      .then((res) => {
-        // const data = res.data;
-        // window.sessionStorage.setItem("account_type", data.account.__t);
-        // window.sessionStorage.setItem("token", data.account.token);
-        // window.sessionStorage.setItem("username", data.account.username);
-        setUsername("");
-        setPassword("");
+    e.preventDefault();
+    // console.log(account);
 
-        // Route to respective pages
+    emrxClient
+      .post("/medicalInstitutionAccount/login", account)
+      .then((res) => {
+        setUser(res.data);
       })
-      .catch((e) => {
-        // error handling
-        console.log(e.log);
-      });
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -117,9 +107,13 @@ export default function Login() {
               id="username"
               label="Username"
               name="username"
-              autocomplete="email"
               autoFocus
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) =>
+                setAccount({
+                  ...account,
+                  username: e.target.value,
+                })
+              }
             />
             <TextField
               variant="outlined"
@@ -129,11 +123,22 @@ export default function Login() {
               label="Password"
               type="password"
               name="password"
-              autocomplete="current-password"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) =>
+                setAccount({
+                  ...account,
+                  password: e.target.value,
+                })
+              }
             />
             <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-            <Button variant="contained" type="submit" fullWidth color="primary" className={classes.submit}>
+            <Button
+              variant="contained"
+              type="submit"
+              fullWidth
+              color="primary"
+              className={classes.submit}
+              onClick={(e) => login(e)}
+            >
               Sign In
             </Button>
             <Grid container>
