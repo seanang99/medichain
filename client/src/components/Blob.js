@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     top: 200,
     right: 50,
     zIndex: -999,
-    height: "100px",
     transform: "rotate(180deg)",
   },
 }));
