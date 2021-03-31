@@ -24,6 +24,12 @@ const accountSchema = new Schema
         password: {
             type: String,
             required: [true, 'Password is required'],
+        },
+        onChainAccountAddress: {
+            type: String,
+            required: [true, 'On chain account address is required'],
+            trim: true,
+            unique: true
         }
     },
     {

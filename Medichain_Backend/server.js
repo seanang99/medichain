@@ -31,63 +31,65 @@ dbConnection.once('open', ()=>{
 })
 
 const accountRouter = require('./route/account.route')
+const claimRouter = require('./route/claim.route')
 
 app.use('/account', accountRouter)
+app.use('/claim', claimRouter)
 
-app.post('/registerPolicyholder', (req, res) => {
-  console.log("**** POST /registerPolicyholder ****");
-  const policyholder = req.body.address;
+// app.post('/registerPolicyholder', (req, res) => {
+//   console.log("**** POST /registerPolicyholder ****");
+//   const policyholder = req.body.address;
 
-  medichain.registerPolicyholder(policyholder, (message) => {
-    console.log(`server.js/registerPolicyholder: ${message}\n`);
-    res.send(message);
-  }).catch(err => {
-    console.log(`server.js/registerPolicyholder: ${err}\n`);
-    res.status(403).send(err);
-  });
-});
+//   medichain.registerPolicyholder(policyholder, (message) => {
+//     console.log(`server.js/registerPolicyholder: ${message}\n`);
+//     res.send(message);
+//   }).catch(err => {
+//     console.log(`server.js/registerPolicyholder: ${err}\n`);
+//     res.status(403).send(err);
+//   });
+// });
 
-app.post('/registerInsurer', (req, res) => {
-  console.log("**** POST /registerInsurer ****");
-  const insurer = req.body.address;
+// app.post('/registerInsurer', (req, res) => {
+//   console.log("**** POST /registerInsurer ****");
+//   const insurer = req.body.address;
 
-  medichain.registerInsurer(insurer, (message) => {
-    console.log(`server.js/registerInsurer: ${message}\n`);
-    res.send(message);
-  }).catch(err => {
-    console.log(`server.js/registerInsurer: ${err}\n`);
-    res.status(403).send(err);
-  });
-});
+//   medichain.registerInsurer(insurer, (message) => {
+//     console.log(`server.js/registerInsurer: ${message}\n`);
+//     res.send(message);
+//   }).catch(err => {
+//     console.log(`server.js/registerInsurer: ${err}\n`);
+//     res.status(403).send(err);
+//   });
+// });
 
-app.post('/submitClaim', (req, res) => {
-  console.log("**** POST /submitClaim ****");
+// app.post('/submitClaim', (req, res) => {
+//   console.log("**** POST /submitClaim ****");
 
-  const policyholder = req.body.policyholder;
-  const medicalAmount = req.body.medicalAmount;
-  const token = req.body.token;
-  const medicalRecordRefIds = req.body.medicalRecordRefIds;
+//   const policyholder = req.body.policyholder;
+//   const medicalAmount = req.body.medicalAmount;
+//   const token = req.body.token;
+//   const medicalRecordRefIds = req.body.medicalRecordRefIds;
 
-  medichain.submitClaim(policyholder, medicalAmount, token, medicalRecordRefIds, (message) => {
-    console.log(`server.js/submitClaim: ${message}\n`);
-    res.send(message);
-  }).catch(err => {
-    console.log(`server.js/submitClaim: ${err}\n`);
-    res.status(403).send(err);
-  });
-})
+//   medichain.submitClaim(policyholder, medicalAmount, token, medicalRecordRefIds, (message) => {
+//     console.log(`server.js/submitClaim: ${message}\n`);
+//     res.send(message);
+//   }).catch(err => {
+//     console.log(`server.js/submitClaim: ${err}\n`);
+//     res.status(403).send(err);
+//   });
+// })
 
-app.post('/getClaims', (req, res) => {
-  console.log("**** POST /getClaims ****");
+// app.post('/getClaims', (req, res) => {
+//   console.log("**** POST /getClaims ****");
 
-  const insurer = req.body.insurer;
+//   const insurer = req.body.insurer;
 
-  medichain.getClaims(insurer, (claims) => {
-    console.log("server.js/getClaims:");
-    console.log(claims);
-    res.send(claims);
-  }).catch(err => {
-    console.log(`server.js/getClaims: ${err}`)
-    res.status(403).send(err);
-  })
-})
+//   medichain.getClaims(insurer, (claims) => {
+//     console.log("server.js/getClaims:");
+//     console.log(claims);
+//     res.send(claims);
+//   }).catch(err => {
+//     console.log(`server.js/getClaims: ${err}`)
+//     res.status(403).send(err);
+//   })
+// })
