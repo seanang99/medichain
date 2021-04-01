@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { useHistory } from "react-router-dom";
-import { Dialog, IconButton, TextField, Typography, DialogContent } from "@material-ui/core";
+import { Dialog, IconButton, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { AddCircle, PowerSettingsNew } from "@material-ui/icons";
 
@@ -106,13 +106,17 @@ const HealthCareProvider = () => {
           />
         </div>
         {medicalRecords && medicalRecords.length > 0 ? (
-          medicalRecords.slice(0, 4).map((record, i) => <MedicalRecordCard key={i} {...record} />)
+          <Fragment>
+            {medicalRecords.slice(0, 4).map((record, i) => (
+              <MedicalRecordCard key={i} {...record} />
+            ))}
+            <Typography variant="body2" className={classes.footer}>
+              {medicalRecords.length} Record(s)
+            </Typography>
+          </Fragment>
         ) : (
-          <Typography>No results</Typography>
+          <Typography style={{ margin: "16px" }}>No results</Typography>
         )}
-        <Typography variant="body2" className={classes.footer}>
-          {medicalRecords.length} Record(s)
-        </Typography>
       </div>
 
       <Dialog
