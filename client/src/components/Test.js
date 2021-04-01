@@ -2,21 +2,22 @@ import React from "react";
 import CreateMedicalRecord from "./HealthCareProvider/CreateMedicalRecord";
 import SubmitClaim from "./PolicyHolder/SubmitClaim";
 
-
 import ClaimRecordAccordion from "./ClaimRecordAccordian";
 import MedicalRecordCard from "./MedicalRecordCard";
 import Blob from "./Blob";
 
 const Test = () => {
   const testMedicalCard1 = {
-    title: "Emergency Medical Record",
-    patientName: "Ong Lai Huat",
+    recordType: "Consultation Report",
+    recordDetails: "Emergency Medical Record",
+    patientId: "Ong Lai Huat",
     fileURL: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   };
 
   const testMedicalCard2 = {
-    title: "Emergency Medical Record",
-    patientName: "Ong Lai Huat",
+    recordType: "Consultation Report",
+    recordDetails: "Emergency Medical Record",
+    patientId: "Ong Lai Huat",
     fileURL: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     submitClaim: true,
   };

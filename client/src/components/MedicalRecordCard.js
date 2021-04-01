@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalRecordCard = ({ title, patientName, fileURL, submitClaim }) => {
+const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileURL, submitClaim }) => {
   const classes = useStyles();
 
   return (
@@ -39,10 +39,11 @@ const MedicalRecordCard = ({ title, patientName, fileURL, submitClaim }) => {
       <CardContent className={classes.cardContent}>
         <div className={classes.flexItem}>
           <Typography variant="h6" color="primary">
-            {title}
+            {recordType}
           </Typography>
+          <Typography variant="body1">{recordDetails}</Typography>
           <Typography variant="body2">
-            Patient: <span style={{ color: "#676767" }}>{patientName}</span>
+            Patient: <span style={{ color: "#676767" }}>{patientId}</span>
           </Typography>
         </div>
         <div className={classes.column}>
