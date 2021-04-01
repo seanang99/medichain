@@ -1,29 +1,112 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import {} from "@material-ui/core";
+// import axios from "axios";
+import { Dialog, DialogTitle, IconButton, TextField, Typography, DialogContent } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { AddCircle } from "@material-ui/icons";
 
 import Blob from "../Blob";
+import { emrxClient } from "../../Auth";
+import MedicalRecordCard from "../MedicalRecordCard";
+import CreateMedicalRecord from "./CreateMedicalRecord";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh",
-    width: "100vw",
+    maxHeight: "100vh",
   },
-  paper: {
-    margin: theme.spacing(12, 4),
+  pageTitle: {
+    margin: theme.spacing(6),
+  },
+  container: {
+    margin: theme.spacing(6),
     display: "flex",
     flexDirection: "column",
+  },
+  header: {
+    display: "flex",
     alignItems: "center",
+    width: "100%",
+  },
+  searchRoot: {
+    flexGrow: 1,
+    marginLeft: "50%",
+  },
+  searchInput: {
+    backgroundColor: "#FFF",
+  },
+  icon: {
+    marginLeft: theme.spacing(1),
+    padding: theme.spacing(1),
+  },
+  footer: {
+    width: "100%",
+    textAlign: "right",
+    color: theme.palette.grey[800],
   },
 }));
 
-export default function HealthCareProvider() {
+const HealthCareProvider = () => {
   const classes = useStyles();
+
+  const [medicalRecords, setMedicalRecords] = useState([]);
+  const [recordCreationDialogOpen, setRecordCreationDialogOpen] = useState(false);
+
+  useEffect(() => {
+    emrxClient
+      .get("medicalRecord/readAllMedicalRecord/60634ef35bffa016189f33ec")
+      .then((res) => {
+        // console.log(res.data);
+        setMedicalRecords(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <div className={classes.root}>
+      <Typography className={classes.pageTitle} variant="h2" color="primary">
+        Welcome back, mate
+      </Typography>
+      <div className={classes.container}>
+        <div className={classes.header}>
+          <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
+            Medical Records
+          </Typography>
+          <IconButton
+            className={classes.icon}
+            edge="end"
+            color="primary"
+            onClick={() => setRecordCreationDialogOpen(true)}
+          >
+            <AddCircle />
+          </IconButton>
+          <TextField
+            classes={{ root: classes.searchRoot }}
+            InputProps={{ classes: { root: classes.searchInput } }}
+            variant="outlined"
+            margin="dense"
+            placeholder="Search"
+          />
+        </div>
+        {medicalRecords && medicalRecords.length > 0 ? (
+          medicalRecords.slice(0, 4).map((record, i) => <MedicalRecordCard key={i} {...record} />)
+        ) : (
+          <Typography>No results</Typography>
+        )}
+        <Typography variant="body2" className={classes.footer}>
+          {medicalRecords.length} Record(s)
+        </Typography>
+      </div>
+
+      <Dialog
+        open={recordCreationDialogOpen}
+        onClose={() => setRecordCreationDialogOpen(false)}
+        aria-labelledby="record-creation"
+      >
+        <CreateMedicalRecord />
+      </Dialog>
+
       <Blob />
     </div>
   );
-}
+};
+
+export default HealthCareProvider;

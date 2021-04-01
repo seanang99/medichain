@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalRecordCard = ({ title, patientName, fileURL, submitClaim }) => {
+const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileUrl, submitClaim }) => {
   const classes = useStyles();
 
   return (
@@ -39,10 +39,13 @@ const MedicalRecordCard = ({ title, patientName, fileURL, submitClaim }) => {
       <CardContent className={classes.cardContent}>
         <div className={classes.flexItem}>
           <Typography variant="h6" color="primary">
-            {title}
+            {recordType}
+          </Typography>
+          <Typography style={{ color: "#1e1e1e", margin: "2px 0 8px" }} variant="body1">
+            {recordDetails}
           </Typography>
           <Typography variant="body2">
-            Patient: <span style={{ color: "#676767" }}>{patientName}</span>
+            Patient: <span style={{ color: "#676767" }}>{patientId}</span>
           </Typography>
         </div>
         <div className={classes.column}>
@@ -50,7 +53,7 @@ const MedicalRecordCard = ({ title, patientName, fileURL, submitClaim }) => {
             disableRipple
             classes={{ root: classes.button }}
             endIcon={<GetApp fontSize="inherit" />}
-            href={fileURL}
+            href={fileUrl}
             target="_blank"
             referrerPolicy="no-referrer"
           >
@@ -68,9 +71,7 @@ const MedicalRecordCard = ({ title, patientName, fileURL, submitClaim }) => {
 };
 
 MedicalRecordCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  patientName: PropTypes.string.isRequired,
-  fileURL: PropTypes.string.isRequired,
+  fileUrl: PropTypes.string.isRequired,
 };
 
 export default MedicalRecordCard;
