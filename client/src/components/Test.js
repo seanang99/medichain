@@ -2,7 +2,6 @@ import React from "react";
 import CreateMedicalRecord from "./HealthCareProvider/CreateMedicalRecord";
 import SubmitClaim from "./PolicyHolder/SubmitClaim";
 
-
 import ClaimRecordAccordion from "./ClaimRecordAccordian";
 import MedicalRecordCard from "./MedicalRecordCard";
 import Blob from "./Blob";
@@ -31,9 +30,10 @@ const Test = () => {
     <div>
       <Blob />
       <div style={{ maxWidth: "60%" }}>
-        <MedicalRecordCard {...testMedicalCard1} />
+        <SubmitClaim />
+        {/* <MedicalRecordCard {...testMedicalCard1} />
         <MedicalRecordCard {...testMedicalCard2} />
-        <ClaimRecordAccordion {...testClaimAccordian} />
+        <ClaimRecordAccordion {...testClaimAccordian} /> */}
       </div>
     </div>
   );

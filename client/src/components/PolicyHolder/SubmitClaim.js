@@ -35,8 +35,11 @@ export default function SubmitClaim() {
 
   // Get Medical Records
   const [medicalRecords, setMedicalRecords] = useState([]);
+  const [numOfMedicalRecords, setNumOfMedicalRecords] = useState(0);
 
-  const numOfMedicalRecords = 0;
+  const handleNumOfMedicalRecords = () => {
+    setNumOfMedicalRecords(numOfMedicalRecords + 1);
+  };
 
   return (
     <div className={classes.root}>
@@ -45,6 +48,8 @@ export default function SubmitClaim() {
           Submit a Claim
         </Typography>
         {/* use .map */}
+        <Typography>{numOfMedicalRecords}</Typography>
+        <Typography component="body" variant="body1" onClick={handleNumOfMedicalRecords}>+ Add Medical Record</Typography>
         <TextField
               variant="outlined"
               margin="normal"
@@ -53,6 +58,7 @@ export default function SubmitClaim() {
               name="totalAmt"
               label="Amount"
               fullWidth
+              readOnly
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">$</InputAdornment>
