@@ -34,9 +34,9 @@ const Blob = () => {
 
   return (
     <React.Fragment>
-      <img className={classes.btmBlob} src={blob} alt="bloop" />
-      <img className={classes.topBlob} src={blob2} alt="bloop" />
-      <img className={classes.secondaryTopBlob} src={blob2} alt="bloop" />
+      <img className={classes.btmBlob} src={blob2} alt="bloop" />
+      <img className={classes.topBlob} src={blob} alt="bloop" />
+      <img className={classes.secondaryTopBlob} src={blob} alt="bloop" />
     </React.Fragment>
   );
 };

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-// import axios from "axios";
-import { Dialog, DialogTitle, IconButton, TextField, Typography, DialogContent } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { Dialog, IconButton, TextField, Typography, DialogContent } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { AddCircle } from "@material-ui/icons";
+import { AddCircle, PowerSettingsNew } from "@material-ui/icons";
 
 import Blob from "../Blob";
-import { emrxClient } from "../../Auth";
+import { emrxClient, logout } from "../../Auth";
 import MedicalRecordCard from "../MedicalRecordCard";
 import CreateMedicalRecord from "./CreateMedicalRecord";
 
@@ -42,19 +42,20 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "right",
     color: theme.palette.grey[800],
   },
+  logout: {
+    color: theme.palette.error.main,
+    margin: theme.spacing(0, 1),
+    "&:hover": {
+      backgroundColor: "rgba(244, 67, 54, 0.4)",
+    },
+  },
 }));
 
 const HealthCareProvider = () => {
   const classes = useStyles();
+  const history = useHistory();
 
-  const [medicalRecords, setMedicalRecords] = useState(
-    Array(5).fill({
-      recordType: "Consultation Report",
-      recordDetails: "Emergency Medical Record",
-      patientId: "Ong Lai Huat",
-      fileURL: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    })
-  );
+  const [medicalRecords, setMedicalRecords] = useState([]);
   const [recordCreationDialogOpen, setRecordCreationDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -69,8 +70,19 @@ const HealthCareProvider = () => {
 
   return (
     <div className={classes.root}>
+      <div className={classes.header}></div>
       <Typography className={classes.pageTitle} variant="h2" color="primary">
         Welcome back, mate
+        <IconButton
+          className={classes.logout}
+          edge="end"
+          onClick={() => {
+            logout();
+            history.push("/emrx/login");
+          }}
+        >
+          <PowerSettingsNew />
+        </IconButton>
       </Typography>
       <div className={classes.container}>
         <div className={classes.header}>
