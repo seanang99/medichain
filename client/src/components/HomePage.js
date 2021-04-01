@@ -32,10 +32,10 @@ const HomePage = () => {
           <Typography variant="h6">Select Portal:</Typography>
         </CardContent>
         <CardContent>
-          <Button classes={{ root: classes.button }} variant="contained" color="primary" href="emrx/login">
+          <Button classes={{ root: classes.button }} variant="contained" color="primary" href="/emrx/login">
             EMRX
           </Button>
-          <Button classes={{ root: classes.button }} variant="contained" color="secondary" href="medichain/login">
+          <Button classes={{ root: classes.button }} variant="contained" color="secondary" href="/medichain/login">
             Medichain
           </Button>
         </CardContent>
