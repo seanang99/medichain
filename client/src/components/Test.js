@@ -32,10 +32,10 @@ const Test = () => {
     <div>
       <Blob />
       <div style={{ maxWidth: "60%" }}>
-        {/* <SubmitClaim /> */}
-        <MedicalRecordCard {...testMedicalCard1} />
+        <SubmitClaim />
+        {/* <MedicalRecordCard {...testMedicalCard1} />
         <MedicalRecordCard {...testMedicalCard2} />
-        <ClaimRecordAccordion {...testClaimAccordian} />
+        <ClaimRecordAccordion {...testClaimAccordian} /> */}
       </div>
     </div>
   );

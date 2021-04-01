@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Grid, Paper, OutlinedInput, TextField, Typography, Button, InputAdornment } from "@material-ui/core";
+import {
+  Grid,
+  Paper,
+  OutlinedInput,
+  TextField,
+  Typography,
+  Button,
+  InputAdornment,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -14,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   pageTitle: {
-    letterSpacing: "8px",
     color: theme.palette.primary.dark,
   },
   upload: {
@@ -64,11 +71,11 @@ export default function CreateMedicalRecord() {
 
   return (
     <div className={classes.root}>
-      <Typography component="h1" variant="h6" classes={classes.pageTitle}>
+      <Typography component="h1" variant="h6" className={classes.pageTitle}>
         New Medical Record
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -78,8 +85,6 @@ export default function CreateMedicalRecord() {
             fullWidth
             onChange={(e) => setPatientId(e.target.value)}
           />
-        </Grid>
-        <Grid item xs={12} sm={9}>
           {/* Is this a dropdown?  */}
           <TextField
             variant="outlined"
@@ -90,24 +95,6 @@ export default function CreateMedicalRecord() {
             fullWidth
             onChange={(e) => setRecordType(e.target.value)}
           />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            type="number"
-            id="totalAmt"
-            name="totalAmt"
-            label="Amount"
-            fullWidth
-            InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
-              inputProps: { min: 0.0 },
-            }}
-            onChange={(e) => setTotalAmt(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={12}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -122,6 +109,22 @@ export default function CreateMedicalRecord() {
           <TextField
             variant="outlined"
             margin="normal"
+            type="number"
+            id="totalAmt"
+            name="totalAmt"
+            label="Amount"
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              ),
+              inputProps: { min: 0.0 },
+            }}
+            onChange={(e) => setTotalAmt(e.target.value)}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
             fullWidth
             id="fileUrl"
             name="fileUrl"
@@ -129,7 +132,11 @@ export default function CreateMedicalRecord() {
             onChange={(e) => setFileURL(e.target.value)}
           />
           <Grid container justify="flex-end">
-            <Button variant="contained" type="submit" className={classes.upload}>
+            <Button
+              variant="contained"
+              type="submit"
+              className={classes.upload}
+            >
               Upload
             </Button>
           </Grid>
