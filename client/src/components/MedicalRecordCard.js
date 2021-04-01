@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileURL, submitClaim }) => {
+const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileUrl, submitClaim }) => {
   const classes = useStyles();
 
   return (
@@ -41,7 +41,9 @@ const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileURL, subm
           <Typography variant="h6" color="primary">
             {recordType}
           </Typography>
-          <Typography variant="body1">{recordDetails}</Typography>
+          <Typography style={{ color: "#1e1e1e", margin: "2px 0 8px" }} variant="body1">
+            {recordDetails}
+          </Typography>
           <Typography variant="body2">
             Patient: <span style={{ color: "#676767" }}>{patientId}</span>
           </Typography>
@@ -51,7 +53,7 @@ const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileURL, subm
             disableRipple
             classes={{ root: classes.button }}
             endIcon={<GetApp fontSize="inherit" />}
-            href={fileURL}
+            href={fileUrl}
             target="_blank"
             referrerPolicy="no-referrer"
           >
@@ -69,9 +71,7 @@ const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileURL, subm
 };
 
 MedicalRecordCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  patientName: PropTypes.string.isRequired,
-  fileURL: PropTypes.string.isRequired,
+  fileUrl: PropTypes.string.isRequired,
 };
 
 export default MedicalRecordCard;

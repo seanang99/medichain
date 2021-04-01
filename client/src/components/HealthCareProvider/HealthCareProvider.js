@@ -36,24 +36,23 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     padding: theme.spacing(1),
   },
+  footer: {
+    width: "100%",
+    textAlign: "right",
+    color: theme.palette.grey[800],
+  },
 }));
 
 const HealthCareProvider = () => {
   const classes = useStyles();
 
-  const [medicalRecords, setMedicalRecords] = useState(
-    Array(4).fill({
-      recordType: "Consultation Report",
-      recordDetails: "Emergency Medical Record",
-      patientId: "Ong Lai Huat",
-      fileURL: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    })
-  );
+  const [medicalRecords, setMedicalRecords] = useState([]);
 
   useEffect(() => {
     emrxClient
       .get("medicalRecord/readAllMedicalRecord/60634ef35bffa016189f33ec")
       .then((res) => {
+        // console.log(res.data);
         setMedicalRecords(res.data);
       })
       .catch((err) => console.log(err));
@@ -80,9 +79,14 @@ const HealthCareProvider = () => {
             placeholder="Search"
           />
         </div>
-        {medicalRecords && medicalRecords.length > 0
-          ? medicalRecords.map((record) => <MedicalRecordCard {...record} />)
-          : "No results"}
+        {medicalRecords && medicalRecords.length > 0 ? (
+          medicalRecords.slice(0, 4).map((record) => <MedicalRecordCard {...record} />)
+        ) : (
+          <Typography>No results</Typography>
+        )}
+        <Typography variant="body2" className={classes.footer}>
+          {medicalRecords.length} Record(s)
+        </Typography>
       </div>
       <Blob />
     </div>
