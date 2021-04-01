@@ -10,6 +10,10 @@ import {
   Checkbox,
   FormControlLabel,
   TextField,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -24,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: `url(${blob1})`,
     backgroundRepeat: "no-repeat",
     backgroundColor: theme.palette.type === "light" ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: "200vh 250vh",
-    backgroundPosition: "right",
+    backgroundSize: "200vh 200vh",
+    backgroundPosition: "left",
   },
   paper: {
     margin: theme.spacing(12, 4),
@@ -75,6 +79,7 @@ export default function Login() {
     username: "",
     password: "",
   });
+  const [userType, setUserType] = useState("policyholder");
 
   const login = (e) => {
     e.preventDefault();
@@ -84,7 +89,7 @@ export default function Login() {
       .post("/medicalInstitutionAccount/login", account)
       .then((res) => {
         setUser(res.data);
-        history.push("/emrx/home");
+        history.push(`/medichain/${userType === "policyholder" ? "policyHolder" : "insurer"}`);
       })
       .catch((err) => console.log(err));
   };
@@ -92,17 +97,32 @@ export default function Login() {
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} className={classes.flexGrid}>
+
+      <Grid item xs={12} sm={9} md={6} className={classes.flexGrid}>
         <div className={classes.paper}>
           <Typography variant="h2" className={classes.pageTitle}>
             LOGIN
           </Typography>
-          <br />
           <Typography component="h2" variant="subtitle1">
             MEDICHAIN
           </Typography>
+          <br />
           <form className={classes.form} onSubmit={(e) => login(e)}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend" color="secondary">
+                Are you a:
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-label="user-type"
+                name="user-type"
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
+              >
+                <FormControlLabel value="policyholder" control={<Radio />} label="Policy Holder" />
+                <FormControlLabel value="insurer" control={<Radio />} label="Insurer" />
+              </RadioGroup>
+            </FormControl>
             <TextField
               variant="outlined"
               color="secondary"
@@ -166,6 +186,7 @@ export default function Login() {
           </Box>
         </div>
       </Grid>
+      <Grid item xs={false} sm={3} md={6} className={classes.image} />
     </Grid>
   );
 }
