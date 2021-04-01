@@ -25,7 +25,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.dark,
   },
   upload: {
-    backgroundColor: "#75C4E0",
+    textTransform: "none",
+    margin: theme.spacing(2, 0),
+    minWidth: "200px",
   },
 }));
 
@@ -132,11 +134,7 @@ export default function CreateMedicalRecord() {
             onChange={(e) => setFileURL(e.target.value)}
           />
           <Grid container justify="flex-end">
-            <Button
-              variant="contained"
-              type="submit"
-              className={classes.upload}
-            >
+            <Button variant="contained" type="submit" className={classes.upload} color="primary">
               Upload
             </Button>
           </Grid>

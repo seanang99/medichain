@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
   CssBaseline,
@@ -75,6 +75,12 @@ export default function EMRXLogin() {
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      history.push("/emrx/home");
+    }
+  }, []);
 
   const login = (e) => {
     e.preventDefault();

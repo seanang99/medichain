@@ -7,6 +7,8 @@ import Test from "./components/Test";
 import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./components/HomePage";
 import HealthCareProvider from "./components/HealthCareProvider/HealthCareProvider";
+import PolicyHolder from "./components/PolicyHolder/PolicyHolder";
+import Insurer from "./components/Insurer/Insurer";
 
 class App extends Component {
   render() {
@@ -16,6 +18,8 @@ class App extends Component {
         <Route exact path="/emrx/login" component={EMRXLogin} />
         <Route path="/test" component={Test} />
         <PrivateRoute path="/emrx/home" component={HealthCareProvider} />
+        <PrivateRoute path="/medichain/policyHolder" component={PolicyHolder} />
+        <PrivateRoute path="/medichain/insurer" component={Insurer} />
         <Route component={HomePage} />
       </Switch>
     );
