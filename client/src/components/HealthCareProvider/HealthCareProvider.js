@@ -47,7 +47,14 @@ const useStyles = makeStyles((theme) => ({
 const HealthCareProvider = () => {
   const classes = useStyles();
 
-  const [medicalRecords, setMedicalRecords] = useState([]);
+  const [medicalRecords, setMedicalRecords] = useState(
+    Array(5).fill({
+      recordType: "Consultation Report",
+      recordDetails: "Emergency Medical Record",
+      patientId: "Ong Lai Huat",
+      fileURL: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    })
+  );
   const [recordCreationDialogOpen, setRecordCreationDialogOpen] = useState(false);
 
   useEffect(() => {
