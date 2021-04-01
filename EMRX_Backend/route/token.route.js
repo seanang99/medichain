@@ -5,7 +5,7 @@ const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 
 function generateString() {
     let length = 8;
-    let result = ' ';
+    let result = '';
     const charactersLength = characters.length;
     for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -14,6 +14,8 @@ function generateString() {
 }
 
 router.post('/generateToken', (req, res) => {
+    console.log("**** POST / generateToken****");
+
     const {
         medicalRecordsId,
         patientId
@@ -27,8 +29,8 @@ router.post('/generateToken', (req, res) => {
         patientId
     });
 
-    return tokenService.generateToken(newToken, patientId)
-        .then(() => res.status(200).json('Successfully created token'))
+    return tokenService.generateToken(newToken)
+        .then(() => res.status(200).json(newToken))
         .catch(err => res.status(400).json('Unsuccessfully created token ' + err));
 });
 

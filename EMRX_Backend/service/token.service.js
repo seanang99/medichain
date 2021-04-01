@@ -5,6 +5,7 @@ async function generateToken(newToken) {
     let patientId = newToken.patientId;
     return Token.create(newToken)
         .then(token => {
+            
             let tokenId = token._id;
             Patient.findOneAndUpdate(
                 {
