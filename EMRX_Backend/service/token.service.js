@@ -37,7 +37,7 @@ async function getAllToken(identificationNum) {
             identificationNum: identificationNum
         })
         .populate({
-            path : 'tokens',
+            path: 'tokens',
             populate: {
                 path: 'medicalRecords',
                 model: 'MedicalRecord'
@@ -76,12 +76,25 @@ async function deleteToken(tokenId) {
         })
         .catch(err => {
             throw err;
+        });
+}
+
+async function updateTokenToInactive(tokenId) {
+    return Token.findByIdAndUpdate(tokenId,
+        {
+            $set: {
+                isExpired: true
+            }
         })
+        .catch(err => {
+            throw err
+        });
 }
 
 module.exports = {
     generateToken,
     getAllToken,
     getToken,
-    deleteToken
+    deleteToken,
+    updateTokenToInactive
 }

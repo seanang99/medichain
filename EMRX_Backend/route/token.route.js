@@ -55,4 +55,11 @@ router.delete('/deleteToken/:tokenId', (req, res) => {
         .catch(err => res.status(400).json(err));
 });
 
+router.put('/updateTokenToInactive/:tokenId', (req, res) => {
+    const tokenId = req.params.tokenId;
+    return tokenService.updateTokenToInactive(tokenId)
+        .then(() => res.status(200).json('Token has been successfully updated as expired'))
+        .catch(err => res.status(400).json(err));
+})
+
 module.exports = router;
