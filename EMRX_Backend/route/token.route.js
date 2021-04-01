@@ -5,7 +5,7 @@ const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 
 function generateString() {
     let length = 8;
-    let result = ' ';
+    let result = '';
     const charactersLength = characters.length;
     for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -15,27 +15,26 @@ function generateString() {
 
 router.post('/generateToken', (req, res) => {
     const {
-        medicalRecordsId,
-        patientId
+        medicalRecords,
+        identificationNum
     } = req.body;
     const tokenValue = generateString();
 
     let newToken = new Token({
         tokenValue,
         isExpired: false,
-        medicalRecordsId,
-        patientId
+        medicalRecords,
     });
 
-    return tokenService.generateToken(newToken, patientId)
+    return tokenService.generateToken(newToken, identificationNum)
         .then(() => res.status(200).json('Successfully created token'))
         .catch(err => res.status(400).json('Unsuccessfully created token ' + err));
 });
 
-router.get('/getAllToken/:patientId', (req, res) => {
+router.get('/getAllToken/:patientIdentificationNum', (req, res) => {
     // Patient ID is mongo db .id
-    const patientId = req.params.patientId;
-    return tokenService.getAllToken(patientId)
+    const identificationNum = req.params.patientIdentificationNum;
+    return tokenService.getAllToken(identificationNum)
         .then(tokens => res.status(200).json(tokens))
         .catch(err => res.status(400).json('Get All Token ' + err));
 });
