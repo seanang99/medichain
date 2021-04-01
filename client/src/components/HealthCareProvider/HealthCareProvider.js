@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 // import axios from "axios";
-import { IconButton, TextField, Typography } from "@material-ui/core";
+import { Dialog, DialogTitle, IconButton, TextField, Typography, DialogContent } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { AddCircle, AirlineSeatLegroomExtraSharp } from "@material-ui/icons";
+import { AddCircle } from "@material-ui/icons";
 
 import Blob from "../Blob";
 import { emrxClient } from "../../Auth";
 import MedicalRecordCard from "../MedicalRecordCard";
+import CreateMedicalRecord from "./CreateMedicalRecord";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +48,7 @@ const HealthCareProvider = () => {
   const classes = useStyles();
 
   const [medicalRecords, setMedicalRecords] = useState([]);
+  const [recordCreationDialogOpen, setRecordCreationDialogOpen] = useState(false);
 
   useEffect(() => {
     emrxClient
@@ -68,7 +70,12 @@ const HealthCareProvider = () => {
           <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
             Medical Records
           </Typography>
-          <IconButton className={classes.icon} edge="end" color="primary">
+          <IconButton
+            className={classes.icon}
+            edge="end"
+            color="primary"
+            onClick={() => setRecordCreationDialogOpen(true)}
+          >
             <AddCircle />
           </IconButton>
           <TextField
@@ -80,7 +87,7 @@ const HealthCareProvider = () => {
           />
         </div>
         {medicalRecords && medicalRecords.length > 0 ? (
-          medicalRecords.slice(0, 4).map((record) => <MedicalRecordCard {...record} />)
+          medicalRecords.slice(0, 4).map((record, i) => <MedicalRecordCard key={i} {...record} />)
         ) : (
           <Typography>No results</Typography>
         )}
@@ -88,6 +95,15 @@ const HealthCareProvider = () => {
           {medicalRecords.length} Record(s)
         </Typography>
       </div>
+
+      <Dialog
+        open={recordCreationDialogOpen}
+        onClose={() => setRecordCreationDialogOpen(false)}
+        aria-labelledby="record-creation"
+      >
+        <CreateMedicalRecord />
+      </Dialog>
+
       <Blob />
     </div>
   );
