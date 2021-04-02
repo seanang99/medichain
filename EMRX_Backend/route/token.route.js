@@ -17,27 +17,26 @@ router.post('/generateToken', (req, res) => {
     console.log("**** POST / generateToken****");
 
     const {
-        medicalRecordsId,
-        patientId
+        medicalRecords,
+        identificationNum
     } = req.body;
     const tokenValue = generateString();
 
     let newToken = new Token({
         tokenValue,
         isExpired: false,
-        medicalRecordsId,
-        patientId
+        medicalRecords,
     });
 
-    return tokenService.generateToken(newToken)
+    return tokenService.generateToken(newToken, identificationNum)
         .then(() => res.status(200).json(newToken))
         .catch(err => res.status(400).json('Unsuccessfully created token ' + err));
 });
 
-router.get('/getAllToken/:patientId', (req, res) => {
+router.get('/getAllToken/:patientIdentificationNum', (req, res) => {
     // Patient ID is mongo db .id
-    const patientId = req.params.patientId;
-    return tokenService.getAllToken(patientId)
+    const identificationNum = req.params.patientIdentificationNum;
+    return tokenService.getAllToken(identificationNum)
         .then(tokens => res.status(200).json(tokens))
         .catch(err => res.status(400).json('Get All Token ' + err));
 });
@@ -57,5 +56,12 @@ router.delete('/deleteToken/:tokenId', (req, res) => {
         .then(() => res.status(200).json('Successfully deleted token'))
         .catch(err => res.status(400).json(err));
 });
+
+router.put('/updateTokenToInactive/:tokenId', (req, res) => {
+    const tokenId = req.params.tokenId;
+    return tokenService.updateTokenToInactive(tokenId)
+        .then(() => res.status(200).json('Token has been successfully updated as expired'))
+        .catch(err => res.status(400).json(err));
+})
 
 module.exports = router;

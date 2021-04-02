@@ -1,18 +1,26 @@
 const Token = require('../model/token.model');
 const Patient = require('../model/patient.model');
 
-async function generateToken(newToken) {
-    let patientId = newToken.patientId;
-    return Token.create(newToken)
-        .then(token => {
-            
-            let tokenId = token._id;
-            Patient.findOneAndUpdate(
-                {
-                    _id: patientId
-                },
-                {
-                    $push: { tokens: tokenId }
+async function generateToken(newToken, identificationNum) {
+    return Patient.findOne(
+        {
+            identificationNum: identificationNum
+        })
+        .then(patient => {
+            newToken.patientId = patient._id;
+            Token.create(newToken)
+                .then(token => {
+                    let tokenId = token._id;
+                    Patient.findOneAndUpdate(
+                        {
+                            identificationNum: identificationNum
+                        },
+                        {
+                            $push: { tokens: tokenId }
+                        })
+                        .catch(err => {
+                            throw err
+                        });
                 })
                 .catch(err => {
                     throw err
@@ -23,20 +31,29 @@ async function generateToken(newToken) {
         });
 }
 
-async function getAllToken(patientId) {
-    return Token.find(
+async function getAllToken(identificationNum) {
+    return Patient.findOne(
         {
-            patientId: patientId
+            identificationNum: identificationNum
         })
-        .populate("medicalRecordsId")
+        .populate({
+            path: 'tokens',
+            populate: {
+                path: 'medicalRecords',
+                model: 'MedicalRecord'
+            }
+        })
+        .then(patient => {
+            return patient.tokens
+        })
         .catch(err => {
-            throw err;
-        });
+            throw err
+        })
 }
 
 async function getToken(tokenId) {
     return Token.findById(tokenId)
-        .populate("medicalRecordsId")
+        .populate("medicalRecords")
         .catch(err => {
             throw err;
         });
@@ -59,12 +76,25 @@ async function deleteToken(tokenId) {
         })
         .catch(err => {
             throw err;
+        });
+}
+
+async function updateTokenToInactive(tokenId) {
+    return Token.findByIdAndUpdate(tokenId,
+        {
+            $set: {
+                isExpired: true
+            }
         })
+        .catch(err => {
+            throw err
+        });
 }
 
 module.exports = {
     generateToken,
     getAllToken,
     getToken,
-    deleteToken
+    deleteToken,
+    updateTokenToInactive
 }

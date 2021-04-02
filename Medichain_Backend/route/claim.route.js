@@ -19,17 +19,17 @@ router.post('/submitClaim', (req, res) => {
     }
 
     axios.post('http://localhost:3002/token/generateToken',payload)
-        .then((token) => {
-            medichain.submitClaim(onChainAccountAddress, medicalAmount, token.tokenValue, medicalRecordRefIds, (message) => {
+        .then((response) => {
+            medichain.submitClaim(onChainAccountAddress, medicalAmount, response.data.tokenValue, medicalRecordRefIds, (message) => {
                 console.log(`server.js/submitClaim: ${message}\n`);
                 res.send(message);
             }).catch(err => {
-                console.log(`server.js/submitClaim: ${err}\n`);
+                console.log(`server.js/submitClaim1: ${err}\n`);
                 res.status(403).send(err);
             });
         })
         .catch(err => {
-            console.log(`server.js/submitClaim: ${err}\n`);
+            console.log(`server.js/submitClaim2: ${err}\n`);
             res.status(403).send(err);
         });
 })
