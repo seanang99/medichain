@@ -10,7 +10,7 @@ const tokenSchema = new Schema(
         isExpired: {
             type: Boolean, default: false
         },
-        medicalRecordsId: [{
+        medicalRecords: [{
             type: Schema.Types.ObjectId,
             ref: "MedicalRecord",
             required: [true, "Medical Record is required"]

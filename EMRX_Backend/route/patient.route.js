@@ -7,7 +7,7 @@ router.post('/createPatient', (req, res) => {
     const {
         firstName,
         lastName,
-        identificationNumber,
+        identificationNum,
         // medicalRecords,
         // tokens
     } = req.body;
@@ -15,7 +15,7 @@ router.post('/createPatient', (req, res) => {
     let newPatient = new Patient({
         firstName,
         lastName,
-        identificationNumber
+        identificationNum
     });
 
     return patientService.createPatient(newPatient)
@@ -29,16 +29,16 @@ router.get('/readAllPatient', (req, res) => {
         .catch(err => res.status(400).json(err));
 });
 
-router.get('/readPatientByIdNum/:identificationNumber', (req, res) => {
-    const identificationNumber = req.params.identificationNumber;
-    return patientService.readPatientByIdNum(identificationNumber)
+router.get('/readPatientByIdNum/:identificationNum', (req, res) => {
+    const identificationNum = req.params.identificationNum;
+    return patientService.readPatientByIdNum(identificationNum)
         .then(patient => res.status(200).json(patient))
         .catch(err => res.status(400).json(err));
 });
 
-router.delete('/deletePatientByIdNum/:identificationNumber', (req, res) => {
-    const identificationNumber = req.params.identificationNumber;
-    return patientService.deletePatientByIdNum(identificationNumber)
+router.delete('/deletePatientByIdNum/:identificationNum', (req, res) => {
+    const identificationNum = req.params.identificationNum;
+    return patientService.deletePatientByIdNum(identificationNum)
         .then(msg => res.status(200).json(msg))
         .catch(err => res.status(400).json(err));
 });

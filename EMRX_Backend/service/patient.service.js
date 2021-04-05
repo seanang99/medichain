@@ -14,20 +14,20 @@ async function readAllPatient() {
         })
 }
 
-async function readPatientByIdNum(identificationNumber) {
+async function readPatientByIdNum(identificationNum) {
     return Patient.findOne(
         {
-            identificationNumber: identificationNumber
+            identificationNum: identificationNum
         })
         .catch(err => {
             throw err
         });
 }
 
-async function deletePatientByIdNum(identificationNumber) {
+async function deletePatientByIdNum(identificationNum) {
     return Patient.findOneAndDelete(
         {
-            identificationNumber: identificationNumber
+            identificationNum: identificationNum
         })
         .catch(err => {
             throw err

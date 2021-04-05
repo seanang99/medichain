@@ -13,7 +13,7 @@ const patientSchema = new Schema(
             required: [true, "Last name is required"],
             trim: true
         },
-        identificationNumber: {
+        identificationNum: {
             type: String,
             unique: true,
             required: [true, "Patient identification number is required"],
