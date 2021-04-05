@@ -20,13 +20,22 @@ import MedicalRecordCard from "../MedicalRecordCard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh",
     padding: "2vw",
     display: "float",
   },
   paper: {
     padding: theme.spacing(2),
     alignItems: "center",
+  },
+  add: {
+    textTransform: "none",
+    margin: theme.spacing(2, 0),
+    minWidth: "10vw",
+  },
+  submit: {
+    textTransform: "none",
+    margin: theme.spacing(2, 0),
+    minWidth: "10vw",
   },
 }));
 
@@ -100,55 +109,75 @@ export default function SubmitClaim() {
 
   return (
     <div className={classes.root}>
-      <Paper elevation={3} className={classes.paper}>
-        <Typography component="h1" variant="h6" classes={classes.pageTitle}>
-          Submit a Claim
-        </Typography>
+      <Typography component="h1" variant="h6" classes={classes.pageTitle}>
+        Submit a Claim
+      </Typography>
 
-        {selectedMedicalRecords && selectedMedicalRecords.length > 0 ? (
-          selectedMedicalRecords.map((record, i) => (
-            <MedicalRecordCard key-={i} {...record} />
-          ))
-        ) : (
-          <Typography>No medical record added</Typography>
-        )}
+      {selectedMedicalRecords && selectedMedicalRecords.length > 0 ? (
+        selectedMedicalRecords.map((record, i) => (
+          <MedicalRecordCard key-={i} {...record} />
+        ))
+      ) : (
+        <Typography>No medical record added</Typography>
+      )}
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={9}>
+          <Autocomplete
+            {...availableOptions}
+            fullWidth
+            id="newMR_autocomplete"
+            key="newMR_autocomplete"
+            filterSelectedOptÎions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                labels="Medical Record"
+                placeholder="Add Medical Record"
+              />
+            )}
+            onChange={(e) => addMedicalRecord(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+            className={classes.add}
+            color="secondary"
+            onClick={() => null}
+          >
+            Add
+          </Button>
+        </Grid>
+      </Grid>
 
-        <Autocomplete
-          {...availableOptions}
-          fullWidth
-          id="newMR_autocomplete"
-          key="newMR_autocomplete"
-          filterSelectedOptÎions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              labels="Medical Record"
-              placeholder="Add Medical Record"
-            />
-          )}
-          onChange={(e) => addMedicalRecord(e.target.value)}
-        />
-
-        <TextField
-          variant="outlined"
-          margin="normal"
-          type="number"
-          id="totalAmt"
-          name="totalAmt"
-          label="Amount"
-          value={totalAmt}
-          fullWidth
-          readOnly
-          InputProps={{
-            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-            inputProps: { min: 0.0 },
-          }}
-        />
-        <Button variant="contained" type="submit" className={classes.upload}>
+      <TextField
+        variant="outlined"
+        margin="normal"
+        type="number"
+        id="totalAmt"
+        name="totalAmt"
+        label="Amount"
+        value={totalAmt}
+        fullWidth
+        readOnly
+        InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          inputProps: { min: 0.0 },
+        }}
+      />
+      <Grid container justify="flex-end">
+        <Button
+          variant="contained"
+          type="submit"
+          className={classes.submit}
+          color="primary"
+        >
           Submit
         </Button>
-      </Paper>
+      </Grid>
     </div>
   );
 }

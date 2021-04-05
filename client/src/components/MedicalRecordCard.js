@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Card, CardContent, Typography } from "@material-ui/core";
+import { Button, Card, CardContent, Typography, Dialog } from "@material-ui/core";
 import { Folder, GetApp } from "@material-ui/icons";
+
+import SubmitClaim from "./PolicyHolder/SubmitClaim";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,8 +33,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileUrl, submitClaim }) => {
+const MedicalRecordCard = ({
+  recordType,
+  recordDetails,
+  patientId,
+  fileUrl,
+  submitClaim,
+}) => {
   const classes = useStyles();
+
+  const [openSubmitClaimDialog, setOpenSubmitClaimDialog] = useState(false);
 
   return (
     <Card classes={{ root: classes.root }}>
@@ -41,7 +51,10 @@ const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileUrl, subm
           <Typography variant="h6" color="primary">
             {recordType}
           </Typography>
-          <Typography style={{ color: "#1e1e1e", margin: "2px 0 8px" }} variant="body1">
+          <Typography
+            style={{ color: "#1e1e1e", margin: "2px 0 8px" }}
+            variant="body1"
+          >
             {recordDetails}
           </Typography>
           <Typography variant="body2">
@@ -60,10 +73,24 @@ const MedicalRecordCard = ({ recordType, recordDetails, patientId, fileUrl, subm
             Download File
           </Button>
           {submitClaim && (
-            <Button variant="contained" color="primary" style={{ borderRadius: 15 }} endIcon={<Folder />}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ borderRadius: 15 }}
+              endIcon={<Folder />}
+              onClick={()=> setOpenSubmitClaimDialog(true)}
+            >
               Submit Claim
             </Button>
           )}
+          <Dialog
+            fullWidth
+            open={openSubmitClaimDialog}
+            onClose={() => setOpenSubmitClaimDialog(false)}
+            aria-labelledby="claim-creation"
+          >
+            <SubmitClaim />
+          </Dialog>
         </div>
       </CardContent>
     </Card>
