@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
   Grid,
-  Paper,
-  OutlinedInput,
   TextField,
   Typography,
   Button,
   InputAdornment,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { emrxClient } from "../../Auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,18 +43,15 @@ export default function CreateMedicalRecord() {
   // Uploading Files
 
   const medicalRecord = {
-    patientId: patientId,
-    healthcareProviderId: healthcareProviderId,
+    identificationNum: patientId,
     recordType: recordType,
     recordDetails: recordDetails,
     totalAmt: totalAmt,
-    fileURL: fileURL,
+    fileUrl: fileURL,
   };
-  const createNewMedicalRecord = (e) => {
-    e.preventDefault();
-
-    axios
-      .post("url", medicalRecord)
+  const createNewMedicalRecord = () => {
+    emrxClient
+      .post("medicalRecord/createMedicalRecord", medicalRecord)
       .then((res) => {
         var record = res.data;
         setPatientId("");
@@ -134,7 +129,7 @@ export default function CreateMedicalRecord() {
             onChange={(e) => setFileURL(e.target.value)}
           />
           <Grid container justify="flex-end">
-            <Button variant="contained" type="submit" className={classes.upload} color="primary">
+            <Button variant="contained" type="submit" className={classes.upload} color="primary" onClick={() => createNewMedicalRecord()}>
               Upload
             </Button>
           </Grid>

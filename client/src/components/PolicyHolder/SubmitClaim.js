@@ -3,20 +3,17 @@ import axios from "axios";
 import {
   Grid,
   Typography,
-  Paper,
   TextField,
-  FormControl,
-  InputLabel,
-  Input,
-  FormHelperText,
   InputAdornment,
   Button,
+  Card,
+  CardContent,
+  IconButton
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
-import { emrxClient } from "../../Auth";
-import { set } from "mongoose";
-import MedicalRecordCard from "../MedicalRecordCard";
+import { emrxClient, medichainClient } from "../../Auth";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,23 +34,45 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0),
     minWidth: "10vw",
   },
+  cardRoot: {
+    margin: theme.spacing(1, 0),
+    border: "1px solid #C4C4C4",
+    boxShadow: "none",
+  },
+  cardContent: {
+    display: "flex",
+    padding: theme.spacing(2),
+    "&:last-child": {
+      padding: theme.spacing(2),
+    },
+  },
+  flexItem: {
+    flexGrow: 1,
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+  },
 }));
 
 export default function SubmitClaim() {
   const classes = useStyles();
 
-  const [patientAddress, setPatientAddress] = useState("");
+  const [patientIdentification, setPatientIdentification] = useState("S1234567A");
+  const [onChainAccountAddress, setOnChainAccountAddress] = useState("0xD76236d0bB257111b4AFD1A541b097073C5bC5BB");
   const [totalAmt, setTotalAmt] = useState(0);
   const [medicalRecordsId, setMedicalRecordsId] = useState([]);
   const [selectedMedicalRecords, setSelectedMedicalRecords] = useState([]);
 
+  const [options, setOptions] = useState([]);
+
   const [allMedicalRecords, setAllMedicalRecords] = useState([]);
   const getMedicalRecords = async () => {
     emrxClient
-      .get("medicalRecord/readAllMedicalRecord/60634ef35bffa016189f33ec")
+      .get("medicalRecord/readMedicalRecordByPatientIdNum/S1234567A")
       .then((res) => {
-        console.log(res.data);
         setAllMedicalRecords(res.data);
+        setOptions(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -61,22 +80,42 @@ export default function SubmitClaim() {
   };
 
   const addMedicalRecord = (medicalRecord) => {
-    let currRecord = selectedMedicalRecords;
-    currRecord.append(medicalRecord);
-    setSelectedMedicalRecords(currRecord);
-    calculateTotalAmount(currRecord);
+    if (medicalRecord != null) {
+      let currRecord = selectedMedicalRecords;
+      let currRecord_id = medicalRecordsId;
+      currRecord.push(medicalRecord);
+      currRecord_id.push(medicalRecord._id);
+      setSelectedMedicalRecords(currRecord);
+      setMedicalRecordsId(currRecord_id);
+      recalibrateOptions(currRecord);
+      calculateTotalAmount(currRecord);
+    }
   };
 
   const removeMedicalRecord = (medicalRecord) => {
     let currRecord = selectedMedicalRecords;
+    let currRecord_id = medicalRecordsId;
     for (var i = 0; i < currRecord.length; i++) {
       if (currRecord[i] == medicalRecord) {
         currRecord.splice(i, 1);
+        currRecord_id.splice(i, 1);
       }
     }
     setSelectedMedicalRecords(currRecord);
+    setMedicalRecordsId(currRecord_id);
+    recalibrateOptions(currRecord);
     calculateTotalAmount(currRecord);
   };
+
+  const recalibrateOptions = (selectedMR) => {
+    let _options = [];
+    for (var i=0; i < allMedicalRecords.length; i++){
+      if (!selectedMR.includes(allMedicalRecords[i])){
+        _options.push(allMedicalRecords[i]);
+      }
+    }
+    setOptions(_options);
+  }
 
   const calculateTotalAmount = (selectedMR) => {
     let tempAmt = 0;
@@ -87,16 +126,33 @@ export default function SubmitClaim() {
   };
 
   const availableOptions = {
-    options: allMedicalRecords,
+    options: options,
     getOptionLabel: (option) => option.recordType,
   };
 
+  // const processMedicalRecordsId = () => {
+  //   let tempMRId = []
+  //   console.log(selectedMedicalRecords);
+  //   selectedMedicalRecords.forEach(element => tempMRId.push(element._id));
+  //   setMedicalRecordsId(tempMRId);
+  // }
+
+  const claim = {
+    onChainAccountAddress: onChainAccountAddress,
+    medicalAmount:totalAmt,
+    medicalRecordRefIds: medicalRecordsId,
+    identificationNum: patientIdentification,
+  }
+
   //Submit claim
   const createClaim = async () => {
-    emrxClient
-      .get("url", medicalRecordsId, patientAddress)
+    console.log(claim);
+    await medichainClient
+      .post("/claim/submitClaim", claim)
       .then((res) => {
         console.log(res.data);
+        setMedicalRecordsId([]);
+        setSelectedMedicalRecords([]);
       })
       .catch((err) => {
         console.log(err);
@@ -105,29 +161,43 @@ export default function SubmitClaim() {
 
   useEffect(() => {
     getMedicalRecords();
-  }, []);
+  }, [selectedMedicalRecords]);
 
   return (
     <div className={classes.root}>
       <Typography component="h1" variant="h6" classes={classes.pageTitle}>
         Submit a Claim
       </Typography>
-
       {selectedMedicalRecords && selectedMedicalRecords.length > 0 ? (
         selectedMedicalRecords.map((record, i) => (
-          <MedicalRecordCard key-={i} {...record} />
+          <Card key={i} className={classes.cardRoot}>
+            <CardContent className={classes.cardContent}>
+              <div className={classes.flexItem}>
+                <Typography variant="h6">{record.recordType}</Typography>
+                <Typography variant="body1">{record.recordDetails}</Typography>
+              </div>
+              <div className={classes.column}>
+                <IconButton
+                  aria-label="remove medical record"
+                  onClick={() => removeMedicalRecord(record)}
+                >
+                  <CancelIcon />
+                </IconButton>
+              </div>
+            </CardContent>
+          </Card>
         ))
       ) : (
         <Typography>No medical record added</Typography>
       )}
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={9}>
+        <Grid item xs={12}>
           <Autocomplete
             {...availableOptions}
             fullWidth
             id="newMR_autocomplete"
             key="newMR_autocomplete"
-            filterSelectedOptÎions
+            filterSelectedOptions
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -136,20 +206,10 @@ export default function SubmitClaim() {
                 placeholder="Add Medical Record"
               />
             )}
-            onChange={(e) => addMedicalRecord(e.target.value)}
+            onChange={(event, value) => {
+              addMedicalRecord(value);
+            }}
           />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Button
-            variant="contained"
-            type="submit"
-            fullWidth
-            className={classes.add}
-            color="secondary"
-            onClick={() => null}
-          >
-            Add
-          </Button>
         </Grid>
       </Grid>
 
@@ -171,9 +231,9 @@ export default function SubmitClaim() {
       <Grid container justify="flex-end">
         <Button
           variant="contained"
-          type="submit"
           className={classes.submit}
           color="primary"
+          onClick={() => createClaim()}
         >
           Submit
         </Button>

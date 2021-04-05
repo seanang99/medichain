@@ -58,7 +58,7 @@ const MedicalRecordCard = ({
             {recordDetails}
           </Typography>
           <Typography variant="body2">
-            Patient: <span style={{ color: "#676767" }}>{patientId}</span>
+            Patient: <span style={{ color: "#676767" }}>{patientId.identificationNum}</span>
           </Typography>
         </div>
         <div className={classes.column}>
