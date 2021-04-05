@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import {
   CssBaseline,
@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Snackbar from "../contexts/SnackbarComponent";
 
 import { emrxClient, setUser } from "../Auth";
 import blob1 from "../image-assets/blob1.svg";
@@ -23,7 +24,10 @@ const useStyles = makeStyles((theme) => ({
   image: {
     backgroundImage: `url(${blob1})`,
     backgroundRepeat: "no-repeat",
-    backgroundColor: theme.palette.type === "light" ? theme.palette.grey[50] : theme.palette.grey[900],
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
     backgroundSize: "200vh 200vh",
     backgroundPosition: "right",
   },
@@ -69,6 +73,13 @@ function Copyright() {
 
 export default function EMRXLogin() {
   const classes = useStyles();
+  //Get context value from snack bar context
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
+
+  const [errorMessages, setErrorMessages] = useState([""]);
+
   const history = useHistory();
 
   const [account, setAccount] = useState({
@@ -92,11 +103,18 @@ export default function EMRXLogin() {
         setUser(res.data);
         history.push("/emrx/home");
       })
-      .catch((err) => console.log(err));
+      .catch((error) => {
+        let newErrorMessage = [...errorMessages, error.response.data];
+        console.log('Error: ', newErrorMessage);
+        setMessage("Username or Password is incorrect");
+        setSeverity("error");
+        setOpenSnackBar(true);
+      });
   };
 
   return (
     <Grid container component="main" className={classes.root}>
+      <Snackbar open={openSnackBar} severity={severity} message={message} />
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} className={classes.flexGrid}>
@@ -141,7 +159,10 @@ export default function EMRXLogin() {
                 })
               }
             />
-            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
             <Button
               variant="contained"
               type="submit"

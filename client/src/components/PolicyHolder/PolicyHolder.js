@@ -1,12 +1,13 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { useHistory } from "react-router-dom";
 import { Divider, IconButton, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { PowerSettingsNew } from "@material-ui/icons";
 
 import Blob from "../Bloop";
-import { logout } from "../../Auth";
-import MedicalRecordCard from "../MedicalRecordCard";
+import { emrxClient, logout, medichainClient } from "../../Auth";
+import MedicalRecordCard from "../HealthCareProvider/MedicalRecordCard";
+import ClaimRecordAccordion from "../Insurer/ClaimRecordAccordian";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,7 +55,35 @@ const PolicyHolder = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [medicalRecords, setMedicalRecords] = useState([]);
+  const [policyHolderId, setPolicyHolderId] = useState("S1234567A");
+  const [policyHolderOnChainId, setPolicyHolderOnChainId] = useState("0xD76236d0bB257111b4AFD1A541b097073C5bC5BB");
+  
+  const [medicalRecords, setMedicalRecords] = useState([]); 
+  const [claims, setClaims] = useState([]);
+
+  const getMedicalRecords = () => {
+    emrxClient
+    .get("medicalRecord/readMedicalRecordByPatientIdNum/" + policyHolderId)
+    .then((res) => {
+      setMedicalRecords(res.data);
+    })
+    .catch((error) => console.log(error.response.data));
+  }
+
+  const getClaims = () => {
+    medichainClient
+    .get("claim/getClaims/" + policyHolderOnChainId)
+    .then((res) => {
+      setClaims(res.data);
+    })
+    .catch((error) => console.log(error.response.data))
+
+  }
+
+  useEffect(() => {
+    getMedicalRecords();
+    getClaims();
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -75,16 +104,16 @@ const PolicyHolder = () => {
       <div className={classes.container}>
         <div className={classes.header}>
           <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
-            Your Claim Records
+            Claim Records
           </Typography>
         </div>
-        {medicalRecords && medicalRecords.length > 0 ? (
+        {claims && claims.length > 0 ? (
           <Fragment>
-            {medicalRecords.slice(0, 4).map((record, i) => (
-              <MedicalRecordCard key={i} {...record} />
+            {claims.slice(0, 4).map((record, i) => (
+              <ClaimRecordAccordion key={i} {...record} />
             ))}
             <Typography variant="body2" className={classes.footer}>
-              {medicalRecords.length} Record(s)
+              {claims.length} Record(s)
             </Typography>
           </Fragment>
         ) : (
@@ -94,7 +123,7 @@ const PolicyHolder = () => {
         <Divider style={{ margin: "48px 0 24px" }} />
         <div className={classes.header}>
           <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
-            Your Medical Records
+            Medical Records
           </Typography>
           <TextField
             classes={{ root: classes.searchRoot }}

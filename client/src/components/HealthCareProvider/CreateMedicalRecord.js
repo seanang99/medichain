@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Grid,
   TextField,
@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { emrxClient } from "../../Auth";
+import Snackbar from "../../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
 export default function CreateMedicalRecord() {
   const classes = useStyles();
 
+  //Get context value from snack bar context
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
+
   // Attribute of medical records
   const [patientId, setPatientId] = useState("");
   const [healthcareProviderId, setHealthCareProviderId] = useState("");
@@ -40,7 +46,7 @@ export default function CreateMedicalRecord() {
   const [totalAmt, setTotalAmt] = useState(0);
   const [fileURL, setFileURL] = useState("");
 
-  // Uploading Files
+  const [errorMessages, setErrorMessages] = useState([""]);
 
   const medicalRecord = {
     identificationNum: patientId,
@@ -50,10 +56,14 @@ export default function CreateMedicalRecord() {
     fileUrl: fileURL,
   };
   const createNewMedicalRecord = () => {
+    console.log(medicalRecord);
     emrxClient
       .post("medicalRecord/createMedicalRecord", medicalRecord)
       .then((res) => {
-        var record = res.data;
+        console.log(res.data);
+        setMessage("Medical Record created successfully!");
+        setSeverity("success");
+        setOpenSnackBar(true);
         setPatientId("");
         setHealthCareProviderId("");
         setRecordType("");
@@ -62,12 +72,16 @@ export default function CreateMedicalRecord() {
         setFileURL("");
       })
       .catch((error) => {
-        console.log(error.response.data);
+        let newErrorMessage = [...errorMessages, error.response.data];
+        setMessage(newErrorMessage);
+        setSeverity('error');
+        setOpenSnackBar(true);
       });
   };
 
   return (
     <div className={classes.root}>
+      <Snackbar open={openSnackBar} severity={severity} message={message} />
       <Typography component="h1" variant="h6" className={classes.pageTitle}>
         New Medical Record
       </Typography>
@@ -87,8 +101,8 @@ export default function CreateMedicalRecord() {
             variant="outlined"
             margin="normal"
             id="recordType"
-            name="recordType"
-            label="Record Type"
+            name="recordTitle"
+            label="Record Title"
             fullWidth
             onChange={(e) => setRecordType(e.target.value)}
           />

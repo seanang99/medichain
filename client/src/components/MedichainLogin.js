@@ -16,9 +16,9 @@ import {
   Radio,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { emrxClient, setUser } from "../Auth";
+import { medichainClient, setUser } from "../Auth";
 import blob1 from "../image-assets/bg-blob.svg";
+import Snackbar from "../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +27,10 @@ const useStyles = makeStyles((theme) => ({
   image: {
     backgroundImage: `url(${blob1})`,
     backgroundRepeat: "no-repeat",
-    backgroundColor: theme.palette.type === "light" ? theme.palette.grey[50] : theme.palette.grey[900],
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
     backgroundSize: "200vh 200vh",
     backgroundPosition: "left",
   },
@@ -73,6 +76,13 @@ function Copyright() {
 
 export default function Login() {
   const classes = useStyles();
+  //Get context value from snack bar context
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
+
+  const [errorMessages, setErrorMessages] = useState([""]);
+
   const history = useHistory();
 
   const [account, setAccount] = useState({
@@ -83,21 +93,29 @@ export default function Login() {
 
   const login = (e) => {
     e.preventDefault();
-    // console.log(account);
-
-    emrxClient
-      .post("/medicalInstitutionAccount/login", account)
+    medichainClient
+      .post("/account/login", account)
       .then((res) => {
         setUser(res.data);
-        history.push(`/medichain/${userType === "policyholder" ? "policyHolder" : "insurer"}`);
+        history.push(
+          `/medichain/${
+            userType === "policyholder" ? "policyHolder" : "insurer"
+          }`
+        );
       })
-      .catch((err) => console.log(err));
+      .catch((error) => {
+        let newErrorMessage = [...errorMessages, error.response.data];
+        console.log('Error: ', newErrorMessage);
+        setMessage("Username or Password is incorrect");
+        setSeverity("error");
+        setOpenSnackBar(true);
+      });
   };
 
   return (
     <Grid container component="main" className={classes.root}>
+      <Snackbar open={openSnackBar} severity={severity} message={message} />
       <CssBaseline />
-
       <Grid item xs={12} sm={9} md={6} className={classes.flexGrid}>
         <div className={classes.paper}>
           <Typography variant="h2" className={classes.pageTitle}>
@@ -119,8 +137,16 @@ export default function Login() {
                 value={userType}
                 onChange={(e) => setUserType(e.target.value)}
               >
-                <FormControlLabel value="policyholder" control={<Radio />} label="Policy Holder" />
-                <FormControlLabel value="insurer" control={<Radio />} label="Insurer" />
+                <FormControlLabel
+                  value="policyholder"
+                  control={<Radio />}
+                  label="Policy Holder"
+                />
+                <FormControlLabel
+                  value="insurer"
+                  control={<Radio />}
+                  label="Insurer"
+                />
               </RadioGroup>
             </FormControl>
             <TextField
@@ -157,7 +183,10 @@ export default function Login() {
                 })
               }
             />
-            <FormControlLabel control={<Checkbox value="remember" color="secondary" />} label="Remember me" />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="secondary" />}
+              label="Remember me"
+            />
             <Button
               variant="contained"
               type="submit"

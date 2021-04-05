@@ -6,7 +6,7 @@ import { PowerSettingsNew } from "@material-ui/icons";
 
 import Blob from "../Bloop";
 import { logout } from "../../Auth";
-import MedicalRecordCard from "../MedicalRecordCard";
+import MedicalRecordCard from "../HealthCareProvider/MedicalRecordCard";
 
 const useStyles = makeStyles((theme) => ({
   root: {

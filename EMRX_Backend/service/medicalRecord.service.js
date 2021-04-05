@@ -2,11 +2,13 @@ const medicalRecord = require('../model/medicalRecord.model');
 const Patient = require('../model/patient.model');
 
 async function createMedicalRecord(newMedicalRecord, identificationNum) {
+    console.log(identificationNum);
     return Patient.findOne(
         {
             identificationNum: identificationNum
         })
         .then(patient => {
+            console.log(patient);
             newMedicalRecord.patientId = patient._id
             medicalRecord.create(newMedicalRecord)
                 .then(medicalRecord => {

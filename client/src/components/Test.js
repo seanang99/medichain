@@ -2,8 +2,8 @@ import React from "react";
 import CreateMedicalRecord from "./HealthCareProvider/CreateMedicalRecord";
 import SubmitClaim from "./PolicyHolder/SubmitClaim";
 
-import ClaimRecordAccordion from "./ClaimRecordAccordian";
-import MedicalRecordCard from "./MedicalRecordCard";
+import ClaimRecordAccordion from "./Insurer/ClaimRecordAccordian";
+import MedicalRecordCard from "./HealthCareProvider/MedicalRecordCard";
 import Blob from "./Blob";
 
 const Test = () => {

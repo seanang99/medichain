@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Grid,
   Typography,
@@ -8,12 +7,13 @@ import {
   Button,
   Card,
   CardContent,
-  IconButton
+  IconButton,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { emrxClient, medichainClient } from "../../Auth";
 import CancelIcon from "@material-ui/icons/Cancel";
+import Snackbar from "../../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,8 +58,18 @@ const useStyles = makeStyles((theme) => ({
 export default function SubmitClaim() {
   const classes = useStyles();
 
-  const [patientIdentification, setPatientIdentification] = useState("S1234567A");
-  const [onChainAccountAddress, setOnChainAccountAddress] = useState("0xD76236d0bB257111b4AFD1A541b097073C5bC5BB");
+  //Get context value from snack bar context
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
+  const [errorMessages, setErrorMessages] = useState([""]);
+
+  const [patientIdentification, setPatientIdentification] = useState(
+    "S1234567A"
+  );
+  const [onChainAccountAddress, setOnChainAccountAddress] = useState(
+    "0xD76236d0bB257111b4AFD1A541b097073C5bC5BB"
+  );
   const [totalAmt, setTotalAmt] = useState(0);
   const [medicalRecordsId, setMedicalRecordsId] = useState([]);
   const [selectedMedicalRecords, setSelectedMedicalRecords] = useState([]);
@@ -109,13 +119,13 @@ export default function SubmitClaim() {
 
   const recalibrateOptions = (selectedMR) => {
     let _options = [];
-    for (var i=0; i < allMedicalRecords.length; i++){
-      if (!selectedMR.includes(allMedicalRecords[i])){
+    for (var i = 0; i < allMedicalRecords.length; i++) {
+      if (!selectedMR.includes(allMedicalRecords[i])) {
         _options.push(allMedicalRecords[i]);
       }
     }
     setOptions(_options);
-  }
+  };
 
   const calculateTotalAmount = (selectedMR) => {
     let tempAmt = 0;
@@ -130,19 +140,12 @@ export default function SubmitClaim() {
     getOptionLabel: (option) => option.recordType,
   };
 
-  // const processMedicalRecordsId = () => {
-  //   let tempMRId = []
-  //   console.log(selectedMedicalRecords);
-  //   selectedMedicalRecords.forEach(element => tempMRId.push(element._id));
-  //   setMedicalRecordsId(tempMRId);
-  // }
-
   const claim = {
     onChainAccountAddress: onChainAccountAddress,
-    medicalAmount:totalAmt,
+    medicalAmount: totalAmt,
     medicalRecordRefIds: medicalRecordsId,
     identificationNum: patientIdentification,
-  }
+  };
 
   //Submit claim
   const createClaim = async () => {
@@ -151,11 +154,17 @@ export default function SubmitClaim() {
       .post("/claim/submitClaim", claim)
       .then((res) => {
         console.log(res.data);
+        setMessage("Claim filed successfully!");
+        setSeverity("success");
+        setOpenSnackBar(true);
         setMedicalRecordsId([]);
         setSelectedMedicalRecords([]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        let newErrorMessage = [...errorMessages, error.response.data];
+        setMessage(newErrorMessage);
+        setSeverity("error");
+        setOpenSnackBar(true);
       });
   };
 
@@ -165,6 +174,7 @@ export default function SubmitClaim() {
 
   return (
     <div className={classes.root}>
+      <Snackbar open={openSnackBar} severity={severity} message={message} />
       <Typography component="h1" variant="h6" classes={classes.pageTitle}>
         Submit a Claim
       </Typography>

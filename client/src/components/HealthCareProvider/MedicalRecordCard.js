@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Button, Card, CardContent, Typography, Dialog } from "@material-ui/core";
 import { Folder, GetApp } from "@material-ui/icons";
 
-import SubmitClaim from "./PolicyHolder/SubmitClaim";
+import SubmitClaim from "../PolicyHolder/SubmitClaim";
 
 const useStyles = makeStyles((theme) => ({
   root: {

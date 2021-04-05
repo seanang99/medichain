@@ -6,7 +6,7 @@ import { AddCircle, PowerSettingsNew } from "@material-ui/icons";
 
 import Blob from "../Blob";
 import { emrxClient, logout } from "../../Auth";
-import MedicalRecordCard from "../MedicalRecordCard";
+import MedicalRecordCard from "./MedicalRecordCard";
 import CreateMedicalRecord from "./CreateMedicalRecord";
 
 const useStyles = makeStyles((theme) => ({
@@ -66,7 +66,7 @@ const HealthCareProvider = () => {
         setMedicalRecords(res.data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [medicalRecords]);
 
   return (
     <div className={classes.root}>

@@ -13,15 +13,18 @@ import Insurer from "./components/Insurer/Insurer";
 class App extends Component {
   render() {
     return (
-      <Switch>
-        <Route exact path="/medichain/login" component={MedichainLogin} />
-        <Route exact path="/emrx/login" component={EMRXLogin} />
-        <Route path="/test" component={Test} />
-        <PrivateRoute path="/emrx/home" component={HealthCareProvider} />
-        <PrivateRoute path="/medichain/policyHolder" component={PolicyHolder} />
-        <PrivateRoute path="/medichain/insurer" component={Insurer} />
-        <Route component={HomePage} />
-      </Switch>
+        <Switch>
+          <Route exact path="/medichain/login" component={MedichainLogin} />
+          <Route exact path="/emrx/login" component={EMRXLogin} />
+          <Route path="/test" component={Test} />
+          <PrivateRoute path="/emrx/home" component={HealthCareProvider} />
+          <PrivateRoute
+            path="/medichain/policyHolder"
+            component={PolicyHolder}
+          />
+          <PrivateRoute path="/medichain/insurer" component={Insurer} />
+          <Route component={HomePage} />
+        </Switch>
     );
   }
 }
