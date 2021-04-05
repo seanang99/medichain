@@ -1,3 +1,4 @@
+const axios = require('axios');
 const router = require('express').Router()
 const medichain = require('../../connection/app')
 
@@ -8,17 +9,29 @@ router.post('/submitClaim', (req, res) => {
     const {
         onChainAccountAddress,
         medicalAmount,
-        token,
-        medicalRecordRefIds
+        medicalRecordRefIds,
+        identificationNum
     } = req.body
 
-    medichain.submitClaim(onChainAccountAddress, medicalAmount, token, medicalRecordRefIds, (message) => {
-        console.log(`server.js/submitClaim: ${message}\n`);
-        res.send(message);
-    }).catch(err => {
-        console.log(`server.js/submitClaim: ${err}\n`);
-        res.status(403).send(err);
-    });
+    let payload = {
+        medicalRecordsId: medicalRecordRefIds,
+        identificationNum: identificationNum
+    }
+
+    axios.post('http://localhost:3002/token/generateToken',payload)
+        .then((response) => {
+            medichain.submitClaim(onChainAccountAddress, medicalAmount, response.data.tokenValue, medicalRecordRefIds, (message) => {
+                console.log(`server.js/submitClaim: ${message}\n`);
+                res.send(message);
+            }).catch(err => {
+                console.log(`server.js/submitClaim1: ${err}\n`);
+                res.status(403).send(err);
+            });
+        })
+        .catch(err => {
+            console.log(`server.js/submitClaim2: ${err}\n`);
+            res.status(403).send(err);
+        });
 })
 
 router.get('/getClaims/:address', (req, res) => {

@@ -51,11 +51,34 @@ async function deleteAccountByUsername(username) {
         })
 }
 
+async function login(username,password) {
+    return Account.findOne(
+        {
+            username: username
+        })
+        .then((account) => {
+            if (account.password == password) {
+                if (account.__t == 'Policyholder') {
+                    let resObj = {
+                        identificationNum: account.identificationNum,
+                        onChainAccountAddress: account.onChainAccountAddress
+                    }
+                    return resObj
+                }
+                else{
+                    return 'Login successfully'
+                }
+            }
+        })
+        .catch((err) => { throw err })
+}
+
 module.exports = {
     createSystemAdmin,
     createPolicyholder,
     createInsurer,
     readAllAccounts,
     readAccount,
-    deleteAccountByUsername
+    deleteAccountByUsername,
+    login
 }

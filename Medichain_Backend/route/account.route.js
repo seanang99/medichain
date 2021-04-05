@@ -36,10 +36,10 @@ router.post('/create', (req, res) => {
                 medichain.registerPolicyholder(policyholder.onChainAccountAddress, (message) => {
                     console.log(`server.js/registerPolicyholder: ${message}\n`);
                     res.status(200).send(message);
-                  }).catch(err => {
+                }).catch(err => {
                     console.log(`server.js/registerPolicyholder: ${err}\n`);
                     res.status(403).send(err);
-                  });
+                });
             })
             .catch((err) => res.status(400).json(err))
     }
@@ -58,27 +58,13 @@ router.post('/create', (req, res) => {
                 medichain.registerInsurer(insurer.onChainAccountAddress, (message) => {
                     console.log(`server.js/registerInsurer: ${message}\n`);
                     res.status(200).send(message);
-                  }).catch(err => {
+                }).catch(err => {
                     console.log(`server.js/registerInsurer: ${err}\n`);
                     res.status(403).send(err);
-                  });
+                });
             })
             .catch((err) => res.status(400).json(err))
     }
-    // else if (type == 'systemAdmin') {
-    //     let newSystemAdmin = new SystemAdmin
-    //         ({
-    //             firstName,
-    //             lastName,
-    //             username,
-    //             password,
-    //             employeeId,
-    //         })
-    //     return accountService.createSystemAdmin(newSystemAdmin)
-    //         .then(() => res.status(200).json('Successfully created new system admin'))
-    //         .catch((err) => res.status(400).json(err))
-    // }
-
 })
 
 router.get('/readAllAccounts', (req, res) => {
@@ -97,6 +83,17 @@ router.delete('/deleteAccountByUsername/:username', (req, res) => {
     return accountService.deleteAccountByUsername(req.params.username)
         .then((msg) => res.status(200).json(msg))
         .catch((err) => res.status(400).json(err))
+})
+
+router.post('/login', (req, res) => {
+    console.log("**** POST /accountLogin ****");
+    const {
+        username,
+        password
+    } = req.body
+    accountService.login(username,password)
+        .then(resObj => res.status(200).send(resObj))
+        .catch(err => res.status(401).send('Login unsuccessfully:' + err))
 })
 
 

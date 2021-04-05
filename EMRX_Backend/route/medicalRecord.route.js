@@ -10,7 +10,7 @@ router.post('/createMedicalRecord', (req, res) => {
         recordDetails,
         totalAmt,
         fileUrl,
-        patientId
+        identificationNum
     } = req.body;
 
     let newMedicalRecord = new MedicalRecord({
@@ -18,19 +18,24 @@ router.post('/createMedicalRecord', (req, res) => {
         recordDetails,
         totalAmt,
         fileUrl,
-        patientId,
     });
 
-    return medicalRecordService.createMedicalRecord(newMedicalRecord)
+    return medicalRecordService.createMedicalRecord(newMedicalRecord, identificationNum)
         .then(() => res.status(200).json('Successfully created medical record'))
         .catch(err => res.status(400).json('Medical record ' + err));
 });
 
-// Read patient's medical records with patient Id 
-router.get('/readAllMedicalRecord/:patientId', (req, res) => {
-    const patientId = req.params.patientId;
-    
-    return medicalRecordService.readAllMedicalRecord(patientId)
+router.get('/readAllMedicalRecord', (req, res) => {
+    return medicalRecordService.readAllMedicalRecord()
+        .then(medicalRecords => res.status(200).json(medicalRecords))
+        .catch(err => res.status(400).json('Read all medical record ' + err));
+});
+
+// Read patient's medical records with patient Id Num 
+router.get('/readMedicalRecordByPatientIdNum/:identificationNum', (req, res) => {
+    const identificationNum = req.params.identificationNum;
+
+    return medicalRecordService.readMedicalRecordByPatientIdNum(identificationNum)
         .then(medicalRecords => res.status(200).json(medicalRecords))
         .catch(err => res.status(400).json(err));
 });

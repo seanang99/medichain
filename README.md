@@ -28,7 +28,7 @@ The react web project will run on `http://localhost:3000`.
 #### Backend Directory
 ```sh
 cd Medichain_Backend
-npm install express cors mongoose dotenv
+npm install express cors mongoose dotenv axios
 ```
 
 ## Database Setup Instructions
