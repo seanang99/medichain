@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const port = 3002;
 const mongoose = require('mongoose');
 
@@ -8,6 +9,7 @@ app.listen(port, () => {
 });
 
 const uri = "mongodb+srv://admin:passwordAdmin@cluster0.z77gk.gcp.mongodb.net/emrx?retryWrites=true&w=majority";
+app.use(cors());
 app.use(express.json());
 mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false });
 const dbConnection = mongoose.connection;
