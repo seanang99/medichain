@@ -106,7 +106,7 @@ export default function SubmitClaim() {
     let currRecord = selectedMedicalRecords;
     let currRecord_id = medicalRecordsId;
     for (var i = 0; i < currRecord.length; i++) {
-      if (currRecord[i] == medicalRecord) {
+      if (currRecord[i] === medicalRecord) {
         currRecord.splice(i, 1);
         currRecord_id.splice(i, 1);
       }

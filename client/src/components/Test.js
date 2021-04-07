@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import CreateMedicalRecord from "./HealthCareProvider/CreateMedicalRecord";
 import SubmitClaim from "./PolicyHolder/SubmitClaim";
 
 import ClaimRecordAccordion from "./Insurer/ClaimRecordAccordian";
 import MedicalRecordCard from "./HealthCareProvider/MedicalRecordCard";
 import Blob from "./Blob";
+import ApproveRejectDialog from "./Insurer/ApproveRejectDialog";
 
 const Test = () => {
   const testMedicalCard1 = {
@@ -28,14 +29,17 @@ const Test = () => {
     status: "PROCESSING",
   };
 
+  const [open, setOpen] = useState(false); 
+
   return (
     <div>
       <Blob />
       <div style={{ maxWidth: "60%" }}>
         {/* <SubmitClaim /> */}
-        <MedicalRecordCard {...testMedicalCard1} />
+        {/* <MedicalRecordCard {...testMedicalCard1} />
         <MedicalRecordCard {...testMedicalCard2} />
-        <ClaimRecordAccordion {...testClaimAccordian} />
+        <ClaimRecordAccordion {...testClaimAccordian} /> */}
+        <ApproveRejectDialog policyHolderId={"S1234567A"}/>
       </div>
     </div>
   );
