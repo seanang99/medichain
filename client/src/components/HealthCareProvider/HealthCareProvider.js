@@ -6,7 +6,7 @@ import { AddCircle, PowerSettingsNew } from "@material-ui/icons";
 import Fuse from "fuse.js";
 
 import Blob from "../Blob";
-import { emrxClient, logout } from "../../Auth";
+import { emrxClient, logout, getUser } from "../../Auth";
 import MedicalRecordCard from "./MedicalRecordCard";
 import CreateMedicalRecord from "./CreateMedicalRecord";
 
@@ -56,6 +56,7 @@ const HealthCareProvider = () => {
   const classes = useStyles();
   const history = useHistory();
 
+  const [user, setUser] = useState();
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [recordCreationDialogOpen, setRecordCreationDialogOpen] = useState(false);
 
@@ -70,6 +71,7 @@ const HealthCareProvider = () => {
   };
 
   useEffect(() => {
+    setUser(getUser());
     emrxClient
       .get("medicalRecord/readMedicalRecordByPatientIdNum/S1234567A")
       .then((res) => {
@@ -86,11 +88,13 @@ const HealthCareProvider = () => {
     setSearchResults(fuse.search(value));
   };
 
+  console.log(user);
+
   return (
     <div className={classes.root}>
       <div className={classes.header}></div>
       <Typography className={classes.pageTitle} variant="h2" color="primary">
-        Welcome back, mate
+        Welcome back, {user && `${user.firstName} ${user.lastName}`}
         <IconButton
           className={classes.logout}
           edge="end"
