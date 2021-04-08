@@ -27,10 +27,7 @@ const useStyles = makeStyles((theme) => ({
   image: {
     backgroundImage: `url(${blob1})`,
     backgroundRepeat: "no-repeat",
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
+    backgroundColor: theme.palette.type === "light" ? theme.palette.grey[50] : theme.palette.grey[900],
     backgroundSize: "200vh 200vh",
     backgroundPosition: "left",
   },
@@ -97,15 +94,27 @@ export default function Login() {
       .post("/account/login", account)
       .then((res) => {
         setUser(res.data);
-        history.push(
-          `/medichain/${
-            userType === "policyholder" ? "policyHolder" : "insurer"
-          }`
-        );
+        if (userType === "policyholder") {
+          if (res.data.identificationNum) {
+            history.push("/medichain/policyholder");
+          } else {
+            setMessage("Wrong user type");
+            setSeverity("Error");
+            setOpenSnackBar(true);
+          }
+        } else if (userType === "insurer") {
+          if (!res.data.identificationNum) {
+            history.push("/medichain/insurer");
+          } else {
+            setMessage("Wrong user type");
+            setSeverity("Error");
+            setOpenSnackBar(true);
+          }
+        }
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
-        console.log('Error: ', newErrorMessage);
+        console.log("Error: ", newErrorMessage);
         setMessage("Username or Password is incorrect");
         setSeverity("error");
         setOpenSnackBar(true);
@@ -137,16 +146,8 @@ export default function Login() {
                 value={userType}
                 onChange={(e) => setUserType(e.target.value)}
               >
-                <FormControlLabel
-                  value="policyholder"
-                  control={<Radio />}
-                  label="Policy Holder"
-                />
-                <FormControlLabel
-                  value="insurer"
-                  control={<Radio />}
-                  label="Insurer"
-                />
+                <FormControlLabel value="policyholder" control={<Radio />} label="Policy Holder" />
+                <FormControlLabel value="insurer" control={<Radio />} label="Insurer" />
               </RadioGroup>
             </FormControl>
             <TextField
@@ -183,10 +184,7 @@ export default function Login() {
                 })
               }
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="secondary" />}
-              label="Remember me"
-            />
+            <FormControlLabel control={<Checkbox value="remember" color="secondary" />} label="Remember me" />
             <Button
               variant="contained"
               type="submit"

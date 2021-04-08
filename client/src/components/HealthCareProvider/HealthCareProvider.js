@@ -88,8 +88,6 @@ const HealthCareProvider = () => {
     setSearchResults(fuse.search(value));
   };
 
-  console.log(user);
-
   return (
     <div className={classes.root}>
       <div className={classes.header}></div>
