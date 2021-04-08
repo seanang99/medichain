@@ -5722,6 +5722,11 @@
   "resolved" "https://registry.npmjs.org/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz"
   "version" "1.0.1"
 
+"fuse.js@^6.4.6":
+  "integrity" "sha512-/gYxR/0VpXmWSfZOIPS3rWwU8SHgsRTwWuXhyb2O6s7aRuVtHtxCkR33bNYu3wyLyNx/Wpv0vU7FZy8Vj53VNw=="
+  "resolved" "https://registry.npmjs.org/fuse.js/-/fuse.js-6.4.6.tgz"
+  "version" "6.4.6"
+
 "generate-react-cli@^6.0.2":
   "integrity" "sha512-uTt6Do3EdyVe5FbaKTxAl6L4BCNesAEGqXSZ3cqiVzJ7jVkfHLDqL2ScrvotMEX4WdM/BflLfk2nTTjhStv4ZQ=="
   "resolved" "https://registry.npmjs.org/generate-react-cli/-/generate-react-cli-6.0.2.tgz"
