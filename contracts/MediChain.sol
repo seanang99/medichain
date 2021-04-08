@@ -49,6 +49,7 @@ contract MediChain {
     }
 
     struct Claim {
+        uint256 claimId;
         uint256 claimDate;
         address claimant;
         uint256 medicalAmount;
@@ -104,6 +105,7 @@ contract MediChain {
 
     function submitClaim(uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public policyholderOnly returns (uint256) {
         Claim memory newClaim = Claim(
+            claims.length,
             claimDate,
             msg.sender,
             medicalAmount,
