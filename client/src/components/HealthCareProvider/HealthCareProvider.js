@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Dialog, IconButton, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { AddCircle, PowerSettingsNew } from "@material-ui/icons";
+import Fuse from "fuse.js";
 
 import Blob from "../Blob";
 import { emrxClient, logout } from "../../Auth";
@@ -58,15 +59,32 @@ const HealthCareProvider = () => {
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [recordCreationDialogOpen, setRecordCreationDialogOpen] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [fuse, setFuse] = useState();
+
+  const options = {
+    includeScore: true,
+    // Search in `author` and in `tags` array
+    keys: ["recordDetails", "recordType"],
+  };
+
   useEffect(() => {
     emrxClient
       .get("medicalRecord/readMedicalRecordByPatientIdNum/S1234567A")
       .then((res) => {
         // console.log(res.data);
         setMedicalRecords(res.data);
+        setSearchResults(res.data);
+        setFuse(new Fuse(res.data, options));
       })
       .catch((err) => console.log(err));
-  }, [medicalRecords]);
+  }, []);
+
+  const onSearch = (value) => {
+    setSearchTerm(value);
+    setSearchResults(fuse.search(value));
+  };
 
   return (
     <div className={classes.root}>
@@ -101,15 +119,18 @@ const HealthCareProvider = () => {
             classes={{ root: classes.searchRoot }}
             InputProps={{ classes: { root: classes.searchInput } }}
             variant="outlined"
+            ƒ
             margin="dense"
             placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => onSearch(e.target.value)}
           />
         </div>
         {medicalRecords && medicalRecords.length > 0 ? (
           <Fragment>
-            {medicalRecords.slice(0, 4).map((record, i) => (
-              <MedicalRecordCard key={i} {...record} />
-            ))}
+            {searchTerm !== ""
+              ? searchResults.slice(0, 5).map((record, i) => <MedicalRecordCard key={i} {...record.item} />)
+              : medicalRecords.slice(0, 5).map((record, i) => <MedicalRecordCard key={i} {...record} />)}
             <Typography variant="body2" className={classes.footer}>
               {medicalRecords.length} Record(s)
             </Typography>
