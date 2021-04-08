@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Typography,
-  TextField,
-  InputAdornment,
-  Button,
-  Card,
-  CardContent,
-  IconButton,
-} from "@material-ui/core";
+import { Grid, Typography, TextField, InputAdornment, Button, Card, CardContent, IconButton } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { emrxClient, medichainClient } from "../../Auth";
@@ -64,12 +55,8 @@ export default function SubmitClaim() {
   const [message, setMessage] = useState("");
   const [errorMessages, setErrorMessages] = useState([""]);
 
-  const [patientIdentification, setPatientIdentification] = useState(
-    "S1234567A"
-  );
-  const [onChainAccountAddress, setOnChainAccountAddress] = useState(
-    "0xD76236d0bB257111b4AFD1A541b097073C5bC5BB"
-  );
+  const [patientIdentification, setPatientIdentification] = useState("S1234567A");
+  const [onChainAccountAddress, setOnChainAccountAddress] = useState("0xD76236d0bB257111b4AFD1A541b097073C5bC5BB");
   const [totalAmt, setTotalAmt] = useState(0);
   const [medicalRecordsId, setMedicalRecordsId] = useState([]);
   const [selectedMedicalRecords, setSelectedMedicalRecords] = useState([]);
@@ -174,7 +161,7 @@ export default function SubmitClaim() {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} />
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <Typography component="h1" variant="h6" classes={classes.pageTitle}>
         Submit a Claim
       </Typography>
@@ -187,10 +174,7 @@ export default function SubmitClaim() {
                 <Typography variant="body1">{record.recordDetails}</Typography>
               </div>
               <div className={classes.column}>
-                <IconButton
-                  aria-label="remove medical record"
-                  onClick={() => removeMedicalRecord(record)}
-                >
+                <IconButton aria-label="remove medical record" onClick={() => removeMedicalRecord(record)}>
                   <CancelIcon />
                 </IconButton>
               </div>
@@ -209,12 +193,7 @@ export default function SubmitClaim() {
             key="newMR_autocomplete"
             filterSelectedOptions
             renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                labels="Medical Record"
-                placeholder="Add Medical Record"
-              />
+              <TextField {...params} variant="outlined" labels="Medical Record" placeholder="Add Medical Record" />
             )}
             onChange={(event, value) => {
               addMedicalRecord(value);
@@ -239,12 +218,7 @@ export default function SubmitClaim() {
         }}
       />
       <Grid container justify="flex-end">
-        <Button
-          variant="contained"
-          className={classes.submit}
-          color="primary"
-          onClick={() => createClaim()}
-        >
+        <Button variant="contained" className={classes.submit} color="primary" onClick={() => createClaim()}>
           Submit
         </Button>
       </Grid>

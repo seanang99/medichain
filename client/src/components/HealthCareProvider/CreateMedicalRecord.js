@@ -1,11 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-  Grid,
-  TextField,
-  Typography,
-  Button,
-  InputAdornment,
-} from "@material-ui/core";
+import { Grid, TextField, Typography, Button, InputAdornment } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { emrxClient } from "../../Auth";
 import Snackbar from "../../contexts/SnackbarComponent";
@@ -74,14 +68,14 @@ export default function CreateMedicalRecord() {
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
         setMessage(newErrorMessage);
-        setSeverity('error');
+        setSeverity("error");
         setOpenSnackBar(true);
       });
   };
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} />
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <Typography component="h1" variant="h6" className={classes.pageTitle}>
         New Medical Record
       </Typography>
@@ -126,9 +120,7 @@ export default function CreateMedicalRecord() {
             label="Amount"
             fullWidth
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
+              startAdornment: <InputAdornment position="start">$</InputAdornment>,
               inputProps: { min: 0.0 },
             }}
             onChange={(e) => setTotalAmt(e.target.value)}
@@ -143,7 +135,13 @@ export default function CreateMedicalRecord() {
             onChange={(e) => setFileURL(e.target.value)}
           />
           <Grid container justify="flex-end">
-            <Button variant="contained" type="submit" className={classes.upload} color="primary" onClick={() => createNewMedicalRecord()}>
+            <Button
+              variant="contained"
+              type="submit"
+              className={classes.upload}
+              color="primary"
+              onClick={() => createNewMedicalRecord()}
+            >
               Upload
             </Button>
           </Grid>
