@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
-export default function SnackbarComponent ({ 
-    open: openSnackBar, 
-    severity: severity, 
-    message: message,
+export default function SnackbarComponent({
+  open: openSnackBar,
+  severity: severity,
+  message: message,
+  setOpenSnackBar: setOpenSnackBar,
 }) {
-    const handleClose = () => {
-        openSnackBar = false;
-    }
+  const handleClose = () => {
+    setOpenSnackBar(false);
+  };
 
   return (
     <Snackbar
@@ -23,7 +24,7 @@ export default function SnackbarComponent ({
       <Alert
         severity={severity}
         onClose={() => {
-            handleClose();
+          handleClose();
         }}
       >
         {message}
@@ -31,4 +32,3 @@ export default function SnackbarComponent ({
     </Snackbar>
   );
 }
-
