@@ -1,38 +1,23 @@
 import React, { useState } from "react";
-import {
-  Box, 
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  IconButton,
-} from "@material-ui/core";
+import PropTypes from "prop-types";
+import { Typography, Box, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Snackbar from "../../contexts/SnackbarComponent";
 import { medichainClient } from "../../Auth";
-import { CloseIcon } from "@material-ui/icons/Close";
-import { Typography } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh",
     padding: "2vw",
     display: "float",
   },
-  paper: {
-    padding: theme.spacing(2),
+  title: {
+    margin: theme.spacing(2, 0),
   },
-  title:{
-    margin: theme.spacing(2,0),
+  actionPanel: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: theme.spacing(2),
   },
-  actionPanel:{
-      display:"flex",
-      justifyContent: "flex-end",
-      marginTop: theme.spacing(2),
-  }, 
   button_margin: {
     marginRight: theme.spacing(2),
   },
@@ -86,21 +71,31 @@ export default function ApproveRejectDialog({
   return (
     <div className={classes.root}>
       <Snackbar open={openSnackBar} severity={severity} message={message} />
-      <Paper className={classes.paper}>
-        <Typography className={classes.title} variant="h6">Are you sure?</Typography>
-        <Typography variant="body1">
-          You are about to endorse the Claims for Policy Holder {policyHolderId}
-          . This action cannot be undone and will be logged in the blockchain.
-        </Typography>
-        <Box className={classes.actionPanel}>
-        <Button className={classes.button_margin} variant="contained" color="primary">
-          Disagree
-        </Button>
-        <Button variant="contained" color="primary" autoFocus>
+      <Typography className={classes.title} variant="h6">
+        Are you sure?
+      </Typography>
+      <Typography variant="body1">
+        You are about to endorse the Claims for Policy Holder {policyHolderId}.
+        This action cannot be undone and will be logged in the blockchain.
+      </Typography>
+      <Box className={classes.actionPanel}>
+        <Button
+          className={classes.button_margin}
+          variant="contained"
+          color="primary"
+          autoFocus
+          onClick={() => approveClaim()}
+        >
           Approve
         </Button>
-        </Box>
-      </Paper>
+        <Button variant="outlined" onClick={() => rejectClaim()}>
+          Reject
+        </Button>
+      </Box>
     </div>
   );
-}
+};
+
+ApproveRejectDialog.propTypes = {
+  policyHolderId: PropTypes.string.isRequired,
+};
