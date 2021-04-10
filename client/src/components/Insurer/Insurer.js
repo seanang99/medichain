@@ -55,9 +55,6 @@ const Insurer = () => {
   const history = useHistory();
 
   const [claimRecords, setClaimRecords] = useState([]);
-  const [insurerId, setInsurerId] = useState("");
-  const [insurerOnChainId, setInsurerOnChainId] = useState("");
-
 
   const getClaims = async () => {
     medichainClient

@@ -55,8 +55,6 @@ export default function SubmitClaim() {
   const [message, setMessage] = useState("");
   const [errorMessages, setErrorMessages] = useState([""]);
 
-  const [patientIdentification, setPatientIdentification] = useState("");
-  const [onChainAccountAddress, setOnChainAccountAddress] = useState("");
   const [totalAmt, setTotalAmt] = useState(0);
   const [medicalRecordsId, setMedicalRecordsId] = useState([]);
   const [selectedMedicalRecords, setSelectedMedicalRecords] = useState([]);
