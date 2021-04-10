@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const port = 3001
 const medichain = require('../connection/app')
 const mongoose = require('mongoose')
@@ -22,7 +23,7 @@ const uri = "mongodb+srv://username:adminpassword@cluster0.hcafc.gcp.mongodb.net
 //   // perform actions on the collection object
 //   client.close();
 // });
-
+app.use(cors())
 app.use(express.json())
 mongoose.connect(uri,{useUnifiedTopology:true, useNewUrlParser:true, useCreateIndex:true})
 const dbConnection = mongoose.connection
