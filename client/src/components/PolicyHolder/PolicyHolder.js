@@ -100,11 +100,6 @@ const PolicyHolder = () => {
   };
 
   useEffect(() => {
-    const user = getUser();
-    console.log(user);
-    setPolicyHolderId(user.identificationNum);
-    setPolicyHolderOnChainId(user.onChainAccountAddress);
-
     getMedicalRecords();
     getClaims();
   }, []);
