@@ -1,13 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  Dialog,
-  Button,
-  Divider,
-  IconButton,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Dialog, Button, Divider, IconButton, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Fuse from "fuse.js";
 import { PowerSettingsNew, Folder } from "@material-ui/icons";
@@ -82,14 +75,16 @@ const PolicyHolder = () => {
     keys: ["recordDetails", "recordType"],
   };
 
-  const getMedicalRecords = async () => {
+  const getMedicalRecords = () => {
     emrxClient
       .get("medicalRecord/readMedicalRecordByPatientIdNum/" + getUser().identificationNum)
       .then((res) => {
         console.log(res.data);
         setMedicalRecords(res.data);
         setSearchResults(res.data);
-        setFuse(new Fuse(res.data, options));
+        if (res.data.length > 1) {
+          setFuse(new Fuse(res.data, options));
+        }
       })
       .catch((error) => console.log(error.response.data));
   };
@@ -132,11 +127,7 @@ const PolicyHolder = () => {
       </Typography>
       <div className={classes.container}>
         <div className={classes.header}>
-          <Typography
-            style={{ justifySelf: "flex-start" }}
-            variant="h4"
-            color="primary"
-          >
+          <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
             Claim Records
           </Typography>
           <Button
@@ -165,11 +156,7 @@ const PolicyHolder = () => {
 
         <Divider style={{ margin: "48px 0 24px" }} />
         <div className={classes.header}>
-          <Typography
-            style={{ justifySelf: "flex-start" }}
-            variant="h4"
-            color="primary"
-          >
+          <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
             Medical Records
           </Typography>
           <TextField
