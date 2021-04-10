@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Typography, Box, Button } from "@material-ui/core";
+import { Typography, Box, Button, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Snackbar from "../../contexts/SnackbarComponent";
-import { medichainClient } from "../../Auth";
+import { getUser, medichainClient } from "../../Auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ApproveRejectDialog({
+  claimId: claimId,
   policyHolderId: policyHolderId,
 }) {
   const classes = useStyles();
@@ -34,9 +35,17 @@ export default function ApproveRejectDialog({
   const [message, setMessage] = useState("");
   const [errorMessages, setErrorMessages] = useState([""]);
 
+  const [remarks, setRemarks] = useState("");
+
+  const claim = {
+    claimId: claimId,
+    onChainAccountAddress: getUser().onChainAccountAddress,
+    remarks: remarks,
+  };
+
   const approveClaim = async () => {
     await medichainClient
-      .post("url")
+      .post("claim/approveClaim", claim)
       .then((res) => {
         console.log(res.data);
         setMessage("Claim Approved!");
@@ -53,7 +62,7 @@ export default function ApproveRejectDialog({
 
   const rejectClaim = async () => {
     await medichainClient
-      .post("url")
+      .post("claim/rejectClaim", claim)
       .then((res) => {
         console.log(res.data);
         setMessage("Claim Rejected!");
@@ -70,14 +79,28 @@ export default function ApproveRejectDialog({
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} />
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <Typography className={classes.title} variant="h6">
         Are you sure?
       </Typography>
       <Typography variant="body1">
-        You are about to endorse the Claims for Policy Holder {policyHolderId}.
-        This action cannot be undone and will be logged in the blockchain.
+        You are about to endorse claim {claimId} for Policy Holder{" "}
+        {policyHolderId}. This action cannot be undone and will be logged in the
+        blockchain.
       </Typography>
+      <TextField
+        variant="outlined"
+        margin="normal"
+        id="remarks"
+        name="remarks"
+        label="Remarks"
+        placeholder="Please add remarks stating the reason for approval or rejection"
+        value={remarks}
+        multiline
+        rows={4}
+        fullWidth
+        onChange={(e) => setRemarks(e.target.value)}
+      />
       <Box className={classes.actionPanel}>
         <Button
           className={classes.button_margin}
@@ -94,8 +117,9 @@ export default function ApproveRejectDialog({
       </Box>
     </div>
   );
-};
+}
 
 ApproveRejectDialog.propTypes = {
   policyHolderId: PropTypes.string.isRequired,
+  claimId: PropTypes.string.isRequired,
 };

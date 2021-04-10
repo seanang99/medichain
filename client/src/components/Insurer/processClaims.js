@@ -8,18 +8,20 @@ import {
   Box,
   MenuItem,
   Select,
+  InputAdornment,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { medichainClient } from "../../Auth";
+import { getUser, medichainClient } from "../../Auth";
 import Snackbar from "../../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "2vw", 
+    padding: "2vw",
     display: "float",
   },
-  pageTitle: {
+  header: {
     color: theme.palette.primary.dark,
+    margin: theme.spacing(2,0),
   },
   actionPanel: {
     display: "flex",
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProcessClaims() {
+export default function ProcessClaims({ claimId: claimId }) {
   const classes = useStyles();
 
   //Get context value from snack bar context
@@ -40,41 +42,28 @@ export default function ProcessClaims() {
   const [message, setMessage] = useState("");
   const [errorMessages, setErrorMessages] = useState([""]);
 
-  const [claimId, setClaimId] = useState("");
   const [remarks, setRemarks] = useState("");
-  const [claimStatus, setClaimStatus] = useState("");
+  const [medicalAmount, setMedicalAmount] = useState(0);
+  const [claimAmount, setClaimAmount] = useState(0);
+  const [policyNumber, setPolicyNumber] = useState("");
 
   const claimInformation = {
     claimId: claimId,
-    insurerOnChainId: "",
+    onChainAccountAddress: getUser().onChainAccountAddress,
+    claimAmount: claimAmount,
     remarks: remarks,
+    policyNumber: policyNumber,
   };
 
   const createClaimNotes = async () => {
     await medichainClient
-      .post("url" + claimId, claimInformation)
+      .post("claim/processClaim", claimInformation)
       .then((res) => {
         console.log(res.data);
         setMessage("Claim Rejected!");
         setSeverity("success");
         setOpenSnackBar(true);
         setRemarks("");
-        setClaimStatus("");
-      })
-      .catch((error) => {
-        let newErrorMessage = [...errorMessages, error.response.data];
-        setMessage(newErrorMessage);
-        setSeverity("error");
-        setOpenSnackBar(true);
-      });
-  };
-
-  const getClaimInformation = async () => {
-    await medichainClient
-      .get("url")
-      .then((res) => {
-        setClaimId(res.data.claimId);
-        setClaimStatus(res.data.claimStatus);
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
@@ -86,26 +75,71 @@ export default function ProcessClaims() {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} />
-      <Typography variant="h6">{"Insurer Notes"}</Typography>
-      <TextField
-        variant="outlined"
-        id="claimId"
-        name="claimId"
-        label="Claim Id"
-        value={claimId}
-        fullWidth
-        InputProps={{
-          readOnly: true,
-        }}
-      />
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
+      <Typography className={classes.header} variant="h6">{"Insurer Notes"}</Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <TextField
+            variant="filled"
+            id="claimId"
+            name="claimId"
+            label="Claim Id"
+            value={claimId}
+            fullWidth
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            variant="outlined"
+            id="policyNumber"
+            name="policyNumber"
+            label="Policy Number"
+            value={policyNumber}
+            fullWidth
+            onChange={(e) => setPolicyNumber(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            variant="outlined"
+            id="medicalAmount"
+            name="medicalAmount"
+            label="Proposed Amount"
+            value={medicalAmount}
+            fullWidth
+            InputProps={{
+              readOnly: true,
+              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            variant="outlined"
+            id="claimAmount"
+            name="claimAmount"
+            label="Claim Amount"
+            type="number"
+            value={claimAmount}
+            fullWidth
+            InputProps={{
+              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              inputProps: { min: 0.0 },
+            }}
+            onChange={(e) => setClaimAmount(e.target.value)}
+          />
+        </Grid>
+      </Grid>
       <TextField
         variant="outlined"
         margin="normal"
         id="remarks"
         name="remarks"
         label="Remarks"
-        placeholder="Add Remarks"
+        placeholder="Please add remarks and assessment notes of the claim"
         value={remarks}
         multiline
         rows={4}
@@ -118,6 +152,7 @@ export default function ProcessClaims() {
           variant="contained"
           color="primary"
           autoFocus
+          onClick={() => createClaimNotes()}
         >
           Add Remarks
         </Button>

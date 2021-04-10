@@ -18,6 +18,7 @@ import { ExpandMore } from "@material-ui/icons";
 import ProcessClaims from "./ProcessClaims";
 import ApproveRejectDialog from "./ApproveRejectDialog";
 import { getUser } from "../../Auth";
+import DisburseClaim from "./DisburseClaim";
 
 const useStyles = makeStyles((theme) => ({
   accordionSummary: {
@@ -47,13 +48,16 @@ const ClaimRecordAccordion = ({
   insurer,
   remarks,
   isInsurer: isInsurer,
+  claimId: claimId,
+  policyHolderId: policyHolderId,
+  claimAmount: claimAmount,
 }) => {
   const classes = useStyles();
   const steps = ["PENDING", "PROCESSING", "APPROVED", "DISBURSED"];
 
   const [openAddRemarksDialog, setOpenAddRemarksDialog] = useState(false);
   const [openEndorseClaimsDialog, setOpenEndorseClaimsDialog] = useState(false);
-  const policyHolderId = getUser().identificationNum;
+  const [openDisburseClaimDialog, setOpenDisburseClaimDialog] = useState(false);
 
   return (
     <div>
@@ -123,7 +127,11 @@ const ClaimRecordAccordion = ({
                   Endorse
                 </Button>
               ) : status === "APPROVED" ? (
-                <Button variant="outlined" color="primary">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenDisburseClaimDialog(true)}
+                >
                   Disburse
                 </Button>
               ) : (
@@ -141,7 +149,7 @@ const ClaimRecordAccordion = ({
         onClose={() => setOpenAddRemarksDialog(false)}
         aria-labelledby="add-claim-remarks"
       >
-        <ProcessClaims />
+        <ProcessClaims claimId={claimId} />
       </Dialog>
       <Dialog
         fullWidth
@@ -149,7 +157,18 @@ const ClaimRecordAccordion = ({
         onClose={() => setOpenEndorseClaimsDialog(false)}
         aria-labelledby="add-claim-endorsement"
       >
-        <ApproveRejectDialog policyHolderId={policyHolderId} />
+        <ApproveRejectDialog
+          claimId={claimId}
+          policyHolderId={policyHolderId}
+        />
+      </Dialog>
+      <Dialog
+        fullWidth
+        open={openDisburseClaimDialog}
+        onClose={() => setOpenDisburseClaimDialog(false)}
+        aria-labelledby="disburse-claims"
+      >
+        <DisburseClaim claimId={claimId} policyHolderId={policyHolderId} claimAmount={claimAmount} />
       </Dialog>
     </div>
   );

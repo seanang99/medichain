@@ -27,9 +27,12 @@ const Test = () => {
   const testClaimAccordian = {
     title: "Emergency Surgery Claim 1",
     insurer: "AIA Insurance",
-    status: "PROCESSING",
+    status: "APPROVED",
     remarks: "If someone or something causes inconvenience, they cause problems or difficulties. We apologize for any inconvenience caused during the repairs. The practical inconveniences of long hair are negligible. If someone inconveniences you, they cause problems or difficulties for you.",
     isInsurer: true,
+    claimId:"012345",
+    policyHolderId: "S1234567A",
+    claimAmount: "120",
   };
 
   const [open, setOpen] = useState(false);
