@@ -20,7 +20,7 @@ router.post('/createAccount', (req, res) => {
     });
 
     return medicalInstituteAccountService.createAccount(newMedicalInstituteAcc)
-        .then(() => res.status(200).json('Successfully registered medical institute account'))
+        .then(account => res.status(200).json(account))
         .catch(err => res.status(400).json('Register medical institute account ' + err));
 });
 
