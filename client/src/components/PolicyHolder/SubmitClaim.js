@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Typography,
-  TextField,
-  InputAdornment,
-  Button,
-  Card,
-  CardContent,
-  IconButton,
-} from "@material-ui/core";
+import { Grid, Typography, TextField, InputAdornment, Button, Card, CardContent, IconButton } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { emrxClient, getUser, medichainClient } from "../../Auth";
@@ -183,10 +174,7 @@ export default function SubmitClaim() {
                 <Typography variant="body1">{record.recordDetails}</Typography>
               </div>
               <div className={classes.column}>
-                <IconButton
-                  aria-label="remove medical record"
-                  onClick={() => removeMedicalRecord(record)}
-                >
+                <IconButton aria-label="remove medical record" onClick={() => removeMedicalRecord(record)}>
                   <CancelIcon />
                 </IconButton>
               </div>
@@ -205,12 +193,7 @@ export default function SubmitClaim() {
             key="newMR_autocomplete"
             filterSelectedOptions
             renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                labels="Medical Record"
-                placeholder="Add Medical Record"
-              />
+              <TextField {...params} variant="outlined" labels="Medical Record" placeholder="Add Medical Record" />
             )}
             onChange={(event, value) => {
               addMedicalRecord(value);
@@ -235,12 +218,7 @@ export default function SubmitClaim() {
         }}
       />
       <Grid container justify="flex-end">
-        <Button
-          variant="contained"
-          className={classes.submit}
-          color="primary"
-          onClick={() => createClaim()}
-        >
+        <Button variant="contained" className={classes.submit} color="primary" onClick={() => createClaim()}>
           Submit
         </Button>
       </Grid>

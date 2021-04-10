@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Fuse from "fuse.js";
 import { PowerSettingsNew, Folder } from "@material-ui/icons";
 
 import Blob from "../Bloop";
@@ -71,13 +72,24 @@ const PolicyHolder = () => {
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [claims, setClaims] = useState([]);
 
-  const getMedicalRecords = async() => {
-    
-    await emrxClient
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [fuse, setFuse] = useState();
+
+  const options = {
+    includeScore: true,
+    // Search in `author` and in `tags` array
+    keys: ["recordDetails", "recordType"],
+  };
+
+  const getMedicalRecords = async () => {
+    emrxClient
       .get("medicalRecord/readMedicalRecordByPatientIdNum/" + getUser().identificationNum)
       .then((res) => {
         console.log(res.data);
         setMedicalRecords(res.data);
+        setSearchResults(res.data);
+        setFuse(new Fuse(res.data, options));
       })
       .catch((error) => console.log(error.response.data));
   };
@@ -96,6 +108,11 @@ const PolicyHolder = () => {
     getMedicalRecords();
     getClaims();
   }, []);
+
+  const onSearch = (value) => {
+    setSearchTerm(value);
+    setSearchResults(fuse.search(value));
+  };
 
   return (
     <div className={classes.root}>
@@ -161,13 +178,15 @@ const PolicyHolder = () => {
             variant="outlined"
             margin="dense"
             placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => onSearch(e.target.value)}
           />
         </div>
         {medicalRecords && medicalRecords.length > 0 ? (
           <Fragment>
-            {medicalRecords.slice(0, 4).map((record, i) => (
-              <MedicalRecordCard key={i} {...record} />
-            ))}
+            {searchTerm !== ""
+              ? searchResults.slice(0, 5).map((record, i) => <MedicalRecordCard key={i} {...record.item} />)
+              : medicalRecords.slice(0, 5).map((record, i) => <MedicalRecordCard key={i} {...record} />)}
             <Typography variant="body2" className={classes.footer}>
               {medicalRecords.length} Record(s)
             </Typography>
