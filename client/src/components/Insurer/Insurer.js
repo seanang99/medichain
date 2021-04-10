@@ -61,7 +61,7 @@ const Insurer = () => {
 
   const getClaims = async () => {
     medichainClient
-      .get("claim/getClaims/" + insurerOnChainId)
+      .get("claim/getClaims/" + getUser().onChainAccountAddress)
       .then((res) => {
         setClaimRecords(res.data);
       })
@@ -69,11 +69,6 @@ const Insurer = () => {
   };
   
   useEffect(() => {
-    const user = getUser();
-    console.log(user);
-    setInsurerId(user.identificationNum);
-    setInsurerOnChainId(user.onChainAccountAddress);
-    
     getClaims();
   }, []);
 
@@ -102,7 +97,7 @@ const Insurer = () => {
         {claimRecords && claimRecords.length > 0 ? (
           <Fragment>
             {claimRecords.slice(0, 4).map((record, i) => (
-              <ClaimRecordAccordion key={i} {...record} />
+              <ClaimRecordAccordion key={i} {...record} isInsurer={true} />
             ))}
             <Typography variant="body2" className={classes.footer}>
               {claimRecords.length} Record(s)

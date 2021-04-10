@@ -75,7 +75,7 @@ export default function SubmitClaim() {
   const [allMedicalRecords, setAllMedicalRecords] = useState([]);
   const getMedicalRecords = async () => {
     emrxClient
-      .get("medicalRecord/readMedicalRecordByPatientIdNum/" + patientIdentification)
+      .get("medicalRecord/readMedicalRecordByPatientIdNum/" + getUser().identificationNum)
       .then((res) => {
         setAllMedicalRecords(res.data);
         setOptions(res.data);
@@ -137,10 +137,10 @@ export default function SubmitClaim() {
   };
 
   const claim = {
-    onChainAccountAddress: onChainAccountAddress,
+    onChainAccountAddress: getUser().onChainAccountAddress,
     medicalAmount: totalAmt,
     medicalRecordRefIds: medicalRecordsId,
-    identificationNum: patientIdentification,
+    identificationNum: getUser().identificationNum,
   };
 
   //Submit claim
@@ -165,16 +165,12 @@ export default function SubmitClaim() {
   };
 
   useEffect(() => {
-    const user = getUser();
-    setPatientIdentification(user.identificationNum);
-    setOnChainAccountAddress(user.onChainAccountAddress);
-    
     getMedicalRecords();
   }, [selectedMedicalRecords]);
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} />
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <Typography component="h1" variant="h6" classes={classes.pageTitle}>
         Submit a Claim
       </Typography>

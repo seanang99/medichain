@@ -60,13 +60,12 @@ const HealthCareProvider = () => {
 
   useEffect(() => {
     emrxClient
-      .get("medicalRecord/readMedicalRecordByPatientIdNum/S1234567A")
+      .get("/medicalRecord/readAllMedicalRecord/")
       .then((res) => {
-        // console.log(res.data);
         setMedicalRecords(res.data);
       })
       .catch((err) => console.log(err));
-  }, [medicalRecords]);
+  }, []);
 
   return (
     <div className={classes.root}>

@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
   column: {
     display: "flex",
     flexDirection: "column",
+    minWidth:"12vw",
   },
 }));
 

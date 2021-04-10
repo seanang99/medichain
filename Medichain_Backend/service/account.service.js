@@ -66,7 +66,11 @@ async function login(username,password) {
                     return resObj
                 }
                 else{
-                    return 'Login successfully'
+                    let resObj = {
+                        employeeId: account.employeeId,
+                        onChainAccountAddress: account.onChainAccountAddress
+                    }
+                    return resObj
                 }
             }
         })

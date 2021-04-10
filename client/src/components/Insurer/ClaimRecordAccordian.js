@@ -17,6 +17,7 @@ import {
 import { ExpandMore } from "@material-ui/icons";
 import ProcessClaims from "./ProcessClaims";
 import ApproveRejectDialog from "./ApproveRejectDialog";
+import { getUser } from "../../Auth";
 
 const useStyles = makeStyles((theme) => ({
   accordionSummary: {
@@ -40,13 +41,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ClaimRecordAccordion = ({ title, status, insurer, remarks }) => {
+const ClaimRecordAccordion = ({
+  title,
+  status,
+  insurer,
+  remarks,
+  isInsurer: isInsurer,
+}) => {
   const classes = useStyles();
   const steps = ["PENDING", "PROCESSING", "APPROVED", "DISBURSED"];
 
   const [openAddRemarksDialog, setOpenAddRemarksDialog] = useState(false);
   const [openEndorseClaimsDialog, setOpenEndorseClaimsDialog] = useState(false);
-  const policyHolderId = "S1234567A";
+  const policyHolderId = getUser().identificationNum;
 
   return (
     <div>
@@ -96,28 +103,36 @@ const ClaimRecordAccordion = ({ title, status, insurer, remarks }) => {
               }}
             />{" "}
           </div>
-          <Box className={classes.actionPanel}>
-            {/* check for claim status */}
-            {status === "PENDING" ? (
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => setOpenAddRemarksDialog(true)}
-              >
-                Add Remarks
-              </Button>
-            ) : status === "PROCESSING" ? (
-              <Button variant="outlined" color="primary" onClick={() => setOpenEndorseClaimsDialog(true)}>
-                Endorse
-              </Button>
-            ) : status === "APPROVED" ? (
-              <Button variant="outlined" color="primary">
-                Disburse
-              </Button>
-            ) : (
-              <></>
-            )}
-          </Box>
+          {isInsurer ? (
+            <Box className={classes.actionPanel}>
+              {/* check for claim status */}
+              {status === "PENDING" ? (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenAddRemarksDialog(true)}
+                >
+                  Add Remarks
+                </Button>
+              ) : status === "PROCESSING" ? (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenEndorseClaimsDialog(true)}
+                >
+                  Endorse
+                </Button>
+              ) : status === "APPROVED" ? (
+                <Button variant="outlined" color="primary">
+                  Disburse
+                </Button>
+              ) : (
+                <></>
+              )}
+            </Box>
+          ) : (
+            <></>
+          )}
         </AccordionDetails>
       </Accordion>
       <Dialog
@@ -134,7 +149,7 @@ const ClaimRecordAccordion = ({ title, status, insurer, remarks }) => {
         onClose={() => setOpenEndorseClaimsDialog(false)}
         aria-labelledby="add-claim-endorsement"
       >
-        <ApproveRejectDialog policyHolderId={policyHolderId}/>
+        <ApproveRejectDialog policyHolderId={policyHolderId} />
       </Dialog>
     </div>
   );
