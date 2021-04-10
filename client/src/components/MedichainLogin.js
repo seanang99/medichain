@@ -114,7 +114,7 @@ export default function Login() {
 
   return (
     <Grid container component="main" className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} />
+      <Snackbar open={openSnackBar} setOpenSnackBar={setOpenSnackBar} severity={severity} message={message} />
       <CssBaseline />
       <Grid item xs={12} sm={9} md={6} className={classes.flexGrid}>
         <div className={classes.paper}>

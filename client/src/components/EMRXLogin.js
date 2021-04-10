@@ -114,7 +114,7 @@ export default function EMRXLogin() {
 
   return (
     <Grid container component="main" className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} />
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} className={classes.flexGrid}>
