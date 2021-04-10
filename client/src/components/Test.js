@@ -29,6 +29,7 @@ const Test = () => {
     insurer: "AIA Insurance",
     status: "PROCESSING",
     remarks: "If someone or something causes inconvenience, they cause problems or difficulties. We apologize for any inconvenience caused during the repairs. The practical inconveniences of long hair are negligible. If someone inconveniences you, they cause problems or difficulties for you.",
+    isInsurer: true,
   };
 
   const [open, setOpen] = useState(false);

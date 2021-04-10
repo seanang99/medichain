@@ -60,9 +60,6 @@ const PolicyHolder = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [policyHolderId, setPolicyHolderId] = useState("");
-  const [policyHolderOnChainId, setPolicyHolderOnChainId] = useState("");
-
   const [openSubmitClaimDialog, setOpenSubmitClaimDialog] = useState(false);
 
   const [medicalRecords, setMedicalRecords] = useState([]);
@@ -80,8 +77,9 @@ const PolicyHolder = () => {
 
   const getMedicalRecords = () => {
     emrxClient
-      .get("medicalRecord/readMedicalRecordByPatientIdNum/" + policyHolderId)
+      .get("medicalRecord/readMedicalRecordByPatientIdNum/" + getUser().identificationNum)
       .then((res) => {
+        console.log(res.data);
         setMedicalRecords(res.data);
         setSearchResults(res.data);
         if (res.data.length > 1) {
@@ -92,9 +90,10 @@ const PolicyHolder = () => {
   };
 
   const getClaims = async () => {
-    medichainClient
-      .get("claim/getClaims/" + policyHolderOnChainId)
+    await medichainClient
+      .get("claim/getClaims/" + getUser().onChainAccountAddress)
       .then((res) => {
+        console.log(res.data);
         setClaims(res.data);
       })
       .catch((error) => console.log(error.response.data));
@@ -150,7 +149,7 @@ const PolicyHolder = () => {
         {claims && claims.length > 0 ? (
           <Fragment>
             {claims.slice(0, 4).map((record, i) => (
-              <ClaimRecordAccordion key={i} {...record} />
+              <ClaimRecordAccordion key={i} {...record} isInsurer={false} />
             ))}
             <Typography variant="body2" className={classes.footer}>
               {claims.length} Record(s)

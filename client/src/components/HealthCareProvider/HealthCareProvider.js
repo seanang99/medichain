@@ -73,9 +73,8 @@ const HealthCareProvider = () => {
   useEffect(() => {
     setUser(getUser());
     emrxClient
-      .get("medicalRecord/readMedicalRecordByPatientIdNum/S1234567A")
+      .get("/medicalRecord/readAllMedicalRecord/")
       .then((res) => {
-        // console.log(res.data);
         setMedicalRecords(res.data);
         setSearchResults(res.data);
         setFuse(new Fuse(res.data, options));

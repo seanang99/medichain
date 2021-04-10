@@ -64,19 +64,23 @@ router.get('/getClaims/:address', (req, res) => {
                 }
                 // add one more field medicalRecords while keeping medicalRecordRefIds
                 claim.medicalRecords = medicalRecords
+
+                // convert the claims from string to json format
                 let remarks = claim.remarks;
-                let remarksSplit = []
-                let remarksInJson = []
-                remarksSplit = remarks.split(";;;")
-                // last index is a empty string, thats why length - 1
-                for (let i=0;i<remarksSplit.length-1;i++) {
-                    let remarkSplit = remarksSplit[i].split("##",2)
-                    remarksInJson.push({
-                        account : remarkSplit[0],
-                        remark: remarkSplit[1]
-                    })
+                if (remarks != undefined) {
+                    let remarksSplit = []
+                    let remarksInJson = []
+                    remarksSplit = remarks.split(";;;")
+                    // last index is a empty string, thats why length - 1
+                    for (let i=0;i<remarksSplit.length-1;i++) {
+                        let remarkSplit = remarksSplit[i].split("##",2)
+                        remarksInJson.push({
+                            account : remarkSplit[0],
+                            remark: remarkSplit[1]
+                        })
+                    }
+                    claim.remarks = remarksInJson
                 }
-                claim.remarks = remarksInJson
                 result.push(claim)
             }
         });
