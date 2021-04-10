@@ -92,11 +92,11 @@ module.exports = {
         for (claim of claims) {
           claimsInJson.push({
             "claimId": claim[0],
-            "claimDate": new Date(claim[1]),
+            "claimDate": new Date(claim[1] * 1000),
             "claimant": claim[2],
             "medicalAmount": claim[3] / 100,
             "claimAmount": claim[4] / 100,
-            "claimStatus": claim[5],
+            "claimStatus": getClaimStatus(claim[5]),
             "remarks": claim[6],
             "verifier": claim[7],
             "endorser": claim[8],
@@ -119,11 +119,11 @@ module.exports = {
       .then(claim => {
         return {
           "claimId": claim[0],
-          "claimDate": new Date(claim[1]),
+          "claimDate": new Date(claim[1] * 1000),
           "claimant": claim[2],
           "medicalAmount": claim[3] / 100,
           "claimAmount": claim[4] / 100,
-          "claimStatus": claim[5],
+          "claimStatus": getClaimStatus(claim[5]),
           "remarks": claim[6],
           "verifier": claim[7],
           "endorser": claim[8],
@@ -136,4 +136,10 @@ module.exports = {
         throw `An error has occurred while getting a claim: ${err}`;
       })
   }
+}
+
+
+function getClaimStatus(idx){
+  let arr = ['PENDING', 'PROCESSED', 'APPROVED', 'REJECTED']
+  return arr[idx]
 }
