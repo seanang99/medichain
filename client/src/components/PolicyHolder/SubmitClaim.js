@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
-import { emrxClient, medichainClient } from "../../Auth";
+import { emrxClient, getUser, medichainClient } from "../../Auth";
 import CancelIcon from "@material-ui/icons/Cancel";
 import Snackbar from "../../contexts/SnackbarComponent";
 
@@ -64,12 +64,8 @@ export default function SubmitClaim() {
   const [message, setMessage] = useState("");
   const [errorMessages, setErrorMessages] = useState([""]);
 
-  const [patientIdentification, setPatientIdentification] = useState(
-    "S1234567A"
-  );
-  const [onChainAccountAddress, setOnChainAccountAddress] = useState(
-    "0xD76236d0bB257111b4AFD1A541b097073C5bC5BB"
-  );
+  const [patientIdentification, setPatientIdentification] = useState("");
+  const [onChainAccountAddress, setOnChainAccountAddress] = useState("");
   const [totalAmt, setTotalAmt] = useState(0);
   const [medicalRecordsId, setMedicalRecordsId] = useState([]);
   const [selectedMedicalRecords, setSelectedMedicalRecords] = useState([]);
@@ -79,7 +75,7 @@ export default function SubmitClaim() {
   const [allMedicalRecords, setAllMedicalRecords] = useState([]);
   const getMedicalRecords = async () => {
     emrxClient
-      .get("medicalRecord/readMedicalRecordByPatientIdNum/S1234567A")
+      .get("medicalRecord/readMedicalRecordByPatientIdNum/" + patientIdentification)
       .then((res) => {
         setAllMedicalRecords(res.data);
         setOptions(res.data);
@@ -169,6 +165,10 @@ export default function SubmitClaim() {
   };
 
   useEffect(() => {
+    const user = getUser();
+    setPatientIdentification(user.identificationNum);
+    setOnChainAccountAddress(user.onChainAccountAddress);
+    
     getMedicalRecords();
   }, [selectedMedicalRecords]);
 

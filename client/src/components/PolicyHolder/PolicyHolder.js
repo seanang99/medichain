@@ -1,13 +1,21 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useHistory } from "react-router-dom";
-import { Divider, IconButton, TextField, Typography } from "@material-ui/core";
+import {
+  Dialog,
+  Button,
+  Divider,
+  IconButton,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { PowerSettingsNew } from "@material-ui/icons";
+import { PowerSettingsNew, Folder } from "@material-ui/icons";
 
 import Blob from "../Bloop";
-import { emrxClient, logout, medichainClient } from "../../Auth";
+import { emrxClient, logout, getUser, medichainClient } from "../../Auth";
 import MedicalRecordCard from "../HealthCareProvider/MedicalRecordCard";
 import ClaimRecordAccordion from "../Insurer/ClaimRecordAccordian";
+import SubmitClaim from "./SubmitClaim";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     width: "100%",
+  },
+  buttonRight: {
+    marginLeft: theme.spacing(2),
   },
   searchRoot: {
     flexGrow: 1,
@@ -55,32 +66,38 @@ const PolicyHolder = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [policyHolderId, setPolicyHolderId] = useState("S1234567A");
-  const [policyHolderOnChainId, setPolicyHolderOnChainId] = useState("0xD76236d0bB257111b4AFD1A541b097073C5bC5BB");
-  
-  const [medicalRecords, setMedicalRecords] = useState([]); 
+  const [policyHolderId, setPolicyHolderId] = useState("");
+  const [policyHolderOnChainId, setPolicyHolderOnChainId] = useState("");
+
+  const [openSubmitClaimDialog, setOpenSubmitClaimDialog] = useState(false);
+
+  const [medicalRecords, setMedicalRecords] = useState([]);
   const [claims, setClaims] = useState([]);
 
-  const getMedicalRecords = () => {
+  const getMedicalRecords = async () => {
     emrxClient
-    .get("medicalRecord/readMedicalRecordByPatientIdNum/" + policyHolderId)
-    .then((res) => {
-      setMedicalRecords(res.data);
-    })
-    .catch((error) => console.log(error.response.data));
-  }
+      .get("medicalRecord/readMedicalRecordByPatientIdNum/" + policyHolderId)
+      .then((res) => {
+        setMedicalRecords(res.data);
+      })
+      .catch((error) => console.log(error.response.data));
+  };
 
-  const getClaims = () => {
+  const getClaims = async () => {
     medichainClient
-    .get("claim/getClaims/" + policyHolderOnChainId)
-    .then((res) => {
-      setClaims(res.data);
-    })
-    .catch((error) => console.log(error.response.data))
-
-  }
+      .get("claim/getClaims/" + policyHolderOnChainId)
+      .then((res) => {
+        setClaims(res.data);
+      })
+      .catch((error) => console.log(error.response.data));
+  };
 
   useEffect(() => {
+    const user = getUser();
+    console.log(user);
+    setPolicyHolderId(user.identificationNum);
+    setPolicyHolderOnChainId(user.onChainAccountAddress);
+    
     getMedicalRecords();
     getClaims();
   }, []);
@@ -103,9 +120,23 @@ const PolicyHolder = () => {
       </Typography>
       <div className={classes.container}>
         <div className={classes.header}>
-          <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
+          <Typography
+            style={{ justifySelf: "flex-start" }}
+            variant="h4"
+            color="primary"
+          >
             Claim Records
           </Typography>
+          <Button
+            className={classes.buttonRight}
+            variant="contained"
+            color="primary"
+            style={{ borderRadius: 15 }}
+            endIcon={<Folder />}
+            onClick={() => setOpenSubmitClaimDialog(true)}
+          >
+            Submit Claim
+          </Button>
         </div>
         {claims && claims.length > 0 ? (
           <Fragment>
@@ -122,7 +153,11 @@ const PolicyHolder = () => {
 
         <Divider style={{ margin: "48px 0 24px" }} />
         <div className={classes.header}>
-          <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
+          <Typography
+            style={{ justifySelf: "flex-start" }}
+            variant="h4"
+            color="primary"
+          >
             Medical Records
           </Typography>
           <TextField
@@ -146,6 +181,14 @@ const PolicyHolder = () => {
           <Typography style={{ margin: "16px" }}>No results</Typography>
         )}
       </div>
+      <Dialog
+        fullWidth
+        open={openSubmitClaimDialog}
+        onClose={() => setOpenSubmitClaimDialog(false)}
+        aria-labelledby="claim-creation"
+      >
+        <SubmitClaim />
+      </Dialog>
 
       <Blob />
     </div>

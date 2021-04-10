@@ -81,7 +81,7 @@ export default function CreateMedicalRecord() {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} />
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <Typography component="h1" variant="h6" className={classes.pageTitle}>
         New Medical Record
       </Typography>

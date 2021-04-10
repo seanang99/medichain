@@ -38,7 +38,7 @@ const MedicalRecordCard = ({
   recordDetails,
   patientId,
   fileUrl,
-  submitClaim,
+  submitClaim: submitClaim,
 }) => {
   const classes = useStyles();
 
