@@ -2,11 +2,13 @@ const medicalRecord = require('../model/medicalRecord.model');
 const Patient = require('../model/patient.model');
 
 async function createMedicalRecord(newMedicalRecord, identificationNum) {
+    console.log(identificationNum);
     return Patient.findOne(
         {
             identificationNum: identificationNum
         })
         .then(patient => {
+            console.log(patient);
             newMedicalRecord.patientId = patient._id
             medicalRecord.create(newMedicalRecord)
                 .then(medicalRecord => {
@@ -32,9 +34,12 @@ async function createMedicalRecord(newMedicalRecord, identificationNum) {
 
 async function readAllMedicalRecord() {
     return medicalRecord.find()
-        .catch(err => {
-            throw err
-        });
+        .populate({
+            path: 'patientId'
+        })
+        .catch (err => {
+    throw err
+});
 }
 
 async function readMedicalRecordByPatientIdNum(identificationNum) {

@@ -4,10 +4,14 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "axios": "^0.21.1",
+    "fuse.js": "^6.4.6",
     "generate-react-cli": "^6.0.2",
     "react": "16.11.0",
     "react-dom": "16.11.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
     "web3": "1.2.2"
   },

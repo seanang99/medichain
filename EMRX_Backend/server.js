@@ -5,6 +5,8 @@ const port = 3002;
 const mongoose = require('mongoose');
 const dbInit = require('./dbInit');
 
+app.use(cors())
+
 app.listen(port, () => {
     console.log(`EMRX app listening at http://localhost:${port}`)
 });
