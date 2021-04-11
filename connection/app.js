@@ -102,7 +102,7 @@ module.exports = {
         for (claim of claims) {
           claimsInJson.push({
             "claimId": claim[0],
-            "claimDate": new Date(claim[1] * 1000),
+            "claimDate": new Date(+claim[1]),
             "claimant": claim[2],
             "medicalAmount": claim[3] / 100,
             "claimAmount": claim[4] / 100,
@@ -129,7 +129,7 @@ module.exports = {
       .then(claim => {
         return {
           "claimId": claim[0],
-          "claimDate": new Date(claim[1] * 1000),
+          "claimDate": new Date(+claim[1]),
           "claimant": claim[2],
           "medicalAmount": claim[3] / 100,
           "claimAmount": claim[4] / 100,
