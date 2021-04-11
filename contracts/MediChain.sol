@@ -8,7 +8,7 @@ pragma solidity ^0.5.0;
 contract MediChain {
     address _owner = msg.sender; // System Adminstrator
 
-    enum ClaimStatus {PENDING, PROCESSED, APPROVED, REJECTED}
+    enum ClaimStatus {PENDING, PROCESSED, APPROVED, REJECTED, DISBURSED}
 
     event userRegistration(address user);
     event claimUpdate(uint256 claimId, ClaimStatus claimStatus);
@@ -104,6 +104,12 @@ contract MediChain {
     }
 
     function submitClaim(uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public policyholderOnly returns (uint256) {
+        // TODO: WK - to add in medicalRecordRefIds check
+        for (uint256 claimId = 0; claimId < claims.length; claimId++) {
+            string memory retrievedMedicalRecordRefIds = claims[claimId].medicalRecordRefIds;
+            require(keccak256(abi.encodePacked(medicalRecordRefIds)) != keccak256(abi.encodePacked(retrievedMedicalRecordRefIds)), "Policyholder cannot submit a claim for the same medical records!");
+        }
+                
         Claim memory newClaim = Claim(
             claims.length,
             claimDate,
@@ -138,15 +144,22 @@ contract MediChain {
 
     function approveClaim(uint256 claimId, string memory remarks) public validClaimId(claimId) insurerOnly differentInsurer(claims[claimId].claimant) differentVerifier(claims[claimId].verifier) processedClaim(claims[claimId].claimStatus) {
         claims[claimId].claimStatus = ClaimStatus.APPROVED;
-        updateClaim(claimId, remarks);
+        endorseClaim(claimId, remarks);
     }
 
     function rejectClaim(uint256 claimId, string memory remarks) public validClaimId(claimId) insurerOnly differentInsurer(claims[claimId].claimant) differentVerifier(claims[claimId].verifier) processedClaim(claims[claimId].claimStatus) {
         claims[claimId].claimStatus = ClaimStatus.REJECTED;
-        updateClaim(claimId, remarks);
+        endorseClaim(claimId, remarks);
     }
 
-    function updateClaim(uint256 claimId, string memory remarks) private {
+    function disburseClaim(uint256 claimId, string memory remarks) public validClaimId(claimId) insurerOnly differentInsurer(claims[claimId].claimant) differentVerifier(claims[claimId].verifier) {
+        require(claims[claimId].claimStatus == ClaimStatus.APPROVED, "The claim has not been approved!");
+        claims[claimId].claimStatus = ClaimStatus.DISBURSED;
+        claims[claimId].remarks = remarks;
+        emit claimUpdate(claimId, claims[claimId].claimStatus);
+    }
+
+    function endorseClaim(uint256 claimId, string memory remarks) private {
         claims[claimId].endorser = tx.origin;
         claims[claimId].remarks = remarks;
         emit claimUpdate(claimId, claims[claimId].claimStatus);    
@@ -156,18 +169,6 @@ contract MediChain {
     function getClaims() public view returns(Claim[] memory claimRecords) {
         return claims;
     }
-
-    // function getClaimsByPolicyholder() public view policyholderOnly returns(Claim[] memory claimRecords) {
-    //     require(policyholders[msg.sender].isActivated, "Caller must be a policyholder!");
-        
-    //     Claim[] memory tempClaimRecords;
-    //     for(uint256 i = 0; i < claims.length; i++) {
-    //         if (claims[i].claimant == msg.sender) {
-    //             tempClaimRecords.push(claims[i]);
-    //         }
-    //     }
-    //     return claimRecords;
-    // }
 
     function getClaim(uint256 claimId) public view returns(Claim memory claim) {
         require(insurers[msg.sender].isActivated || msg.sender == claims[claimId].claimant, "Only insurer or claimant can view the claim!");

@@ -3,6 +3,7 @@ const router = require('express').Router()
 const medichain = require('../../connection/app')
 const accountService = require('../service/account.service')
 
+// @BS - need to check if policyholder's IC == claim submission's IC
 router.post('/submitClaim', async (req, res) => {
     console.log("**** POST /submitClaim ****");
 
@@ -232,6 +233,26 @@ router.post('/rejectClaim', async (req, res) => {
     medichain.rejectClaim(onChainAccountAddress, claimId, newRemarks, (msg) => {
         res.status(200).send(msg)
     })
+        .catch(err => res.status(500).send(err))
+})
+
+router.post('/disburseClaim', async (req, res) => {
+    const {
+        claimId,
+        onChainAccountAddress,
+        remarks
+    } = req.body;
+
+    let claimToUpdate = await medichain.getClaim(onChainAccountAddress, claimId)
+        .catch(err => res.status(500).send(err))
+
+    let newRemarks = `${claimToUpdate.remarks}${onChainAccountAddress}##${remarks};;;`
+    // console.log('claim.route line 142', newRemarks)
+
+    medichain
+        .disburseClaim(onChainAccountAddress, claimId, newRemarks, (msg) => {
+            res.status(200).send(msg)
+        })
         .catch(err => res.status(500).send(err))
 })
 

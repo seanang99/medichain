@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Medichain app listening at http://localhost:${port}`)
 })
 
 
@@ -33,9 +33,10 @@ dbConnection.once('open', ()=>{
 
 const accountRouter = require('./route/account.route')
 const claimRouter = require('./route/claim.route')
-
+const dbInitRouter = require('./route/dbInit.route')
 app.use('/account', accountRouter)
 app.use('/claim', claimRouter)
+app.use('/medichainDbInit', dbInitRouter)
 
 // app.post('/registerPolicyholder', (req, res) => {
 //   console.log("**** POST /registerPolicyholder ****");
@@ -94,3 +95,5 @@ app.use('/claim', claimRouter)
 //     res.status(403).send(err);
 //   })
 // })
+
+module.exports = exports = mongoose; 
