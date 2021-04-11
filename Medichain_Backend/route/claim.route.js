@@ -2,6 +2,7 @@ const axios = require('axios');
 const router = require('express').Router()
 const medichain = require('../../connection/app')
 
+// @BS - need to check if policyholder's IC == claim submission's IC
 router.post('/submitClaim', (req, res) => {
     console.log("**** POST /submitClaim ****");
 
@@ -34,8 +35,63 @@ router.post('/submitClaim', (req, res) => {
         });
 })
 
+router.get('/getClaims', (req, res) => {
+    onChainAccountAddress = '0xE5315ad6b97094b5412a0267e74aA200c1ddE15a'
+    medichain.getClaims(onChainAccountAddress, async (claims) => {
+        if (claims == undefined) {
+            res.status(200).send([])
+        }
+
+        result = []
+        // return those claims for which the onChainAccountAddress is one of its stakeholders
+        for (const claim of claims) {
+            // populate all medical records details
+            let medicalRecordRefIds = claim.medicalRecordRefIds
+            var medicalRecords = []
+            for (let i = 0; i < medicalRecordRefIds.length; i++) {
+                let mrid = medicalRecordRefIds[i]
+                // console.log(mrid)
+                let endpointUrl = 'http://localhost:3002/medicalRecord/readMedicalRecord/' + String(mrid)
+                // console.log(endpointUrl)
+                let medicalRecord = await axios.get(endpointUrl)
+                    .then(response => {
+                        let mr = response.data
+                        // medicalRecords.push(response.data)
+                        return mr
+                    })
+                medicalRecords.push(medicalRecord)
+            }
+            // add one more field medicalRecords while keeping medicalRecordRefIds
+            claim.medicalRecords = medicalRecords
+            // console.log(medicalRecords)
+
+            // convert the claims from string to json format
+            let remarks = claim.remarks;
+            if (remarks != undefined) {
+                let remarksSplit = []
+                let remarksInJson = []
+                remarksSplit = remarks.split(";;;")
+                // last index is a empty string, thats why length - 1
+                for (let i = 0; i < remarksSplit.length - 1; i++) {
+                    let remarkSplit = remarksSplit[i].split("##", 2)
+                    remarksInJson.push({
+                        account: remarkSplit[0],
+                        remark: remarkSplit[1]
+                    })
+                }
+                claim.remarks = remarksInJson
+            }
+            result.push(claim)
+        }
+        res.status(200).send(result);
+    }).catch(err => {
+        console.log(`server.js/getClaims: ${err}`)
+        res.status(403).send(err);
+    })
+})
+
 router.get('/getClaims/:address', (req, res) => {
-    console.log("**** POST /getClaims ****");
+    console.log("**** GET /getClaims ****");
 
     onChainAccountAddress = req.params.address
 
@@ -64,19 +120,23 @@ router.get('/getClaims/:address', (req, res) => {
                 }
                 // add one more field medicalRecords while keeping medicalRecordRefIds
                 claim.medicalRecords = medicalRecords
+
+                // convert the claims from string to json format
                 let remarks = claim.remarks;
-                let remarksSplit = []
-                let remarksInJson = []
-                remarksSplit = remarks.split(";;;")
-                // last index is a empty string, thats why length - 1
-                for (let i = 0; i < remarksSplit.length - 1; i++) {
-                    let remarkSplit = remarksSplit[i].split("##", 2)
-                    remarksInJson.push({
-                        account: remarkSplit[0],
-                        remark: remarkSplit[1]
-                    })
+                if (remarks != undefined) {
+                    let remarksSplit = []
+                    let remarksInJson = []
+                    remarksSplit = remarks.split(";;;")
+                    // last index is a empty string, thats why length - 1
+                    for (let i = 0; i < remarksSplit.length - 1; i++) {
+                        let remarkSplit = remarksSplit[i].split("##", 2)
+                        remarksInJson.push({
+                            account: remarkSplit[0],
+                            remark: remarkSplit[1]
+                        })
+                    }
+                    claim.remarks = remarksInJson
                 }
-                claim.remarks = remarksInJson
                 result.push(claim)
             }
         });
@@ -162,7 +222,23 @@ router.post('/rejectClaim', async (req, res) => {
 })
 
 router.post('/disburseClaim', async (req, res) => {
-    
+    const {
+        claimId,
+        onChainAccountAddress,
+        remarks
+    } = req.body;
+
+    let claimToUpdate = await medichain.getClaim(onChainAccountAddress, claimId)
+        .catch(err => res.status(500).send(err))
+
+    let newRemarks = `${claimToUpdate.remarks}${onChainAccountAddress}##${remarks};;;`
+    // console.log('claim.route line 142', newRemarks)
+
+    medichain
+        .disburseClaim(onChainAccountAddress, claimId, newRemarks, (msg) => {
+            res.status(200).send(msg)
+        })
+        .catch(err => res.status(500).send(err))
 })
 
 module.exports = router
