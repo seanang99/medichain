@@ -147,7 +147,7 @@ export default function SubmitClaim() {
         setOpenSnackBar(true);
         setMedicalRecordsId([]);
         setSelectedMedicalRecords([]);
-        history.push("/medichain/insurer");
+        history.push("/medichain/policyholder");
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];

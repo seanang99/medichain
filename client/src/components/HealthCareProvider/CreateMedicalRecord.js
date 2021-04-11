@@ -6,7 +6,6 @@ import Snackbar from "../../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh",
     padding: "2vw",
     display: "float",
   },

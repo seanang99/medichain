@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import {
   Button,
   Grid,
-  Paper,
   TextField,
   Typography,
   Box,
   MenuItem,
   Select,
   InputAdornment,
+  InputLabel,
+  FormControl,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { getUser, medichainClient } from "../../Auth";
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     color: theme.palette.primary.dark,
-    margin: theme.spacing(2,0),
+    margin: theme.spacing(2, 0),
   },
   actionPanel: {
     display: "flex",
@@ -33,7 +34,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProcessClaims({ claimId: claimId, medicalAmount: medicalAmount }) {
+export default function ProcessClaims({
+  claimId: claimId,
+  medicalAmount: medicalAmount,
+}) {
   const classes = useStyles();
 
   //Get context value from snack bar context
@@ -55,7 +59,7 @@ export default function ProcessClaims({ claimId: claimId, medicalAmount: medical
   };
 
   const createClaimNotes = async () => {
-    console.log("id ", getUser().onChainAccountAddress)
+    console.log("id ", getUser().onChainAccountAddress);
     await medichainClient
       .post("claim/processClaim", claimInformation)
       .then((res) => {
@@ -63,6 +67,8 @@ export default function ProcessClaims({ claimId: claimId, medicalAmount: medical
         setMessage("Claim Processed!");
         setSeverity("success");
         setOpenSnackBar(true);
+        setClaimAmount("");
+        setPolicyNumber("");
         setRemarks("");
       })
       .catch((error) => {
@@ -75,10 +81,17 @@ export default function ProcessClaims({ claimId: claimId, medicalAmount: medical
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
-      <Typography className={classes.header} variant="h6">{"Insurer Notes"}</Typography>
+      <Snackbar
+        open={openSnackBar}
+        severity={severity}
+        message={message}
+        setOpenSnackBar={setOpenSnackBar}
+      />
+      <Typography className={classes.header} variant="h6">
+        {"Insurer Notes"}
+      </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={3}>
           <TextField
             variant="filled"
             id="claimId"
@@ -91,16 +104,29 @@ export default function ProcessClaims({ claimId: claimId, medicalAmount: medical
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <TextField
-            variant="outlined"
-            id="policyNumber"
-            name="policyNumber"
-            label="Policy Number"
-            value={policyNumber}
-            fullWidth
-            onChange={(e) => setPolicyNumber(e.target.value)}
-          />
+        <Grid item xs={9}>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel id="select-policy-label">Policy</InputLabel>
+            <Select
+              variant="outlined"
+              labelId="select-policy-label"
+              id="select-policy"
+              label="Policy"
+              autoWidth
+              value={policyNumber}
+              onChange={(e) => setPolicyNumber(e.target.value)}
+            >
+              <MenuItem value={"HealthShield Gold Max | PN34512"}>
+                HealthShield Gold Max | PN34512
+              </MenuItem>
+              <MenuItem value={"MUM2BABY Choices | PN12690"}>
+                MUM2BABY Choices | PN12690
+              </MenuItem>
+              <MenuItem value={"HOSPITAL INCOME | PN23499"}>
+                HOSPITAL INCOME | PN23499
+              </MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={6}>
           <TextField
@@ -112,7 +138,9 @@ export default function ProcessClaims({ claimId: claimId, medicalAmount: medical
             fullWidth
             InputProps={{
               readOnly: true,
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              ),
             }}
           />
         </Grid>
@@ -126,7 +154,9 @@ export default function ProcessClaims({ claimId: claimId, medicalAmount: medical
             value={claimAmount}
             fullWidth
             InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              ),
               inputProps: { min: 0.0 },
             }}
             onChange={(e) => setClaimAmount(e.target.value)}

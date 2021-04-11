@@ -51,6 +51,7 @@ export default function ApproveRejectDialog({
         setMessage("Claim Approved!");
         setSeverity("success");
         setOpenSnackBar(true);
+        setRemarks("");
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
@@ -68,6 +69,7 @@ export default function ApproveRejectDialog({
         setMessage("Claim Rejected!");
         setSeverity("success");
         setOpenSnackBar(true);
+        setRemarks("");
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
