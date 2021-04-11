@@ -18,7 +18,7 @@ router.post('/submitClaim', (req, res) => {
         identificationNum: identificationNum
     }
 
-    axios.post('http://localhost:3002/token/generateToken',payload)
+    axios.post('http://localhost:3002/token/generateToken', payload)
         .then((response) => {
             medichain.submitClaim(onChainAccountAddress, medicalAmount, response.data.tokenValue, medicalRecordRefIds, (message) => {
                 console.log(`server.js/submitClaim: ${message}\n`);
@@ -51,16 +51,16 @@ router.get('/getClaims/:address', (req, res) => {
                 // populate all medical records details
                 let medicalRecordRefIds = claim.medicalRecordRefIds
                 let medicalRecords = []
-                for (let i=0;i<medicalRecordRefIds.length;i++) {
+                for (let i = 0; i < medicalRecordRefIds.length; i++) {
                     let mrid = medicalRecordRefIds[i]
                     // console.log(mrid)
                     let endpointUrl = 'http://localhost:3002/medicalRecord/readMedicalRecord/' + String(mrid)
                     // console.log(endpointUrl)
                     axios.get(endpointUrl)
-                    .then(response => {
-                        let mr = response.data
-                        medicalRecords.push(mr)
-                    })
+                        .then(response => {
+                            let mr = response.data
+                            medicalRecords.push(mr)
+                        })
                 }
                 // add one more field medicalRecords while keeping medicalRecordRefIds
                 claim.medicalRecords = medicalRecords
@@ -69,10 +69,10 @@ router.get('/getClaims/:address', (req, res) => {
                 let remarksInJson = []
                 remarksSplit = remarks.split(";;;")
                 // last index is a empty string, thats why length - 1
-                for (let i=0;i<remarksSplit.length-1;i++) {
-                    let remarkSplit = remarksSplit[i].split("##",2)
+                for (let i = 0; i < remarksSplit.length - 1; i++) {
+                    let remarkSplit = remarksSplit[i].split("##", 2)
                     remarksInJson.push({
-                        account : remarkSplit[0],
+                        account: remarkSplit[0],
                         remark: remarkSplit[1]
                     })
                 }
@@ -88,7 +88,7 @@ router.get('/getClaims/:address', (req, res) => {
 })
 
 // router.post('/addRemarksToClaim', async (req,res) => {
-    
+
 //     const {
 //         onChainAccountAddress,
 //         claimId,
@@ -99,7 +99,7 @@ router.get('/getClaims/:address', (req, res) => {
 //     claimToUpdate = await medichain.getClaim(onChainAccountAddress, claimId)
 //     .catch(err => res.status(407).send(err))
 
-    
+
 //     medichain.processClaim()
 
 // })
@@ -117,10 +117,10 @@ router.post('/processClaim', async (req, res) => {
     let newRemarks = `${onChainAccountAddress}##${remarks};;;`
     // console.log('claim.route line 104', newRemarks)
 
-    medichain.processClaim(onChainAccountAddress, claimId, claimAmount, newRemarks,policyNumber, (msg) => {
+    medichain.processClaim(onChainAccountAddress, claimId, claimAmount, newRemarks, policyNumber, (msg) => {
         res.status(200).send(msg)
     })
-    .catch(err => res.status(500).send(err))
+        .catch(err => res.status(500).send(err))
 })
 
 router.post('/approveClaim', async (req, res) => {
@@ -131,15 +131,15 @@ router.post('/approveClaim', async (req, res) => {
     } = req.body;
 
     let claimToUpdate = await medichain.getClaim(onChainAccountAddress, claimId)
-    .catch(err => res.status(500).send(err))
+        .catch(err => res.status(500).send(err))
 
     let newRemarks = `${claimToUpdate.remarks}${onChainAccountAddress}##${remarks};;;`
     // console.log('claim.route line 123', newRemarks)
-    
+
     medichain.approveClaim(onChainAccountAddress, claimId, newRemarks, (msg) => {
         res.status(200).send(msg)
     })
-    .catch(err => res.status(500).send(err))
+        .catch(err => res.status(500).send(err))
 })
 
 router.post('/rejectClaim', async (req, res) => {
@@ -150,15 +150,19 @@ router.post('/rejectClaim', async (req, res) => {
     } = req.body;
 
     let claimToUpdate = await medichain.getClaim(onChainAccountAddress, claimId)
-    .catch(err => res.status(500).send(err))
+        .catch(err => res.status(500).send(err))
 
     let newRemarks = `${claimToUpdate.remarks}${onChainAccountAddress}##${remarks};;;`
     // console.log('claim.route line 142', newRemarks)
-    
+
     medichain.rejectClaim(onChainAccountAddress, claimId, newRemarks, (msg) => {
         res.status(200).send(msg)
     })
-    .catch(err => res.status(500).send(err))
+        .catch(err => res.status(500).send(err))
+})
+
+router.post('/disburseClaim', async (req, res) => {
+    
 })
 
 module.exports = router
