@@ -105,7 +105,7 @@ const ClaimRecordAccordion = ({
 
   return (
     <div className={classes.root}>
-      <Accordion>
+      <Accordion TransitionProps={{ unmountOnExit: true }}>
         <AccordionSummary
           classes={{
             content: classes.accordionSummary,
