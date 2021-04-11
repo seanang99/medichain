@@ -16,7 +16,7 @@ import {
   Link,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
-import ProcessClaims from "./ProcessClaims";
+import ProcessClaims from "./ProcessClaims"
 import ApproveRejectDialog from "./ApproveRejectDialog";
 import DisburseClaim from "./DisburseClaim";
 

@@ -6,7 +6,7 @@ import ClaimRecordAccordion from "./Insurer/ClaimRecordAccordian";
 import MedicalRecordCard from "./HealthCareProvider/MedicalRecordCard";
 import Blob from "./Blob";
 import ApproveRejectDialog from "./Insurer/ApproveRejectDialog";
-import ProcessClaims from "./Insurer/ProcessClaims";
+// import ProcessClaims from "./Insurer/ProcessClaims";
 
 const Test = () => {
   const testMedicalCard1 = {
