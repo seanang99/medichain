@@ -208,6 +208,14 @@ export default function Login() {
               </Link>
             </Grid>
           </Grid>
+
+          <Grid container style={{ marginTop: 32 }}>
+            <Grid item>
+              <Link style={{ textDecoration: "underline" }} href="/emrx/login" variant="body2" color="secondary">
+                {"<"} Wrong portal? Go to ERMX now
+              </Link>
+            </Grid>
+          </Grid>
           <Box mt={5}>
             <Copyright />
           </Box>

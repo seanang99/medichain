@@ -24,10 +24,7 @@ const useStyles = makeStyles((theme) => ({
   image: {
     backgroundImage: `url(${blob1})`,
     backgroundRepeat: "no-repeat",
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
+    backgroundColor: theme.palette.type === "light" ? theme.palette.grey[50] : theme.palette.grey[900],
     backgroundSize: "200vh 200vh",
     backgroundPosition: "right",
   },
@@ -105,7 +102,7 @@ export default function EMRXLogin() {
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
-        console.log('Error: ', newErrorMessage);
+        console.log("Error: ", newErrorMessage);
         setMessage("Username or Password is incorrect");
         setSeverity("error");
         setOpenSnackBar(true);
@@ -159,10 +156,7 @@ export default function EMRXLogin() {
                 })
               }
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
             <Button
               variant="contained"
               type="submit"
@@ -183,6 +177,14 @@ export default function EMRXLogin() {
             <Grid item>
               <Link href="#" variant="body2">
                 {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Grid>
+
+          <Grid container style={{ justifyContent: "flex-end", marginTop: 32 }}>
+            <Grid item>
+              <Link style={{ textDecoration: "underline" }} href="/medichain/login" variant="body2">
+                Wrong portal? Go to Medichain now &gt;
               </Link>
             </Grid>
           </Grid>
