@@ -136,7 +136,7 @@ const Insurer = () => {
     }
   }
 
-  const getClaims = async () => {
+  const getClaims = () => {
     medichainClient
       .get("claim/getClaims")
       .then((res) => {
@@ -198,7 +198,7 @@ const Insurer = () => {
         {selectedClaims && selectedClaims.length > 0 ? (
           <Fragment>
             {selectedClaims.slice(0, 4).map((record, i) => (
-              <ClaimRecordAccordion key={i} {...record} isInsurer={true} />
+              <ClaimRecordAccordion key={i} {...record} getClaims={getClaims} isInsurer={true} />
             ))}
             <Typography variant="body2" className={classes.footer}>
               {selectedClaims.length} Record(s)

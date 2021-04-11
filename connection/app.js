@@ -150,6 +150,6 @@ module.exports = {
 
 
 function getClaimStatus(idx){
-  let arr = ['PENDING', 'PROCESSED', 'APPROVED', 'REJECTED']
+  let arr = ['PENDING', 'PROCESSED', 'APPROVED', 'REJECTED', 'DISBURSED']
   return arr[idx]
 }

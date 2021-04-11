@@ -56,7 +56,10 @@ const ClaimRecordAccordion = ({
   remarks,
   isInsurer,
   claimant,
+  claimAmount,
   medicalAmount,
+  getClaims,
+  policyNumber,
 }) => {
   const classes = useStyles();
   const steps = ["PENDING", "PROCESSED", "APPROVED", "DISBURSED"];
@@ -69,6 +72,8 @@ const ClaimRecordAccordion = ({
   const [verifierRemarks, setVerifierRemarks] = useState("");
   const [endorser, setEndorser] = useState("");
   const [endorserRemarks, setEndorserRemarks] = useState("");
+  const [disburser, setDisburser] = useState("");
+  const [disburserRemarks, setDisburserRemarks] = useState("");
 
   const unpackRemarks = (unfilteredRemarks) => {
     //Get Verifier
@@ -76,12 +81,21 @@ const ClaimRecordAccordion = ({
       setVerifier(unfilteredRemarks[0].account);
       setVerifierRemarks(unfilteredRemarks[0].remark);
     }
-    //Get Endorser
     if (unfilteredRemarks.length === 2) {
+      //Get Endorser
       setVerifier(unfilteredRemarks[0].account);
       setVerifierRemarks(unfilteredRemarks[0].remark);
       setEndorser(unfilteredRemarks[1].account);
       setEndorserRemarks(unfilteredRemarks[1].remark);
+    }
+    if (unfilteredRemarks.length === 3) {
+      //Get Endorser
+      setVerifier(unfilteredRemarks[0].account);
+      setVerifierRemarks(unfilteredRemarks[0].remark);
+      setEndorser(unfilteredRemarks[1].account);
+      setEndorserRemarks(unfilteredRemarks[1].remark);
+      setDisburser(unfilteredRemarks[2].account);
+      setDisburserRemarks(unfilteredRemarks[2].remark);
     }
   };
 
@@ -106,8 +120,16 @@ const ClaimRecordAccordion = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails className={classes.accordionDetails}>
+        <Typography variant="body2">
+            Policy:{" "}
+            <span style={{ color: "#676767" }}>{policyNumber}</span>
+          </Typography>
           <Typography variant="body2">
             Claim Amount:{" "}
+            <span style={{ color: "#676767" }}>S${claimAmount}</span>
+          </Typography>
+          <Typography variant="body2">
+            Submitted Medical Amount:{" "}
             <span style={{ color: "#676767" }}>S${medicalAmount}</span>
           </Typography>
           <Typography variant="body2">
@@ -142,7 +164,9 @@ const ClaimRecordAccordion = ({
             ) : (
               <></>
             )}
-            {(claimStatus === "APPROVED") | "DISBURSED" ? (
+            {claimStatus === "APPROVED" ||
+            claimStatus === "REJECTED" ||
+            claimStatus === "DISBURSED" ? (
               <div>
                 <Typography name="verifier-label" variant="h6">
                   Endorser Remarks
@@ -152,6 +176,21 @@ const ClaimRecordAccordion = ({
                 </Typography>
                 <Typography name="verifier-remarks" variant="body1">
                   Remarks: {endorserRemarks}
+                </Typography>
+              </div>
+            ) : (
+              <></>
+            )}
+            {claimStatus === "DISBURSED" ? (
+              <div>
+                <Typography name="verifier-label" variant="h6">
+                  Disburser Remarks
+                </Typography>
+                <Typography name="verifier-label" variant="body1">
+                  Disburser: {disburser}
+                </Typography>
+                <Typography name="verifier-remarks" variant="body1">
+                  Remarks: {disburserRemarks}
                 </Typography>
               </div>
             ) : (
@@ -205,6 +244,7 @@ const ClaimRecordAccordion = ({
         fullWidth
         open={openAddRemarksDialog}
         onClose={() => setOpenAddRemarksDialog(false)}
+        onExit={() => {getClaims(); unpackRemarks(remarks);}}
         aria-labelledby="add-claim-remarks"
       >
         <ProcessClaims claimId={claimId} medicalAmount={medicalAmount} />
@@ -213,6 +253,7 @@ const ClaimRecordAccordion = ({
         fullWidth
         open={openEndorseClaimsDialog}
         onClose={() => setOpenEndorseClaimsDialog(false)}
+        onExit={() => {getClaims(); unpackRemarks(remarks);}}
         aria-labelledby="add-claim-endorsement"
       >
         <ApproveRejectDialog
@@ -224,6 +265,7 @@ const ClaimRecordAccordion = ({
         fullWidth
         open={openDisburseClaimDialog}
         onClose={() => setOpenDisburseClaimDialog(false)}
+        onExit={() => {getClaims(); unpackRemarks(remarks);}}
         aria-labelledby="disburse-claims"
       >
         <DisburseClaim

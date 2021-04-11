@@ -34,9 +34,12 @@ async function createMedicalRecord(newMedicalRecord, identificationNum) {
 
 async function readAllMedicalRecord() {
     return medicalRecord.find()
-        .catch(err => {
-            throw err
-        });
+        .populate({
+            path: 'patientId'
+        })
+        .catch (err => {
+    throw err
+});
 }
 
 async function readMedicalRecordByPatientIdNum(identificationNum) {

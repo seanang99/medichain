@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import {
@@ -8,6 +7,7 @@ import {
   Button,
   CircularProgress,
   Fab,
+  TextField,
 } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
 import CheckIcon from "@material-ui/icons/Check";
@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: "2vw",
     display: "float",
+  },
+  header: {
+    color: theme.palette.primary.dark,
+    margin: theme.spacing(2, 0),
   },
   title: {
     margin: theme.spacing(2, 0),
@@ -70,14 +74,17 @@ export default function DisburseClaim({
   const [message, setMessage] = useState("");
   const [errorMessages, setErrorMessages] = useState([""]);
 
+  const [remarks, setRemarks] = useState("");
+
   const claim = {
     claimId: claimId,
     onChainAccountAddress: getUser().onChainAccountAddress,
+    remarks: remarks,
   };
 
   const disburseClaim = async () => {
     await medichainClient
-      .post("url", claim)
+      .post("/claim/disburseClaim", claim)
       .then((res) => {
         console.log(res.data);
         setMessage("Claim Disbursed!");
@@ -100,8 +107,6 @@ export default function DisburseClaim({
     [classes.buttonSuccess]: success,
   });
 
-  const history = useHistory();
-
   const handleButtonClick = () => {
     if (!loading) {
       setSuccess(false);
@@ -109,8 +114,7 @@ export default function DisburseClaim({
       timer.current = window.setTimeout(() => {
         setSuccess(true);
         setLoading(false);
-        window.location.reload();
-        // disburseClaim();
+        disburseClaim();
       }, 2000);
     }
   };
@@ -129,11 +133,27 @@ export default function DisburseClaim({
         message={message}
         setOpenSnackBar={setOpenSnackBar}
       />
+      <Typography className={classes.header} variant="h6">
+        {"Disburse Claims"}
+      </Typography>
       <Typography variant="body1">
         {`We are disbursing $ ${claimAmount} of Claim ${claimId} to Policy Holder 
         ${policyHolderOnChainAddress}. This action cannot be undone and will be logged in the
         blockchain.`}
       </Typography>
+      <TextField
+        variant="outlined"
+        margin="normal"
+        id="remarks"
+        name="remarks"
+        label="Remarks"
+        placeholder="Please add remarks stating the reason for approval or rejection"
+        value={remarks}
+        multiline
+        rows={4}
+        fullWidth
+        onChange={(e) => setRemarks(e.target.value)}
+      />
       <Box className={classes.actionPanel}>
         <div className={classes.wrapper}>
           <Fab
