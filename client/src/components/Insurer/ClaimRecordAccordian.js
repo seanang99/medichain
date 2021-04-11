@@ -59,6 +59,7 @@ const ClaimRecordAccordion = ({
   claimAmount,
   medicalAmount,
   getClaims,
+  policyNumber,
 }) => {
   const classes = useStyles();
   const steps = ["PENDING", "PROCESSED", "APPROVED", "DISBURSED"];
@@ -119,6 +120,10 @@ const ClaimRecordAccordion = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails className={classes.accordionDetails}>
+        <Typography variant="body2">
+            Policy:{" "}
+            <span style={{ color: "#676767" }}>{policyNumber}</span>
+          </Typography>
           <Typography variant="body2">
             Claim Amount:{" "}
             <span style={{ color: "#676767" }}>S${claimAmount}</span>

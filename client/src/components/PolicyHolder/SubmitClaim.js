@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Grid, Typography, TextField, InputAdornment, Button, Card, CardContent, IconButton } from "@material-ui/core";
+import {
+  Grid,
+  Typography,
+  TextField,
+  InputAdornment,
+  Button,
+  Card,
+  CardContent,
+  IconButton,
+} from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { emrxClient, getUser, medichainClient } from "../../Auth";
@@ -65,7 +74,10 @@ export default function SubmitClaim() {
   const [allMedicalRecords, setAllMedicalRecords] = useState([]);
   const getMedicalRecords = async () => {
     emrxClient
-      .get("medicalRecord/readMedicalRecordByPatientIdNum/" + getUser().identificationNum)
+      .get(
+        "medicalRecord/readMedicalRecordByPatientIdNum/" +
+          getUser().identificationNum
+      )
       .then((res) => {
         setAllMedicalRecords(res.data);
         setOptions(res.data);
@@ -137,24 +149,29 @@ export default function SubmitClaim() {
 
   //Submit claim
   const createClaim = async () => {
-    console.log(claim);
-    await medichainClient
-      .post("/claim/submitClaim", claim)
-      .then((res) => {
-        console.log(res.data);
-        setMessage("Claim filed successfully!");
-        setSeverity("success");
-        setOpenSnackBar(true);
-        setMedicalRecordsId([]);
-        setSelectedMedicalRecords([]);
-        history.push("/medichain/policyholder");
-      })
-      .catch((error) => {
-        let newErrorMessage = [...errorMessages, error.response.data];
-        setMessage(newErrorMessage);
-        setSeverity("error");
-        setOpenSnackBar(true);
-      });
+    if (claim.medicalRecordRefIds.length > 0) {
+      await medichainClient
+        .post("/claim/submitClaim", claim)
+        .then((res) => {
+          console.log(res.data);
+          setMessage("Claim filed successfully!");
+          setSeverity("success");
+          setOpenSnackBar(true);
+          setMedicalRecordsId([]);
+          setSelectedMedicalRecords([]);
+          history.push("/medichain/policyholder");
+        })
+        .catch((error) => {
+          let newErrorMessage = [...errorMessages, error.response.data];
+          setMessage(newErrorMessage);
+          setSeverity("error");
+          setOpenSnackBar(true);
+        });
+    } else {
+      setMessage("Medical Record cannot be empty");
+      setSeverity("error");
+      setOpenSnackBar(true);
+    }
   };
 
   useEffect(() => {
@@ -163,7 +180,12 @@ export default function SubmitClaim() {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
+      <Snackbar
+        open={openSnackBar}
+        severity={severity}
+        message={message}
+        setOpenSnackBar={setOpenSnackBar}
+      />
       <Typography component="h1" variant="h6" classes={classes.pageTitle}>
         Submit a Claim
       </Typography>
@@ -176,7 +198,10 @@ export default function SubmitClaim() {
                 <Typography variant="body1">{record.recordDetails}</Typography>
               </div>
               <div className={classes.column}>
-                <IconButton aria-label="remove medical record" onClick={() => removeMedicalRecord(record)}>
+                <IconButton
+                  aria-label="remove medical record"
+                  onClick={() => removeMedicalRecord(record)}
+                >
                   <CancelIcon />
                 </IconButton>
               </div>
@@ -195,7 +220,12 @@ export default function SubmitClaim() {
             key="newMR_autocomplete"
             filterSelectedOptions
             renderInput={(params) => (
-              <TextField {...params} variant="outlined" labels="Medical Record" placeholder="Add Medical Record" />
+              <TextField
+                {...params}
+                variant="outlined"
+                labels="Medical Record"
+                placeholder="Add Medical Record"
+              />
             )}
             onChange={(event, value) => {
               addMedicalRecord(value);
@@ -220,7 +250,12 @@ export default function SubmitClaim() {
         }}
       />
       <Grid container justify="flex-end">
-        <Button variant="contained" className={classes.submit} color="primary" onClick={() => createClaim()}>
+        <Button
+          variant="contained"
+          className={classes.submit}
+          color="primary"
+          onClick={() => createClaim()}
+        >
           Submit
         </Button>
       </Grid>
