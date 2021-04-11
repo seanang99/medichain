@@ -193,8 +193,14 @@ const PolicyHolder = () => {
         open={openSubmitClaimDialog}
         onClose={() => setOpenSubmitClaimDialog(false)}
         aria-labelledby="claim-creation"
+        onExit={() => getClaims()}
       >
-        <SubmitClaim setMessage={setMessage} setSeverity={setSeverity} setOpenSnackBar={setOpenSnackBar} />
+        <SubmitClaim
+          setMessage={setMessage}
+          setSeverity={setSeverity}
+          setOpenSnackBar={setOpenSnackBar}
+          setOpenSubmitClaimDialog={setOpenSubmitClaimDialog}
+        />
       </Dialog>
 
       <Blob />

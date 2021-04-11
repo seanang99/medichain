@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SubmitClaim({ setMessage, setSeverity, setOpenSnackBar }) {
+export default function SubmitClaim({ setMessage, setSeverity, setOpenSnackBar, setOpenSubmitClaimDialog }) {
   const classes = useStyles();
 
   //Get context value from snack bar context
@@ -132,9 +132,9 @@ export default function SubmitClaim({ setMessage, setSeverity, setOpenSnackBar }
   const history = useHistory();
 
   //Submit claim
-  const createClaim = async () => {
+  const createClaim = () => {
     if (claim.medicalRecordRefIds.length > 0) {
-      await medichainClient
+      medichainClient
         .post("/claim/submitClaim", claim)
         .then((res) => {
           console.log(res.data);
@@ -143,7 +143,7 @@ export default function SubmitClaim({ setMessage, setSeverity, setOpenSnackBar }
           setOpenSnackBar(true);
           setMedicalRecordsId([]);
           setSelectedMedicalRecords([]);
-          history.push("/medichain/policyholder");
+          setOpenSubmitClaimDialog(false);
         })
         .catch((error) => {
           let newErrorMessage = [...errorMessages, error.response.data];
