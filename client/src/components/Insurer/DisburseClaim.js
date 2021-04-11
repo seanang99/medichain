@@ -109,7 +109,7 @@ export default function DisburseClaim({
       timer.current = window.setTimeout(() => {
         setSuccess(true);
         setLoading(false);
-        window.location.reload();
+        location.reload
         // disburseClaim();
       }, 2000);
     }
