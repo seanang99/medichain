@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { Grid, TextField, Typography, Button, InputAdornment } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { emrxClient } from "../../Auth";
-import Snackbar from "../../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,12 +25,7 @@ const useStyles = makeStyles((theme) => ({
 export default function CreateMedicalRecord(props) {
   const classes = useStyles();
 
-  const { setRecordCreationDialogOpen } = props;
-
-  //Get context value from snack bar context
-  const [openSnackBar, setOpenSnackBar] = useState(false);
-  const [severity, setSeverity] = useState("");
-  const [message, setMessage] = useState("");
+  const { setRecordCreationDialogOpen, setMessage, setSeverity, setOpenSnackBar } = props;
 
   // Attribute of medical records
   const [patientId, setPatientId] = useState("");
@@ -51,7 +45,6 @@ export default function CreateMedicalRecord(props) {
     fileUrl: fileURL,
   };
   const createNewMedicalRecord = () => {
-    console.log(medicalRecord);
     emrxClient
       .post("medicalRecord/createMedicalRecord", medicalRecord)
       .then((res) => {
@@ -66,20 +59,19 @@ export default function CreateMedicalRecord(props) {
         setTotalAmt(null);
         setFileURL("");
       })
+      .then(() => {
+        setRecordCreationDialogOpen(false);
+      })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
         setMessage(newErrorMessage);
         setSeverity("error");
         setOpenSnackBar(true);
-      })
-      .then(() => {
-        setRecordCreationDialogOpen(false);
       });
   };
 
   return (
     <div className={classes.root}>
-      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <Typography component="h1" variant="h6" className={classes.pageTitle}>
         New Medical Record
       </Typography>

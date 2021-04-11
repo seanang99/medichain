@@ -9,6 +9,7 @@ import Blob from "../Blob";
 import { emrxClient, logout, getUser } from "../../Auth";
 import MedicalRecordCard from "./MedicalRecordCard";
 import CreateMedicalRecord from "./CreateMedicalRecord";
+import Snackbar from "../../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,6 +57,11 @@ const HealthCareProvider = () => {
   const classes = useStyles();
   const history = useHistory();
 
+  //Get context value from snack bar context
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
+
   const [user, setUser] = useState();
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [recordCreationDialogOpen, setRecordCreationDialogOpen] = useState(false);
@@ -93,6 +99,7 @@ const HealthCareProvider = () => {
 
   return (
     <div className={classes.root}>
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <div className={classes.header}></div>
       <Typography className={classes.pageTitle} variant="h2" color="primary">
         Welcome back, {user && `${user.firstName} ${user.lastName}`}
@@ -153,7 +160,9 @@ const HealthCareProvider = () => {
       >
         <CreateMedicalRecord
           setRecordCreationDialogOpen={setRecordCreationDialogOpen}
-          getMedicalRecords={getMedicalRecords}
+          setMessage={setMessage}
+          setSeverity={setSeverity}
+          setOpenSnackBar={setOpenSnackBar}
         />
       </Dialog>
 
