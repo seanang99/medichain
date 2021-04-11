@@ -1,20 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  Grid,
-  Typography,
-  TextField,
-  InputAdornment,
-  Button,
-  Card,
-  CardContent,
-  IconButton,
-} from "@material-ui/core";
+import { Grid, Typography, TextField, InputAdornment, Button, Card, CardContent, IconButton } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { emrxClient, getUser, medichainClient } from "../../Auth";
 import CancelIcon from "@material-ui/icons/Cancel";
-import Snackbar from "../../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,13 +46,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SubmitClaim() {
+export default function SubmitClaim({ setMessage, setSeverity, setOpenSnackBar }) {
   const classes = useStyles();
 
   //Get context value from snack bar context
-  const [openSnackBar, setOpenSnackBar] = useState(false);
-  const [severity, setSeverity] = useState("");
-  const [message, setMessage] = useState("");
   const [errorMessages, setErrorMessages] = useState([""]);
 
   const [totalAmt, setTotalAmt] = useState(0);
@@ -74,10 +61,7 @@ export default function SubmitClaim() {
   const [allMedicalRecords, setAllMedicalRecords] = useState([]);
   const getMedicalRecords = async () => {
     emrxClient
-      .get(
-        "medicalRecord/readMedicalRecordByPatientIdNum/" +
-          getUser().identificationNum
-      )
+      .get("medicalRecord/readMedicalRecordByPatientIdNum/" + getUser().identificationNum)
       .then((res) => {
         setAllMedicalRecords(res.data);
         setOptions(res.data);
@@ -180,12 +164,6 @@ export default function SubmitClaim() {
 
   return (
     <div className={classes.root}>
-      <Snackbar
-        open={openSnackBar}
-        severity={severity}
-        message={message}
-        setOpenSnackBar={setOpenSnackBar}
-      />
       <Typography component="h1" variant="h6" classes={classes.pageTitle}>
         Submit a Claim
       </Typography>
@@ -198,10 +176,7 @@ export default function SubmitClaim() {
                 <Typography variant="body1">{record.recordDetails}</Typography>
               </div>
               <div className={classes.column}>
-                <IconButton
-                  aria-label="remove medical record"
-                  onClick={() => removeMedicalRecord(record)}
-                >
+                <IconButton aria-label="remove medical record" onClick={() => removeMedicalRecord(record)}>
                   <CancelIcon />
                 </IconButton>
               </div>
@@ -220,12 +195,7 @@ export default function SubmitClaim() {
             key="newMR_autocomplete"
             filterSelectedOptions
             renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                labels="Medical Record"
-                placeholder="Add Medical Record"
-              />
+              <TextField {...params} variant="outlined" labels="Medical Record" placeholder="Add Medical Record" />
             )}
             onChange={(event, value) => {
               addMedicalRecord(value);
@@ -250,12 +220,7 @@ export default function SubmitClaim() {
         }}
       />
       <Grid container justify="flex-end">
-        <Button
-          variant="contained"
-          className={classes.submit}
-          color="primary"
-          onClick={() => createClaim()}
-        >
+        <Button variant="contained" className={classes.submit} color="primary" onClick={() => createClaim()}>
           Submit
         </Button>
       </Grid>

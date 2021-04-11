@@ -10,6 +10,7 @@ import { emrxClient, logout, getUser, medichainClient } from "../../Auth";
 import MedicalRecordCard from "../HealthCareProvider/MedicalRecordCard";
 import ClaimRecordAccordion from "../Insurer/ClaimRecordAccordian";
 import SubmitClaim from "./SubmitClaim";
+import Snackbar from "../../contexts/SnackbarComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +62,11 @@ const PolicyHolder = () => {
   const classes = useStyles();
   const history = useHistory();
 
+  //Get context value from snack bar context
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
+
   const [openSubmitClaimDialog, setOpenSubmitClaimDialog] = useState(false);
 
   const [medicalRecords, setMedicalRecords] = useState([]);
@@ -110,6 +116,7 @@ const PolicyHolder = () => {
 
   return (
     <div className={classes.root}>
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <div className={classes.header}></div>
       <Typography className={classes.pageTitle} variant="h2" color="primary">
         Welcome back, mate
@@ -187,7 +194,7 @@ const PolicyHolder = () => {
         onClose={() => setOpenSubmitClaimDialog(false)}
         aria-labelledby="claim-creation"
       >
-        <SubmitClaim />
+        <SubmitClaim setMessage={setMessage} setSeverity={setSeverity} setOpenSnackBar={setOpenSnackBar} />
       </Dialog>
 
       <Blob />
