@@ -51,6 +51,13 @@ async function deleteAccountByUsername(username) {
         })
 }
 
+async function readAccountByIdentificationNum(identificationNum){
+    return Policyholder.findOne({identificationNum: identificationNum})
+    .catch((err) => {
+        throw err
+    })
+}
+
 async function login(username,password) {
     return Account.findOne(
         {
@@ -83,6 +90,7 @@ module.exports = {
     createInsurer,
     readAllAccounts,
     readAccount,
+    readAccountByIdentificationNum,
     deleteAccountByUsername,
     login
 }

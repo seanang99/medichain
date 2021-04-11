@@ -1,8 +1,9 @@
 const axios = require('axios');
 const router = require('express').Router()
 const medichain = require('../../connection/app')
+const accountService = require('../service/account.service')
 
-router.post('/submitClaim', (req, res) => {
+router.post('/submitClaim', async (req, res) => {
     console.log("**** POST /submitClaim ****");
 
     // expect medicalRecordRefIds to be an array
@@ -13,25 +14,39 @@ router.post('/submitClaim', (req, res) => {
         identificationNum
     } = req.body
 
-    let payload = {
-        medicalRecordsId: medicalRecordRefIds,
-        identificationNum: identificationNum
-    }
+    let policyHolder = await accountService.readAccountByIdentificationNum(identificationNum)
+        .catch(err => { return undefined })
 
-    axios.post('http://localhost:3002/token/generateToken', payload)
-        .then((response) => {
-            medichain.submitClaim(onChainAccountAddress, medicalAmount, response.data.tokenValue, medicalRecordRefIds, (message) => {
-                console.log(`server.js/submitClaim: ${message}\n`);
-                res.send(message);
-            }).catch(err => {
-                console.log(`server.js/submitClaim1: ${err}\n`);
-                res.status(403).send(err);
-            });
-        })
-        .catch(err => {
-            console.log(`server.js/submitClaim2: ${err}\n`);
-            res.status(403).send(err);
-        });
+    if (policyHolder != undefined) {
+        console.log(policyHolder)
+        if (policyHolder.onChainAccountAddress == onChainAccountAddress) {
+            let payload = {
+                medicalRecordsId: medicalRecordRefIds,
+                identificationNum: identificationNum
+            }
+
+            axios.post('http://localhost:3002/token/generateToken', payload)
+                .then((response) => {
+                    medichain.submitClaim(onChainAccountAddress, medicalAmount, response.data.tokenValue, medicalRecordRefIds, (message) => {
+                        console.log(`server.js/submitClaim: ${message}\n`);
+                        res.send(message);
+                    }).catch(err => {
+                        console.log(`server.js/submitClaim: ${err}\n`);
+                        res.status(403).send(err);
+                    });
+                })
+                .catch(err => {
+                    console.log(`server.js/submitClaim: ${err}\n`);
+                    res.status(403).send(err);
+                });
+        }
+        else {
+            res.status(400).send(`Identification number ${identificationNum} and on chain account address ${onChainAccountAddress} does not belong to the same account`)
+        }
+    }
+    else {
+        res.status(400).send(`Policy holder with identification number ${identificationNum} is not found`)
+    }
 })
 
 router.get('/getClaims', (req, res) => {
