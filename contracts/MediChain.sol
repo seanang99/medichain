@@ -105,10 +105,10 @@ contract MediChain {
 
     function submitClaim(uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public policyholderOnly returns (uint256) {
         // TODO: WK - to add in medicalRecordRefIds check
-        // for (uint256 claimId = 0; claimId < claims.length; claimId++) {
-        //     string memory retrievedMedicalRecordRefIds = claims[claimId].medicalRecordRefIds;
-        //     require(medicalRecordRefIds != retrievedMedicalRecordRefIds, "Policyholder cannot submit a claim for the same medical records!");
-        // }
+        for (uint256 claimId = 0; claimId < claims.length; claimId++) {
+            string memory retrievedMedicalRecordRefIds = claims[claimId].medicalRecordRefIds;
+            require(keccak256(abi.encodePacked(medicalRecordRefIds)) != keccak256(abi.encodePacked(retrievedMedicalRecordRefIds)), "Policyholder cannot submit a claim for the same medical records!");
+        }
                 
         Claim memory newClaim = Claim(
             claims.length,
@@ -154,6 +154,7 @@ contract MediChain {
 
     function disburseClaim(uint256 claimId, string memory remarks) public validClaimId(claimId) insurerOnly differentInsurer(claims[claimId].claimant) differentVerifier(claims[claimId].verifier) {
         require(claims[claimId].claimStatus == ClaimStatus.APPROVED, "The claim has not been approved!");
+        claims[claimId].claimStatus = ClaimStatus.DISBURSED;
         claims[claimId].remarks = remarks;
         emit claimUpdate(claimId, claims[claimId].claimStatus);
     }

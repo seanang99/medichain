@@ -84,6 +84,16 @@ module.exports = {
         throw `An error has occurred while rejecting a claim: ${err}`;
       });
   },
+  disburseClaim: function (insurer, claimId, remarks, callback) {
+    return mediChainInstance
+      .disburseClaim(claimId, remarks, {
+        from: insurer
+      })
+      .then(txn => callback(`Claim ${claimId} has been disbursed by ${insurer}!`))
+      .catch(err => {
+        throw `An error has occurred while disbursing a claim: ${err}`;
+      });
+  },
   getClaims: function (address, callback) {
     return mediChainInstance
       .getClaims({ from: address })
