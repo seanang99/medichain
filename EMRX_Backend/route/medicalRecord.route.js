@@ -19,8 +19,8 @@ router.post('/createMedicalRecord', (req, res) => {
         totalAmt,
         fileUrl,
     });
-
-    return medicalRecordService.createMedicalRecord(newMedicalRecord, identificationNum)
+  
+    return medicalRecordService.createMedicalRecord(newMedicalRecord, identificationNum.toUpperCase())
         .then(() => res.status(200).json('Successfully created medical record'))
         .catch(err => res.status(400).json('Medical record ' + err));
 });
