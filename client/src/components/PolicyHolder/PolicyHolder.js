@@ -80,7 +80,6 @@ const PolicyHolder = () => {
     emrxClient
       .get("medicalRecord/readMedicalRecordByPatientIdNum/" + getUser().identificationNum)
       .then((res) => {
-        console.log(res.data);
         setMedicalRecords(res.data);
         setSearchResults(res.data);
         if (res.data.length > 1) {
@@ -94,7 +93,6 @@ const PolicyHolder = () => {
     await medichainClient
       .get("claim/getClaims/" + getUser().onChainAccountAddress)
       .then((res) => {
-        console.log(res.data);
         setClaims(res.data);
       })
       .catch((error) => console.log(error.response.data));

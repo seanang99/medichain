@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProcessClaims({ claimId: claimId }) {
+export default function ProcessClaims({ claimId: claimId, medicalAmount: medicalAmount }) {
   const classes = useStyles();
 
   //Get context value from snack bar context
@@ -43,7 +43,6 @@ export default function ProcessClaims({ claimId: claimId }) {
   const [errorMessages, setErrorMessages] = useState([""]);
 
   const [remarks, setRemarks] = useState("");
-  const [medicalAmount, setMedicalAmount] = useState(0);
   const [claimAmount, setClaimAmount] = useState(0);
   const [policyNumber, setPolicyNumber] = useState("");
 
@@ -56,11 +55,12 @@ export default function ProcessClaims({ claimId: claimId }) {
   };
 
   const createClaimNotes = async () => {
+    console.log("id ", getUser().onChainAccountAddress)
     await medichainClient
       .post("claim/processClaim", claimInformation)
       .then((res) => {
         console.log(res.data);
-        setMessage("Claim Rejected!");
+        setMessage("Claim Processed!");
         setSeverity("success");
         setOpenSnackBar(true);
         setRemarks("");

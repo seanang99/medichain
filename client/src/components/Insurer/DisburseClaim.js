@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import {
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 export default function DisburseClaim({
   claimId: claimId,
   claimAmount: claimAmount,
-  policyHolderId: policyHolderId,
+  policyHolderOnChainAddress: policyHolderOnChainAddress,
 }) {
   const classes = useStyles();
 
@@ -99,6 +100,8 @@ export default function DisburseClaim({
     [classes.buttonSuccess]: success,
   });
 
+  const history = useHistory();
+
   const handleButtonClick = () => {
     if (!loading) {
       setSuccess(false);
@@ -106,6 +109,7 @@ export default function DisburseClaim({
       timer.current = window.setTimeout(() => {
         setSuccess(true);
         setLoading(false);
+        window.location.reload();
         // disburseClaim();
       }, 2000);
     }
@@ -127,7 +131,7 @@ export default function DisburseClaim({
       />
       <Typography variant="body1">
         {`We are disbursing $ ${claimAmount} of Claim ${claimId} to Policy Holder 
-        ${policyHolderId}. This action cannot be undone and will be logged in the
+        ${policyHolderOnChainAddress}. This action cannot be undone and will be logged in the
         blockchain.`}
       </Typography>
       <Box className={classes.actionPanel}>
@@ -165,6 +169,6 @@ export default function DisburseClaim({
 }
 
 DisburseClaim.propTypes = {
-  policyHolderId: PropTypes.string.isRequired,
+  policyHolderOnChainAddress: PropTypes.string.isRequired,
   claimId: PropTypes.string.isRequired,
 };

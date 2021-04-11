@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Grid, Typography, TextField, InputAdornment, Button, Card, CardContent, IconButton } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
@@ -132,6 +133,8 @@ export default function SubmitClaim() {
     identificationNum: getUser().identificationNum,
   };
 
+  const history = useHistory();
+
   //Submit claim
   const createClaim = async () => {
     console.log(claim);
@@ -144,6 +147,7 @@ export default function SubmitClaim() {
         setOpenSnackBar(true);
         setMedicalRecordsId([]);
         setSelectedMedicalRecords([]);
+        history.push("/medichain/insurer");
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];

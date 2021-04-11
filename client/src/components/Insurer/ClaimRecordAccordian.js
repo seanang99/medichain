@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -24,6 +24,9 @@ import { getUser } from "../../Auth";
 import { formatDateString } from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1, 0),
+  },
   accordionSummary: {
     justifyContent: "space-between",
     alignItems: "center",
@@ -41,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
   actionPanel: {
     display: "flex",
     justifyContent: "flex-end",
-    marginTop: theme.spacing(2),
   },
 }));
 
@@ -53,18 +55,42 @@ const ClaimRecordAccordion = ({
   medicalRecordRefIds,
   remarks,
   isInsurer,
-  policyHolderId,
+  claimant,
   medicalAmount,
 }) => {
   const classes = useStyles();
-  const steps = ["PENDING", "PROCESSING", "APPROVED", "DISBURSED"];
+  const steps = ["PENDING", "PROCESSED", "APPROVED", "DISBURSED"];
 
   const [openAddRemarksDialog, setOpenAddRemarksDialog] = useState(false);
   const [openEndorseClaimsDialog, setOpenEndorseClaimsDialog] = useState(false);
   const [openDisburseClaimDialog, setOpenDisburseClaimDialog] = useState(false);
 
+  const [verifier, setVerifier] = useState("");
+  const [verifierRemarks, setVerifierRemarks] = useState("");
+  const [endorser, setEndorser] = useState("");
+  const [endorserRemarks, setEndorserRemarks] = useState("");
+
+  const unpackRemarks = (unfilteredRemarks) => {
+    //Get Verifier
+    if (unfilteredRemarks.length === 1) {
+      setVerifier(unfilteredRemarks[0].account);
+      setVerifierRemarks(unfilteredRemarks[0].remark);
+    }
+    //Get Endorser
+    if (unfilteredRemarks.length === 2) {
+      setVerifier(unfilteredRemarks[0].account);
+      setVerifierRemarks(unfilteredRemarks[0].remark);
+      setEndorser(unfilteredRemarks[1].account);
+      setEndorserRemarks(unfilteredRemarks[1].remark);
+    }
+  };
+
+  useEffect(() => {
+    unpackRemarks(remarks);
+  }, []);
+
   return (
-    <div>
+    <div className={classes.root}>
       <Accordion>
         <AccordionSummary
           classes={{
@@ -81,13 +107,18 @@ const ClaimRecordAccordion = ({
         </AccordionSummary>
         <AccordionDetails className={classes.accordionDetails}>
           <Typography variant="body2">
-            Claim Amount: <span style={{ color: "#676767" }}>S${medicalAmount}</span>
+            Claim Amount:{" "}
+            <span style={{ color: "#676767" }}>S${medicalAmount}</span>
           </Typography>
           <Typography variant="body2">
             Token: <span style={{ color: "#676767" }}>{token}</span>
           </Typography>
           <div className={classes.stepperContainer}>
-            <Stepper classes={{ root: classes.stepper }} activeStep={steps.indexOf(claimStatus)} alternativeLabel>
+            <Stepper
+              classes={{ root: classes.stepper }}
+              activeStep={steps.indexOf(claimStatus)}
+              alternativeLabel
+            >
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -96,39 +127,69 @@ const ClaimRecordAccordion = ({
             </Stepper>
           </div>
           <div>
-            <TextField
-              variant="outlined"
-              id="claimRemarks"
-              name="claimRemarks"
-              label="Claim Remarks"
-              value={remarks}
-              fullWidth
-              multiline
-              rows={4}
-              InputProps={{
-                readOnly: true,
-              }}
-              InputLabelProps={{ shrink: true }}
-            />
+            {claimStatus != "PENDING" ? (
+              <div>
+                <Typography name="verifier-label" variant="h6">
+                  Verifier Remarks
+                </Typography>
+                <Typography name="verifier-label" variant="body1">
+                  Verifier: {verifier}
+                </Typography>
+                <Typography name="verifier-remarks" variant="body1">
+                  Remarks: {verifierRemarks}
+                </Typography>
+              </div>
+            ) : (
+              <></>
+            )}
+            {(claimStatus === "APPROVED") | "DISBURSED" ? (
+              <div>
+                <Typography name="verifier-label" variant="h6">
+                  Endorser Remarks
+                </Typography>
+                <Typography name="verifier-label" variant="body1">
+                  Endorser: {endorser}
+                </Typography>
+                <Typography name="verifier-remarks" variant="body1">
+                  Remarks: {endorserRemarks}
+                </Typography>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
           <div style={{ margin: "16px 0 8px" }}>
             <Typography variant="body2">Linked Medical Records:</Typography>
             {medicalRecordRefIds &&
-              medicalRecordRefIds.map((record) => <Link style={{ marginLeft: 8 }}>• {record}</Link>)}
+              medicalRecordRefIds.map((record) => (
+                <Link style={{ marginLeft: 8 }}>• {record}</Link>
+              ))}
           </div>
           {isInsurer ? (
             <Box className={classes.actionPanel}>
               {/* check for claim status */}
               {claimStatus === "PENDING" ? (
-                <Button variant="outlined" color="primary" onClick={() => setOpenAddRemarksDialog(true)}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenAddRemarksDialog(true)}
+                >
                   Add Remarks
                 </Button>
-              ) : claimStatus === "PROCESSING" ? (
-                <Button variant="outlined" color="primary" onClick={() => setOpenEndorseClaimsDialog(true)}>
+              ) : claimStatus === "PROCESSED" ? (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenEndorseClaimsDialog(true)}
+                >
                   Endorse
                 </Button>
               ) : claimStatus === "APPROVED" ? (
-                <Button variant="outlined" color="primary" onClick={() => setOpenDisburseClaimDialog(true)}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenDisburseClaimDialog(true)}
+                >
                   Disburse
                 </Button>
               ) : (
@@ -146,7 +207,7 @@ const ClaimRecordAccordion = ({
         onClose={() => setOpenAddRemarksDialog(false)}
         aria-labelledby="add-claim-remarks"
       >
-        <ProcessClaims claimId={claimId} />
+        <ProcessClaims claimId={claimId} medicalAmount={medicalAmount} />
       </Dialog>
       <Dialog
         fullWidth
@@ -154,7 +215,10 @@ const ClaimRecordAccordion = ({
         onClose={() => setOpenEndorseClaimsDialog(false)}
         aria-labelledby="add-claim-endorsement"
       >
-        <ApproveRejectDialog claimId={claimId} policyHolderId={policyHolderId} />
+        <ApproveRejectDialog
+          claimId={claimId}
+          policyHolderOnChainAddress={claimant}
+        />
       </Dialog>
       <Dialog
         fullWidth
@@ -162,7 +226,11 @@ const ClaimRecordAccordion = ({
         onClose={() => setOpenDisburseClaimDialog(false)}
         aria-labelledby="disburse-claims"
       >
-        <DisburseClaim claimId={claimId} policyHolderId={policyHolderId} claimAmount={medicalAmount} />
+        <DisburseClaim
+          claimId={claimId}
+          policyHolderOnChainAddress={claimant}
+          claimAmount={medicalAmount}
+        />
       </Dialog>
     </div>
   );

@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ApproveRejectDialog({
   claimId: claimId,
-  policyHolderId: policyHolderId,
+  policyHolderOnChainAddress: policyHolderOnChainAddress,
 }) {
   const classes = useStyles();
 
@@ -85,7 +85,7 @@ export default function ApproveRejectDialog({
       </Typography>
       <Typography variant="body1">
         You are about to endorse claim {claimId} for Policy Holder{" "}
-        {policyHolderId}. This action cannot be undone and will be logged in the
+        {policyHolderOnChainAddress}. This action cannot be undone and will be logged in the
         blockchain.
       </Typography>
       <TextField
@@ -120,6 +120,6 @@ export default function ApproveRejectDialog({
 }
 
 ApproveRejectDialog.propTypes = {
-  policyHolderId: PropTypes.string.isRequired,
+  policyHolderOnChainAddress: PropTypes.string.isRequired,
   claimId: PropTypes.string.isRequired,
 };

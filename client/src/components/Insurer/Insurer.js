@@ -94,7 +94,7 @@ const Insurer = () => {
 
     for (let i = 0; i < allClaims.length; i++) {
       console.log('sort: ', allClaims[i]);
-      if (allClaims[i].status === "PENDING") {
+      if (allClaims[i].claimStatus === "PENDING") {
         pending_Claims.push(allClaims[i]);
       } else if (allClaims[i].claimStatus === "PROCESSED") {
         processed_Claims.push(allClaims[i]);
@@ -108,8 +108,8 @@ const Insurer = () => {
     }
     setPendingClaims(pending_Claims);
     setProcessedClaims(processed_Claims);
-    setApprovedClaims(rejected_Claims);
-    setRejectedClaims(approved_Claims);
+    setApprovedClaims(approved_Claims);
+    setRejectedClaims(rejected_Claims);
     setDisbursedClaims(disbursed_Claims);
   };
 
@@ -150,6 +150,7 @@ const Insurer = () => {
 
   useEffect(() => {
     getClaims();
+    console.log(getUser().onChainAccountAddress)
   }, []);
 
   return (
