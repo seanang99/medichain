@@ -34,10 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProcessClaims({
-  claimId: claimId,
-  medicalAmount: medicalAmount,
-}) {
+export default function ProcessClaims({ claimId, medicalAmount, setOpenAddRemarksDialog }) {
   const classes = useStyles();
 
   //Get context value from snack bar context
@@ -70,6 +67,7 @@ export default function ProcessClaims({
         setClaimAmount("");
         setPolicyNumber("");
         setRemarks("");
+        setOpenAddRemarksDialog(false);
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
@@ -81,12 +79,7 @@ export default function ProcessClaims({
 
   return (
     <div className={classes.root}>
-      <Snackbar
-        open={openSnackBar}
-        severity={severity}
-        message={message}
-        setOpenSnackBar={setOpenSnackBar}
-      />
+      <Snackbar open={openSnackBar} severity={severity} message={message} setOpenSnackBar={setOpenSnackBar} />
       <Typography className={classes.header} variant="h6">
         {"Insurer Notes"}
       </Typography>
@@ -116,15 +109,9 @@ export default function ProcessClaims({
               value={policyNumber}
               onChange={(e) => setPolicyNumber(e.target.value)}
             >
-              <MenuItem value={"HealthShield Gold Max | PN34512"}>
-                HealthShield Gold Max | PN34512
-              </MenuItem>
-              <MenuItem value={"MUM2BABY Choices | PN12690"}>
-                MUM2BABY Choices | PN12690
-              </MenuItem>
-              <MenuItem value={"HOSPITAL INCOME | PN23499"}>
-                HOSPITAL INCOME | PN23499
-              </MenuItem>
+              <MenuItem value={"HealthShield Gold Max | PN34512"}>HealthShield Gold Max | PN34512</MenuItem>
+              <MenuItem value={"MUM2BABY Choices | PN12690"}>MUM2BABY Choices | PN12690</MenuItem>
+              <MenuItem value={"HOSPITAL INCOME | PN23499"}>HOSPITAL INCOME | PN23499</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -138,9 +125,7 @@ export default function ProcessClaims({
             fullWidth
             InputProps={{
               readOnly: true,
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
+              startAdornment: <InputAdornment position="start">$</InputAdornment>,
             }}
           />
         </Grid>
@@ -154,9 +139,7 @@ export default function ProcessClaims({
             value={claimAmount}
             fullWidth
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
+              startAdornment: <InputAdornment position="start">$</InputAdornment>,
               inputProps: { min: 0.0 },
             }}
             onChange={(e) => setClaimAmount(e.target.value)}
@@ -178,12 +161,7 @@ export default function ProcessClaims({
       />
 
       <Box className={classes.actionPanel}>
-        <Button
-          variant="contained"
-          color="primary"
-          autoFocus
-          onClick={() => createClaimNotes()}
-        >
+        <Button variant="contained" color="primary" autoFocus onClick={() => createClaimNotes()}>
           Add Remarks
         </Button>
       </Box>

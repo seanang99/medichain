@@ -16,7 +16,7 @@ import {
   Link,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
-import ProcessClaims from "./ProcessClaims"
+import ProcessClaims from "./ProcessClaims";
 import ApproveRejectDialog from "./ApproveRejectDialog";
 import DisburseClaim from "./DisburseClaim";
 
@@ -120,27 +120,20 @@ const ClaimRecordAccordion = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails className={classes.accordionDetails}>
-        <Typography variant="body2">
-            Policy:{" "}
-            <span style={{ color: "#676767" }}>{policyNumber}</span>
+          <Typography variant="body2">
+            Policy: <span style={{ color: "#676767" }}>{policyNumber}</span>
           </Typography>
           <Typography variant="body2">
-            Claim Amount:{" "}
-            <span style={{ color: "#676767" }}>S${claimAmount}</span>
+            Claim Amount: <span style={{ color: "#676767" }}>S${claimAmount}</span>
           </Typography>
           <Typography variant="body2">
-            Submitted Medical Amount:{" "}
-            <span style={{ color: "#676767" }}>S${medicalAmount}</span>
+            Submitted Medical Amount: <span style={{ color: "#676767" }}>S${medicalAmount}</span>
           </Typography>
           <Typography variant="body2">
             Token: <span style={{ color: "#676767" }}>{token}</span>
           </Typography>
           <div className={classes.stepperContainer}>
-            <Stepper
-              classes={{ root: classes.stepper }}
-              activeStep={steps.indexOf(claimStatus)}
-              alternativeLabel
-            >
+            <Stepper classes={{ root: classes.stepper }} activeStep={steps.indexOf(claimStatus)} alternativeLabel>
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -164,9 +157,7 @@ const ClaimRecordAccordion = ({
             ) : (
               <></>
             )}
-            {claimStatus === "APPROVED" ||
-            claimStatus === "REJECTED" ||
-            claimStatus === "DISBURSED" ? (
+            {claimStatus === "APPROVED" || claimStatus === "REJECTED" || claimStatus === "DISBURSED" ? (
               <div>
                 <Typography name="verifier-label" variant="h6">
                   Endorser Remarks
@@ -200,35 +191,21 @@ const ClaimRecordAccordion = ({
           <div style={{ margin: "16px 0 8px" }}>
             <Typography variant="body2">Linked Medical Records:</Typography>
             {medicalRecordRefIds &&
-              medicalRecordRefIds.map((record) => (
-                <Link style={{ marginLeft: 8 }}>• {record}</Link>
-              ))}
+              medicalRecordRefIds.map((record) => <Link style={{ marginLeft: 8 }}>• {record}</Link>)}
           </div>
           {isInsurer ? (
             <Box className={classes.actionPanel}>
               {/* check for claim status */}
               {claimStatus === "PENDING" ? (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => setOpenAddRemarksDialog(true)}
-                >
+                <Button variant="outlined" color="primary" onClick={() => setOpenAddRemarksDialog(true)}>
                   Add Remarks
                 </Button>
               ) : claimStatus === "PROCESSED" ? (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => setOpenEndorseClaimsDialog(true)}
-                >
+                <Button variant="outlined" color="primary" onClick={() => setOpenEndorseClaimsDialog(true)}>
                   Endorse
                 </Button>
               ) : claimStatus === "APPROVED" ? (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => setOpenDisburseClaimDialog(true)}
-                >
+                <Button variant="outlined" color="primary" onClick={() => setOpenDisburseClaimDialog(true)}>
                   Disburse
                 </Button>
               ) : (
@@ -244,34 +221,49 @@ const ClaimRecordAccordion = ({
         fullWidth
         open={openAddRemarksDialog}
         onClose={() => setOpenAddRemarksDialog(false)}
-        onExit={() => {getClaims(); unpackRemarks(remarks);}}
+        onExit={() => {
+          getClaims();
+          unpackRemarks(remarks);
+        }}
         aria-labelledby="add-claim-remarks"
       >
-        <ProcessClaims claimId={claimId} medicalAmount={medicalAmount} />
+        <ProcessClaims
+          claimId={claimId}
+          medicalAmount={medicalAmount}
+          setOpenAddRemarksDialog={setOpenAddRemarksDialog}
+        />
       </Dialog>
       <Dialog
         fullWidth
         open={openEndorseClaimsDialog}
         onClose={() => setOpenEndorseClaimsDialog(false)}
-        onExit={() => {getClaims(); unpackRemarks(remarks);}}
+        onExit={() => {
+          getClaims();
+          unpackRemarks(remarks);
+        }}
         aria-labelledby="add-claim-endorsement"
       >
         <ApproveRejectDialog
           claimId={claimId}
           policyHolderOnChainAddress={claimant}
+          setOpenEndorseClaimsDialog={setOpenEndorseClaimsDialog}
         />
       </Dialog>
       <Dialog
         fullWidth
         open={openDisburseClaimDialog}
         onClose={() => setOpenDisburseClaimDialog(false)}
-        onExit={() => {getClaims(); unpackRemarks(remarks);}}
+        onExit={() => {
+          getClaims();
+          unpackRemarks(remarks);
+        }}
         aria-labelledby="disburse-claims"
       >
         <DisburseClaim
           claimId={claimId}
           policyHolderOnChainAddress={claimant}
           claimAmount={medicalAmount}
+          setOpenDisburseClaimDialog={setOpenDisburseClaimDialog}
         />
       </Dialog>
     </div>
