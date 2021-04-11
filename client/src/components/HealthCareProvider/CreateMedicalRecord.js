@@ -24,8 +24,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CreateMedicalRecord() {
+export default function CreateMedicalRecord(props) {
   const classes = useStyles();
+
+  const { setRecordCreationDialogOpen } = props;
 
   //Get context value from snack bar context
   const [openSnackBar, setOpenSnackBar] = useState(false);
@@ -70,6 +72,9 @@ export default function CreateMedicalRecord() {
         setMessage(newErrorMessage);
         setSeverity("error");
         setOpenSnackBar(true);
+      })
+      .then(() => {
+        setRecordCreationDialogOpen(false);
       });
   };
 

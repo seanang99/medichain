@@ -70,8 +70,7 @@ const HealthCareProvider = () => {
     keys: ["recordDetails", "recordType"],
   };
 
-  useEffect(() => {
-    setUser(getUser());
+  const getMedicalRecords = () => {
     emrxClient
       .get("/medicalRecord/readAllMedicalRecord/")
       .then((res) => {
@@ -80,6 +79,11 @@ const HealthCareProvider = () => {
         setFuse(new Fuse(res.data, options));
       })
       .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    setUser(getUser());
+    getMedicalRecords();
   }, []);
 
   const onSearch = (value) => {
@@ -145,8 +149,12 @@ const HealthCareProvider = () => {
         open={recordCreationDialogOpen}
         onClose={() => setRecordCreationDialogOpen(false)}
         aria-labelledby="record-creation"
+        onExit={() => getMedicalRecords()}
       >
-        <CreateMedicalRecord />
+        <CreateMedicalRecord
+          setRecordCreationDialogOpen={setRecordCreationDialogOpen}
+          getMedicalRecords={getMedicalRecords}
+        />
       </Dialog>
 
       <Blob />
