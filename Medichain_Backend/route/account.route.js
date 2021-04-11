@@ -46,10 +46,10 @@ router.post('/create', (req, res) => {
     else if (type == 'insurer') {
         let newInsurer = new Insurer
             ({
-                firstName,
-                lastName,
-                username,
-                password,
+                firstName: "Singapore",
+                lastName: "AIA",
+                username: "insurer1",
+                password: "",
                 employeeId,
                 onChainAccountAddress
             })
