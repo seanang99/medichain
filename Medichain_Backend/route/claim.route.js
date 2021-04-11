@@ -221,7 +221,6 @@ router.post('/rejectClaim', async (req, res) => {
         .catch(err => res.status(500).send(err))
 })
 
-// @BS - please help check if this is appropriate
 router.post('/disburseClaim', async (req, res) => {
     const {
         claimId,
