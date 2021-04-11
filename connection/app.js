@@ -91,47 +91,55 @@ module.exports = {
         let claimsInJson = [];
         for (claim of claims) {
           claimsInJson.push({
-            "claimDate": new Date(claim[0]),
-            "claimant": claim[1],
-            "medicalAmount": claim[2] / 100,
-            "claimAmount": claim[3] / 100,
-            "claimStatus": claim[4],
-            "remarks": claim[5],
-            "verifier": claim[6],
-            "endorser": claim[7],
-            "policyNumber": claim[8],
-            "token": claim[9],
-            "medicalRecordRefIds": claim[10].split(";").slice(0, -1)
+            "claimId": claim[0],
+            "claimDate": new Date(claim[1] * 1000),
+            "claimant": claim[2],
+            "medicalAmount": claim[3] / 100,
+            "claimAmount": claim[4] / 100,
+            "claimStatus": getClaimStatus(claim[5]),
+            "remarks": claim[6],
+            "verifier": claim[7],
+            "endorser": claim[8],
+            "policyNumber": claim[9],
+            "token": claim[10],
+            "medicalRecordRefIds": claim[11].split(";").slice(0, -1)
           })
         }
-        
+
         callback(claimsInJson)
       })
       .catch(err => {
         throw `An error has occurred while getting a list of claims by insurer: ${err}`;
       });
   },
-  getClaim: function (user, callback) {
+  getClaim: function (user, claimId) {
     return mediChainInstance
       .getClaim
-      .call({ from: user })
+      .call(claimId, { from: user })
       .then(claim => {
-        callback({
-          "claimDate": new Date(claim[0]),
-          "claimant": claim[1],
-          "medicalAmount": claim[2] / 100,
-          "claimAmount": claim[3] / 100,
-          "claimStatus": claim[4],
-          "remarks": claim[5],
-          "verifier": claim[6],
-          "endorser": claim[7],
-          "policyNumber": claim[8],
-          "token": claim[9],
-          "medicalRecordRefIds": claim[10].split(";").slice(0, -1)
-        })
+        return {
+          "claimId": claim[0],
+          "claimDate": new Date(claim[1] * 1000),
+          "claimant": claim[2],
+          "medicalAmount": claim[3] / 100,
+          "claimAmount": claim[4] / 100,
+          "claimStatus": getClaimStatus(claim[5]),
+          "remarks": claim[6],
+          "verifier": claim[7],
+          "endorser": claim[8],
+          "policyNumber": claim[9],
+          "token": claim[10],
+          "medicalRecordRefIds": claim[11].split(";").slice(0, -1)
+        }
       })
       .catch(err => {
         throw `An error has occurred while getting a claim: ${err}`;
       })
   }
+}
+
+
+function getClaimStatus(idx){
+  let arr = ['PENDING', 'PROCESSED', 'APPROVED', 'REJECTED']
+  return arr[idx]
 }

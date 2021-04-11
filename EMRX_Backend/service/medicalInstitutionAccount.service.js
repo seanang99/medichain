@@ -38,7 +38,7 @@ async function login(username, password) {
     return readAccountByUsername(username)
         .then(account => {
             if (account.password == password) {
-                return "Login successfully";
+                return account;
             } else {
                 throw new Error("Login unsuccessfully, please try again");
             }

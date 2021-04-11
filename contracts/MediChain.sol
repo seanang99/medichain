@@ -49,6 +49,7 @@ contract MediChain {
     }
 
     struct Claim {
+        uint256 claimId;
         uint256 claimDate;
         address claimant;
         uint256 medicalAmount;
@@ -110,6 +111,7 @@ contract MediChain {
         // }
                 
         Claim memory newClaim = Claim(
+            claims.length,
             claimDate,
             msg.sender,
             medicalAmount,
