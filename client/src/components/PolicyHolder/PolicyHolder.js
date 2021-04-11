@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     width: "100%",
+    margin: theme.spacing(0, 0, 2),
   },
   buttonRight: {
     marginLeft: theme.spacing(2),
