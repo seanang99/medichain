@@ -1,12 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  Divider,
-  IconButton,
-  Select,
-  MenuItem,
-  Typography,
-} from "@material-ui/core";
+import { Divider, IconButton, Select, MenuItem, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { PowerSettingsNew } from "@material-ui/icons";
 
@@ -52,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     textAlign: "right",
     color: theme.palette.grey[800],
-    margin: theme.spacing(2,0),
+    margin: theme.spacing(2, 0),
   },
   logout: {
     color: theme.palette.error.main,
@@ -67,73 +61,15 @@ const Insurer = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const statuses = [
-    "ALL",
-    "PENDING",
-    "PROCESSED",
-    "APPROVED",
-    "REJECTED",
-    "DISBURSED",
-  ];
+  const statuses = ["ALL", "PENDING", "PROCESSED", "APPROVED", "REJECTED", "DISBURSED"];
   const [status, setStatus] = useState("ALL");
 
   const [allClaimRecords, setAllClaimRecords] = useState([]);
   const [selectedClaims, setSelectedClaims] = useState([]);
-  const [pendingClaims, setPendingClaims] = useState([]);
-  const [processedClaims, setProcessedClaims] = useState([]);
-  const [approvedClaims, setApprovedClaims] = useState([]);
-  const [rejectedClaims, setRejectedClaims] = useState([]);
-  const [disbursedClaims, setDisbursedClaims] = useState([]);
-
-  const sortClaims = async (allClaims) => {
-    let pending_Claims = [];
-    let processed_Claims = [];
-    let rejected_Claims = [];
-    let approved_Claims = [];
-    let disbursed_Claims = [];
-
-    for (let i = 0; i < allClaims.length; i++) {
-      console.log('sort: ', allClaims[i]);
-      if (allClaims[i].claimStatus === "PENDING") {
-        pending_Claims.push(allClaims[i]);
-      } else if (allClaims[i].claimStatus === "PROCESSED") {
-        processed_Claims.push(allClaims[i]);
-      } else if (allClaims[i].claimStatus === "REJECTED") {
-        rejected_Claims.push(allClaims[i]);
-      } else if (allClaims[i].claimStatus === "APPROVED") {
-        approved_Claims.push(allClaims[i]);
-      } else if (allClaims[i].claimStatus === "DISBURSED") {
-        disbursed_Claims.push(allClaims[i]);
-      }
-    }
-    setPendingClaims(pending_Claims);
-    setProcessedClaims(processed_Claims);
-    setApprovedClaims(approved_Claims);
-    setRejectedClaims(rejected_Claims);
-    setDisbursedClaims(disbursed_Claims);
-  };
 
   function handleSelection(value) {
-    switch (value) {
-      case "ALL":
-        setSelectedClaims(allClaimRecords);
-        break;
-      case "PENDING":
-        setSelectedClaims(pendingClaims);
-        break;
-      case "PROCESSED":
-        setSelectedClaims(processedClaims);
-        break;
-      case "REJECTED":
-        setSelectedClaims(rejectedClaims);
-        break;
-      case "APPROVED":
-        setSelectedClaims(approvedClaims);
-        break;
-      case "DISBURSED":
-        setSelectedClaims(disbursedClaims);
-        break;
-    }
+    // console.log(value);
+    setSelectedClaims(allClaimRecords.filter((record) => record.claimStatus === value));
   }
 
   const getClaims = () => {
@@ -143,15 +79,16 @@ const Insurer = () => {
         console.log(res.data);
         setAllClaimRecords(res.data);
         setSelectedClaims(res.data);
-        sortClaims(res.data);
       })
       .catch((error) => console.log(error.response.data));
   };
 
   useEffect(() => {
     getClaims();
-    console.log(getUser().onChainAccountAddress)
+    // console.log(getUser().onChainAccountAddress)
   }, []);
+
+  console.log(allClaimRecords);
 
   return (
     <div className={classes.root}>
@@ -171,11 +108,7 @@ const Insurer = () => {
       </Typography>
       <div className={classes.container}>
         <div className={classes.header}>
-          <Typography
-            style={{ justifySelf: "flex-start" }}
-            variant="h4"
-            color="primary"
-          >
+          <Typography style={{ justifySelf: "flex-start" }} variant="h4" color="primary">
             Claim Records
           </Typography>
           <Select
@@ -201,7 +134,7 @@ const Insurer = () => {
               <ClaimRecordAccordion key={i} {...record} getClaims={getClaims} isInsurer={true} />
             ))}
             <Typography variant="body2" className={classes.footer}>
-              {selectedClaims.length} Record(s)
+              {selectedClaims.slice(0, 4).length} of {allClaimRecords.length} Record(s)
             </Typography>
           </Fragment>
         ) : (
