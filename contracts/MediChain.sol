@@ -1,14 +1,10 @@
 pragma experimental ABIEncoderV2;
 pragma solidity ^0.5.0;
 
-// 1. Do not keep track of policy details
-// 2. There will be insurer staff accounts (mainly used to keep track of who approve/reject claims)
-// 3. Policyholder/Insurer accounts will be preloaded.
-//    - May or may not do registration.
 contract MediChain {
     address _owner = msg.sender; // System Adminstrator
 
-    enum ClaimStatus {PENDING, PROCESSED, APPROVED, REJECTED, DISBURSED}
+    enum ClaimStatus { PENDING, PROCESSED, APPROVED, REJECTED, DISBURSED }
 
     event userRegistration(address user);
     event claimUpdate(uint256 claimId, ClaimStatus claimStatus);
@@ -24,12 +20,12 @@ contract MediChain {
     }
 
     modifier policyholderOnly() {
-        require(policyholders[msg.sender].isActivated, "User is not a policyholder!");
+        require(policyholders[msg.sender], "User is not a policyholder!");
         _;
     }
 
     modifier insurerOnly() {
-        require(insurers[msg.sender].isActivated, "User is not an insurer!");
+        require(insurers[msg.sender], "User is not an insurer!");
         _;
     }
 
@@ -63,48 +59,34 @@ contract MediChain {
         string medicalRecordRefIds; // Array not well supported, use ";" to delimit different Ids
     }
 
-    struct Policyholder {
-        bool isActivated;
-        // address policyholderAddress;
-        // mapping(uint256 => Claim) submittedClaims;
-    }
-
-    struct Insurer {
-        bool isActivated;
-        // address insurerAddress;
-        // mapping(uint256 => Claim) verifiedClaims; // Claims that were processed and verified by this insurer
-        // mapping(uint256 => Claim) endorsedClaims; // Claims that were approved or rejected by this insurer
-    }
-
     Claim[] private claims;
 
     uint256 private numPolicyholders;
-    mapping(address => Policyholder) private policyholders; 
+    mapping(address => bool) private policyholders; 
 
     uint256 private numInsurers;
-    mapping(address => Insurer) private insurers;
+    mapping(address => bool) private insurers;
 
     // When registering a new account for Policyholder/Insurer, the platform owner will specify an address for the user (in private MediChain network)
     function registerPolicyholder(address policyholder) public contractOwnerOnly returns (uint256) {
-        require(!policyholders[policyholder].isActivated, "Policyholder has already been registered!");
+        require(!policyholders[policyholder], "Policyholder has already been registered!");
 
-        policyholders[policyholder] = Policyholder(true);
+        policyholders[policyholder] = true;
         emit userRegistration(policyholder);
 
         return numPolicyholders++;
     }
 
     function registerInsurer(address insurer) public contractOwnerOnly returns (uint256) {
-        require(!insurers[insurer].isActivated, "Insurer has already been registered!");
+        require(!insurers[insurer], "Insurer has already been registered!");
 
-        insurers[insurer] = Insurer(true);
+        insurers[insurer] = true;
         emit userRegistration(insurer);
 
         return numInsurers++;
     }
 
     function submitClaim(uint256 medicalAmount, uint256 claimDate, string memory token, string memory medicalRecordRefIds) public policyholderOnly returns (uint256) {
-        // TODO: WK - to add in medicalRecordRefIds check
         for (uint256 claimId = 0; claimId < claims.length; claimId++) {
             string memory retrievedMedicalRecordRefIds = claims[claimId].medicalRecordRefIds;
             require(keccak256(abi.encodePacked(medicalRecordRefIds)) != keccak256(abi.encodePacked(retrievedMedicalRecordRefIds)), "Policyholder cannot submit a claim for the same medical records!");
@@ -171,7 +153,7 @@ contract MediChain {
     }
 
     function getClaim(uint256 claimId) public view returns(Claim memory claim) {
-        require(insurers[msg.sender].isActivated || msg.sender == claims[claimId].claimant, "Only insurer or claimant can view the claim!");
+        require(insurers[msg.sender] || msg.sender == claims[claimId].claimant, "Only insurer or claimant can view the claim!");
         return claims[claimId];
     }
 }
