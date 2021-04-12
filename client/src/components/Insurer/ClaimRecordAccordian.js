@@ -111,7 +111,7 @@ const ClaimRecordAccordion = ({
 
   useEffect(() => {
     unpackRemarks(remarks);
-  }, []);
+  }, [remarks]);
 
   const handleSelectMedicalRecord = (id) => {
     console.log(id);
