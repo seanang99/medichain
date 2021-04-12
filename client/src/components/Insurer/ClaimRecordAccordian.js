@@ -16,7 +16,7 @@ import {
   Link,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
-import ProcessClaims from "./ProcessClaims";
+import ProcessClaims from "./ProcessClaims"
 import ApproveRejectDialog from "./ApproveRejectDialog";
 import DisburseClaim from "./DisburseClaim";
 
@@ -105,7 +105,7 @@ const ClaimRecordAccordion = ({
 
   return (
     <div className={classes.root}>
-      <Accordion>
+      <Accordion TransitionProps={{ unmountOnExit: true }}>
         <AccordionSummary
           classes={{
             content: classes.accordionSummary,
