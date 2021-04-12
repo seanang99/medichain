@@ -23,10 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ApproveRejectDialog({
-  claimId: claimId,
-  policyHolderOnChainAddress: policyHolderOnChainAddress,
-}) {
+export default function ApproveRejectDialog({ claimId, policyHolderOnChainAddress, setOpenEndorseClaimsDialog }) {
   const classes = useStyles();
 
   //Get context value from snack bar context
@@ -52,6 +49,7 @@ export default function ApproveRejectDialog({
         setSeverity("success");
         setOpenSnackBar(true);
         setRemarks("");
+        setOpenEndorseClaimsDialog(false);
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
@@ -70,6 +68,7 @@ export default function ApproveRejectDialog({
         setSeverity("success");
         setOpenSnackBar(true);
         setRemarks("");
+        setOpenEndorseClaimsDialog(false);
       })
       .catch((error) => {
         let newErrorMessage = [...errorMessages, error.response.data];
@@ -86,9 +85,8 @@ export default function ApproveRejectDialog({
         Are you sure?
       </Typography>
       <Typography variant="body1">
-        You are about to endorse claim {claimId} for Policy Holder{" "}
-        {policyHolderOnChainAddress}. This action cannot be undone and will be logged in the
-        blockchain.
+        You are about to endorse claim {claimId} for Policy Holder {policyHolderOnChainAddress}. This action cannot be
+        undone and will be logged in the blockchain.
       </Typography>
       <TextField
         variant="outlined"
