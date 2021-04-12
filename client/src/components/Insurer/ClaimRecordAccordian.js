@@ -16,7 +16,7 @@ import {
   Link,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
-import ProcessClaims from "./ProcessClaims";
+import ProcessClaims from "./ProcessClaims.js";
 import ApproveRejectDialog from "./ApproveRejectDialog";
 import DisburseClaim from "./DisburseClaim";
 
@@ -111,7 +111,7 @@ const ClaimRecordAccordion = ({
 
   useEffect(() => {
     unpackRemarks(remarks);
-  }, []);
+  }, [remarks]);
 
   const handleSelectMedicalRecord = (id) => {
     console.log(id);

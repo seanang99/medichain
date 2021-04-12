@@ -110,51 +110,55 @@ router.get('/getClaims/:address', (req, res) => {
 
     onChainAccountAddress = req.params.address
 
-    medichain.getClaims(onChainAccountAddress, (claims) => {
+    medichain.getClaims(onChainAccountAddress, async (claims) => {
         if (claims == undefined) {
             res.status(200).send([])
         }
 
         result = []
         // return those claims for which the onChainAccountAddress is one of its stakeholders
-        claims.forEach(claim => {
-            if (claim.claimant == onChainAccountAddress || claim.verifier == onChainAccountAddress || claim.endorser == onChainAccountAddress) {
-                // populate all medical records details
-                let medicalRecordRefIds = claim.medicalRecordRefIds
-                let medicalRecords = []
-                for (let i = 0; i < medicalRecordRefIds.length; i++) {
-                    let mrid = medicalRecordRefIds[i]
-                    // console.log(mrid)
-                    let endpointUrl = 'http://localhost:3002/medicalRecord/readMedicalRecord/' + String(mrid)
-                    // console.log(endpointUrl)
-                    axios.get(endpointUrl)
-                        .then(response => {
-                            let mr = response.data
-                            medicalRecords.push(mr)
-                        })
-                }
-                // add one more field medicalRecords while keeping medicalRecordRefIds
-                claim.medicalRecords = medicalRecords
-
-                // convert the claims from string to json format
-                let remarks = claim.remarks;
-                if (remarks != undefined) {
-                    let remarksSplit = []
-                    let remarksInJson = []
-                    remarksSplit = remarks.split(";;;")
-                    // last index is a empty string, thats why length - 1
-                    for (let i = 0; i < remarksSplit.length - 1; i++) {
-                        let remarkSplit = remarksSplit[i].split("##", 2)
-                        remarksInJson.push({
-                            account: remarkSplit[0],
-                            remark: remarkSplit[1]
-                        })
-                    }
-                    claim.remarks = remarksInJson
-                }
-                result.push(claim)
+        let filteredClaims = claims.filter(claim => (claim.claimant == onChainAccountAddress || claim.verifier == onChainAccountAddress || claim.endorser == onChainAccountAddress))
+        
+        for (const claim of filteredClaims) {
+            // populate all medical records details
+            let medicalRecordRefIds = claim.medicalRecordRefIds
+            var medicalRecords = []
+            for (let i = 0; i < medicalRecordRefIds.length; i++) {
+                let mrid = medicalRecordRefIds[i]
+                // console.log(mrid)
+                let endpointUrl = 'http://localhost:3002/medicalRecord/readMedicalRecord/' + String(mrid)
+                // console.log(endpointUrl)
+                let medicalRecord = await axios.get(endpointUrl)
+                    .then(response => {
+                        let mr = response.data
+                        // medicalRecords.push(response.data)
+                        return mr
+                    })
+                medicalRecords.push(medicalRecord)
             }
-        });
+            // add one more field medicalRecords while keeping medicalRecordRefIds
+            claim.medicalRecords = medicalRecords
+            // console.log(medicalRecords)
+
+            // convert the claims from string to json format
+            let remarks = claim.remarks;
+            if (remarks != undefined) {
+                let remarksSplit = []
+                let remarksInJson = []
+                remarksSplit = remarks.split(";;;")
+                // last index is a empty string, thats why length - 1
+                for (let i = 0; i < remarksSplit.length - 1; i++) {
+                    let remarkSplit = remarksSplit[i].split("##", 2)
+                    remarksInJson.push({
+                        account: remarkSplit[0],
+                        remark: remarkSplit[1]
+                    })
+                }
+                claim.remarks = remarksInJson
+            }
+            result.push(claim)
+        }
+
         res.status(200).send(result);
     }).catch(err => {
         console.log(`server.js/getClaims: ${err}`)
