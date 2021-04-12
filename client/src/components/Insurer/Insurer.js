@@ -68,7 +68,6 @@ const Insurer = () => {
   const [selectedClaims, setSelectedClaims] = useState([]);
 
   function handleSelection(value) {
-    // console.log(value);
     setSelectedClaims(allClaimRecords.filter((record) => record.claimStatus === value));
   }
 

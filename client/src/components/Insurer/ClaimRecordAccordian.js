@@ -22,6 +22,7 @@ import DisburseClaim from "./DisburseClaim";
 
 import { getUser } from "../../Auth";
 import { formatDateString } from "../../utils";
+import MedicalRecordSummary from "./MedicalRecordSummary";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +46,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
   },
+  muiLink: {
+    margin: theme.spacing(1),
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
 }));
 
 const ClaimRecordAccordion = ({
@@ -60,6 +67,7 @@ const ClaimRecordAccordion = ({
   medicalAmount,
   getClaims,
   policyNumber,
+  medicalRecords,
 }) => {
   const classes = useStyles();
   const steps = ["PENDING", "PROCESSED", "APPROVED", "DISBURSED"];
@@ -67,6 +75,8 @@ const ClaimRecordAccordion = ({
   const [openAddRemarksDialog, setOpenAddRemarksDialog] = useState(false);
   const [openEndorseClaimsDialog, setOpenEndorseClaimsDialog] = useState(false);
   const [openDisburseClaimDialog, setOpenDisburseClaimDialog] = useState(false);
+  const [openMedicalRecord, setOpenMedicalRecord] = useState(false);
+  const [selectedMedicalRecord, setSelectedMedicalRecord] = useState();
 
   const [verifier, setVerifier] = useState("");
   const [verifierRemarks, setVerifierRemarks] = useState("");
@@ -102,6 +112,14 @@ const ClaimRecordAccordion = ({
   useEffect(() => {
     unpackRemarks(remarks);
   }, []);
+
+  const handleSelectMedicalRecord = (id) => {
+    console.log(id);
+    setSelectedMedicalRecord(
+      medicalRecords.filter((record) => record !== null).find((record) => record._id && record._id === id)
+    );
+    setOpenMedicalRecord(true);
+  };
 
   return (
     <div className={classes.root}>
@@ -191,7 +209,11 @@ const ClaimRecordAccordion = ({
           <div style={{ margin: "16px 0 8px" }}>
             <Typography variant="body2">Linked Medical Records:</Typography>
             {medicalRecordRefIds &&
-              medicalRecordRefIds.map((record) => <Link style={{ marginLeft: 8 }}>• {record}</Link>)}
+              medicalRecordRefIds.map((record) => (
+                <Link className={classes.muiLink} onClick={() => handleSelectMedicalRecord(record)}>
+                  • {record}
+                </Link>
+              ))}
           </div>
           {isInsurer ? (
             <Box className={classes.actionPanel}>
@@ -266,6 +288,17 @@ const ClaimRecordAccordion = ({
           setOpenDisburseClaimDialog={setOpenDisburseClaimDialog}
         />
       </Dialog>
+
+      {selectedMedicalRecord && (
+        <Dialog
+          fullWidth
+          open={openMedicalRecord}
+          onClose={() => setOpenMedicalRecord(false)}
+          onExit={() => setSelectedMedicalRecord()}
+        >
+          <MedicalRecordSummary selectedMedicalRecord={selectedMedicalRecord} />
+        </Dialog>
+      )}
     </div>
   );
 };
