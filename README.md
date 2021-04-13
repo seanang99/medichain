@@ -72,8 +72,31 @@ npm start
 #### Compulsory Initialisation
 Before you start using the application, access the following links to initialise all the necessary accounts:
 1. http://localhost:3001/medichainDbInit/dbInit
+This will clear the MediChain database and initialise the following accounts:
+##### Policyholder One
+```sh
+username: policyholder1
+password: password
+```
+##### Insurer One
+```sh
+username: insurer1
+password: password
+```
+##### Insurer Two
+```sh
+username: insurer2
+password: password
+```
+    
 2. http://localhost:3002/emrxDbInit/dbInit
+This will clear the EMRX database and initialise the following account:
 
+##### Medical Institute Personnel - Alex Ong
+```sh
+username: user1
+password: password
+```
 #### Optional:
 To run the test scripts for testing the MediChain smart contract.
 ```sh
