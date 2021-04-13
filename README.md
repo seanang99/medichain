@@ -72,6 +72,7 @@ npm start
 #### Compulsory Initialisation
 Before you start using the application, access the following links to initialise all the necessary accounts:
 1. http://localhost:3001/medichainDbInit/dbInit
+
 This will clear the MediChain database and initialise the following accounts:
 ##### Policyholder One
 ```sh
@@ -90,6 +91,7 @@ password: password
 ```
     
 2. http://localhost:3002/emrxDbInit/dbInit
+
 This will clear the EMRX database and initialise the following account:
 
 ##### Medical Institute Personnel - Alex Ong
