@@ -21,13 +21,17 @@ npm install web3 @truffle/contract
 #### Frontend Directory
 ```sh
 cd client
-npm install axios react-router-dom @material-ui/core @material-ui/lab @material-ui/icons
+npm install web3 axios react-router-dom @material-ui/core @material-ui/lab @material-ui/icons
 ```
-The react web project will run on `http://localhost:3000`.
 
 #### Backend Directory
 ```sh
 cd Medichain_Backend
+npm install express cors mongoose dotenv axios
+```
+
+```sh
+cd EMRX_Backend
 npm install express cors mongoose dotenv axios
 ```
 
@@ -106,17 +110,28 @@ truffle migrate
 ```
 
 #### Third Tab:
-This starts the backend node.js server. The app should be listening at http://localhost:3001. It should also show that "Mongoose DB Connection established Successfully!"
+This starts the backend MediChain node.js server. The app should be listening at http://localhost:3001. It should also show that "Medichain Mongoose DB Connection established Successfully!"
 ```sh
 node Medichain_Backend/server.js
 ```
 
 #### Fourth Tab:
+This starts the backend EMRX node.js server. the app should be listening at http://localhost:3002. It should also show that "EMRX Mongoose DB Connection established Successfully!"
+```sh
+node EMRX_Backend/server.js
+```
+
+#### Fifth Tab:
 This web interface for the web reactJS client can then be accessed at http://localhost:3000
 ```sh
 cd client
 npm start
 ```
+
+#### Compulsory Initialisation
+Before you start using the application, access the following links to initialise all the necessary accounts:
+1. http://localhost:3001/medichainDbInit/dbInit
+2. http://localhost:3002/emrxDbInit/dbInit
 
 #### Optional:
 To run the test scripts for testing the MediChain smart contract.
