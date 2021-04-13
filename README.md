@@ -82,3 +82,40 @@ truffle test
 
 #### Important Note:
 If you are running the application using NUS Wi-Fi, you may encounter problems with starting up the MongoDB database. Please kindly use your personal hotspot or personal Wi-Fi instead.
+
+## Backend API Endpoints
+#### MediChain
+1. Create MediChain Policyholder/Insurer (POST): http://localhost:3001/account/create
+
+Sample Body:
+
+    "firstName":"policyholder1",
+    
+    "lastName":"one",
+    
+    "username":"policyholder1",
+    
+    "password":"password",
+    
+    "identificationNum":"S1234567A",
+    
+    "type":"policyHolder",
+    
+    "onChainAccountAddress":"0x514181210d13B4070F150d8240c161A954965DB5"
+
+For insurer, the `type` is `insurer`.
+
+#### EMRX
+1. Create Medical Institution Account (POST): http://localhost:3002/medicalInstitutionAccount/createAccount
+
+Sample Body: 
+
+    "firstName":"first name",
+    
+    "lastName":"last name",
+    
+    "username":"user2",
+    
+    "password":"password",
+    
+    "medicalInstituteName":"Tan Tock Seng Hospital"
